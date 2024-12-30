@@ -25,6 +25,7 @@ void renderMenu()
 
 	switch (currentMenu)
 	{
+	case MENU_DEFAULT:
 	case MENU_MAIN:
 
 		printCenter("Main menu", 9);

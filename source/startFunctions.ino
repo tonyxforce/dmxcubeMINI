@@ -19,6 +19,7 @@ If not, see http://www.gnu.org/licenses/
 #include "store.h"
 #include "ajax.h"
 #include "firmUpdate.h"
+#include "IPHelper.h"
 
 void doNodeReport()
 {
@@ -261,24 +262,24 @@ void artStart()
 	case REASON_DEFAULT_RST: // normal start
 	case REASON_EXT_SYS_RST:
 	case REASON_SOFT_RESTART:
-		artRDM.setNodeReport("OK: Device started", ARTNET_RC_POWER_OK);
+		artRDM.setNodeReport(strdup("OK: Device started"), ARTNET_RC_POWER_OK);
 		nextNodeReport = millis() + 4000;
 		break;
 
 	case REASON_WDT_RST:
-		artRDM.setNodeReport("ERROR: (HWDT) Unexpected device restart", ARTNET_RC_POWER_FAIL);
+		artRDM.setNodeReport(strdup("ERROR: (HWDT) Unexpected device restart"), ARTNET_RC_POWER_FAIL);
 		strcpy(nodeError, "Restart error: HWDT");
 		nextNodeReport = millis() + 10000;
 		nodeErrorTimeout = millis() + 30000;
 		break;
 	case REASON_EXCEPTION_RST:
-		artRDM.setNodeReport("ERROR: (EXCP) Unexpected device restart", ARTNET_RC_POWER_FAIL);
+		artRDM.setNodeReport(strdup("ERROR: (EXCP) Unexpected device restart"), ARTNET_RC_POWER_FAIL);
 		strcpy(nodeError, "Restart error: EXCP");
 		nextNodeReport = millis() + 10000;
 		nodeErrorTimeout = millis() + 30000;
 		break;
 	case REASON_SOFT_WDT_RST:
-		artRDM.setNodeReport("ERROR: (SWDT) Unexpected device restart", ARTNET_RC_POWER_FAIL);
+		artRDM.setNodeReport(strdup("ERROR: (SWDT) Unexpected device restart"), ARTNET_RC_POWER_FAIL);
 		strcpy(nodeError, "Error on Restart: SWDT");
 		nextNodeReport = millis() + 10000;
 		nodeErrorTimeout = millis() + 30000;
@@ -314,7 +315,7 @@ void webStart()
     if (!f)
       webServer.send_P(200, typeCSS, css);
     else
-      size_t sent = webServer.streamFile(f, typeCSS);
+      webServer.streamFile(f, typeCSS);
     
     f.close();
     webServer.sendHeader("Connection", "close");
@@ -383,7 +384,7 @@ void wifiStart()
 
 		deviceSettings.ip = deviceSettings.hotspotIp;
 		deviceSettings.subnet = deviceSettings.hotspotSubnet;
-		deviceSettings.broadcast = {~deviceSettings.subnet[0] | (deviceSettings.ip[0] & deviceSettings.subnet[0]), ~deviceSettings.subnet[1] | (deviceSettings.ip[1] & deviceSettings.subnet[1]), ~deviceSettings.subnet[2] | (deviceSettings.ip[2] & deviceSettings.subnet[2]), ~deviceSettings.subnet[3] | (deviceSettings.ip[3] & deviceSettings.subnet[3])};
+		deviceSettings.broadcast = getBroadcastIP(deviceSettings.subnet, deviceSettings.ip);
 
 		return;
 	}
@@ -410,7 +411,7 @@ void wifiStart()
 			if (deviceSettings.gateway == INADDR_NONE)
 				deviceSettings.gateway = WiFi.gatewayIP();
 
-			deviceSettings.broadcast = {~deviceSettings.subnet[0] | (deviceSettings.ip[0] & deviceSettings.subnet[0]), ~deviceSettings.subnet[1] | (deviceSettings.ip[1] & deviceSettings.subnet[1]), ~deviceSettings.subnet[2] | (deviceSettings.ip[2] & deviceSettings.subnet[2]), ~deviceSettings.subnet[3] | (deviceSettings.ip[3] & deviceSettings.subnet[3])};
+			deviceSettings.broadcast = getBroadcastIP(deviceSettings.subnet, deviceSettings.ip);
 		}
 		else
 			WiFi.config(deviceSettings.ip, deviceSettings.gateway, deviceSettings.subnet);

@@ -266,7 +266,6 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
             newLen = 680;
           
           uint16_t oldLen = deviceSettings.portAnumPix;
-          bool lenChanged = false;
   
           // If pixel size has changed
           if (newLen <= 680 && oldLen != newLen) {
@@ -274,8 +273,6 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
             deviceSettings.portAnumPix = newLen;
             pixDriver.updateStrip(1, deviceSettings.portAnumPix, deviceSettings.portApixConfig);
   
-            lenChanged = true;
-
             // If the old mode was pixel map then update the Artnet ports
             if (deviceSettings.portApixMode == FX_MODE_PIXEL_MAP)
               updatePorts = true;
@@ -427,7 +424,6 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
             newLen = 680;
           
           uint16_t oldLen = deviceSettings.portBnumPix;
-          bool lenChanged = false;
   
           // If pixel size has changed
           if (newLen <= 680 && oldLen != newLen) {
@@ -435,8 +431,6 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
             deviceSettings.portBnumPix = newLen;
             pixDriver.updateStrip(1, deviceSettings.portBnumPix, deviceSettings.portBpixConfig);
   
-            lenChanged = true;
-
             // If the old mode was pixel map then update the Artnet ports
             if (deviceSettings.portBpixMode == FX_MODE_PIXEL_MAP)
               updatePorts = true;

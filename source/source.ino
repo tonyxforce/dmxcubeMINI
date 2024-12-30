@@ -47,6 +47,7 @@ This competition will open to the general public a couple of weeks after the pri
 #include <Wire.h>
 #include "display.h"
 #include "source.h"
+#include "IPHelper.h"
 
 #define CLK 12
 #define DT 13
@@ -60,10 +61,6 @@ int remainingFrames = 10;
 unsigned long lastFrame = millis();
 
 int16_t encoderPos = 0; // Counts up or down depending which way the encoder is turned
-
-void ICACHE_RAM_ATTR readEncoder();
-void ICACHE_RAM_ATTR encBtnChange();
-String IPToString(IPAddress ip);
 
 uint8_t encstate = 0;
 bool CLKstate = 0;
@@ -424,7 +421,7 @@ void loop()
 		// Handle received DMX
 		if (newDmxIn)
 		{
-			uint8_t g, p, n;
+			uint8_t g, p;
 
 			newDmxIn = false;
 
@@ -636,7 +633,7 @@ void ipHandle()
 		deviceSettings.subnet = artRDM.getSubnetMask();
 		deviceSettings.gateway = deviceSettings.ip;
 		deviceSettings.gateway[3] = 1;
-		deviceSettings.broadcast = {~deviceSettings.subnet[0] | (deviceSettings.ip[0] & deviceSettings.subnet[0]), ~deviceSettings.subnet[1] | (deviceSettings.ip[1] & deviceSettings.subnet[1]), ~deviceSettings.subnet[2] | (deviceSettings.ip[2] & deviceSettings.subnet[2]), ~deviceSettings.subnet[3] | (deviceSettings.ip[3] & deviceSettings.subnet[3])};
+		deviceSettings.broadcast = getBroadcastIP(deviceSettings.ip, deviceSettings.subnet);
 		deviceSettings.dhcpEnable = 0;
 
 		doReboot = true;
@@ -845,9 +842,3 @@ void ICACHE_RAM_ATTR encBtnChange()
 {
 	remainingFrames += 2;
 };
-
-String IPToString(IPAddress ip)
-{
-	String dot = ".";
-	return ip[0] + dot + ip[1] + dot + ip[2] + dot + ip[3];
-}

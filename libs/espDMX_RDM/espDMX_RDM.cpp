@@ -945,14 +945,14 @@ uint32_t* espDMX::todDev() {
 
 uint16_t espDMX::todMan(uint16_t n) {
   if (_dmx == 0 || !_dmx->rdm_enable)
-    return NULL;
+    return 0;
 
   return _dmx->todManID[n];
 }
 
 uint32_t espDMX::todDev(uint16_t n) {
   if (_dmx == 0 || !_dmx->rdm_enable)
-    return NULL;
+    return 0;
 
   return _dmx->todDevID[n];
 }
@@ -1109,7 +1109,7 @@ void ICACHE_RAM_ATTR espDMX::inputBreak(void) {
   // Double buffer switch
   byte* tmp = _dmx->data;
   _dmx->data = _dmx->data1;
-  _dmx->data1 = _dmx->data;
+  _dmx->data1 = tmp;
 
   if (_dmx->inputCallBack)
     _dmx->inputCallBack(_dmx->numChans);
