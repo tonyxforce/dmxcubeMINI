@@ -1,3 +1,9 @@
+#ifndef STORE_H
+#define STORE_H
+
+#include <EEPROM.h>
+#include <ESP8266WiFi.h>
+
 /*
 ESP8266_ArtNetNode v2.0.0
 Copyright (c) 2016, Matthew Tong
@@ -115,7 +121,10 @@ void eepromLoad() {
     delay(500);
     
     ESP.eraseConfig();
-    while(1);
+		while(1);
   }
 }
 
+
+
+#endif
