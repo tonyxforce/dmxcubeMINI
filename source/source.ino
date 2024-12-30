@@ -42,6 +42,7 @@ This competition will open to the general public a couple of weeks after the pri
 #include "espArtNetRDM.h"
 #include "ws2812Driver.h"
 #include "wsFX.h"
+#include <ArduinoOTA.h> // For enabling over-the-air updates
 
 #include <U8g2lib.h>
 #include <Wire.h>
@@ -260,13 +261,16 @@ void setup() {
   } else
     deviceSettings.doFirmwareUpdate = false;
 
-  delay(10);
+	delay(10);
+	ArduinoOTA.begin(); // Starts OTA
 }
 
 int lastInputDelta = 0;
 
-void loop() {
-  unsigned long now = millis();
+void loop()
+{
+	ArduinoOTA.handle(); // Handles a code update request
+	unsigned long now = millis();
 
   if (now - lastFpsCalc > (1000 / factor)) {
     lastFpsCalc = now;
