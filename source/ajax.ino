@@ -12,6 +12,9 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Ge
 You should have received a copy of the GNU General Public License along with this program.
 If not, see http://www.gnu.org/licenses/
 */
+#include "source.h"
+#include <ArduinoJson.h>
+#include "store.h"
 
 void ajaxHandle() {
   JsonObject& json = jsonBuffer.parseObject(webServer.arg("plain"));
@@ -91,6 +94,8 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
       deviceSettings.standAloneEnable = (bool)json["standAloneEnable"];
 
       eepromSave();
+
+			if(!deviceSettings.standAloneEnable) doReboot = true;
       return true;
       break;
 
@@ -538,11 +543,11 @@ void ajaxLoad(uint8_t page, JsonObject& jsonReply) {
       jsonReply["wifiStatus"] = wifiStatus;
       
       if (isHotspot) {
-        jsonReply["ipAddressT"] = deviceSettings.hotspotIp.toString();
-        jsonReply["subAddressT"] = deviceSettings.hotspotSubnet.toString();
+        jsonReply["ipAddressT"] = IPToString(deviceSettings.hotspotIp);
+        jsonReply["subAddressT"] = IPToString(deviceSettings.hotspotSubnet);
       } else {
-        jsonReply["ipAddressT"] = deviceSettings.ip.toString();
-        jsonReply["subAddressT"] = deviceSettings.subnet.toString();
+        jsonReply["ipAddressT"] = IPToString(deviceSettings.ip);
+        jsonReply["subAddressT"] = IPToString(deviceSettings.subnet);
       }
 
       if (isHotspot && !deviceSettings.standAloneEnable) {
