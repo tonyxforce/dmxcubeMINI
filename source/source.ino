@@ -216,6 +216,7 @@ void setup()
 		const char factoryYes[] = "Yes: Press Button";
 		const char factoryNo[] = "No: Wait ";
 
+		// Factory reset display
 		while (millis() < factoryResetTimeout && !resetDefaults)
 		{
 			yield();

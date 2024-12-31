@@ -2,8 +2,6 @@
 
 WiFi ArtNet V4 to DMX, with experimental RDM support
 
-If you find this helpful and you're feeling generous, I'd love for you to buy the original creator of the base of this product a beer or some gear: https://www.paypal.me/mtongnz. Thanks heaps to all those who have donated.
-
 ## Known Issues & Feedback
 
 Please see the issues tab for known issues or to submit bugs or suggestions
@@ -28,7 +26,7 @@ If the device can't connect to the wifi or get a DHCP assigned address within th
 
 I have allowed for 2 methods to restore the factory default settings: Pressing the encoder during power on or multiple power cycles.
 
-Method 1: Press the encoder while the device boots, then release it after about 1-2 seconds and then short press it again to make sure the device doesn't reset accidentally.
+Method 1: Press the encoder while the device boots, then release it after about 1-2 seconds and then short press it again to make sure the device doesn't reset accidentally. Wait for about 10 seconds to abort factory reset
 
 Method 2: Allow the Cube about 1-4 seconds to start, then power cycle it. Do this at least 5 times to restore factory default settings.
 

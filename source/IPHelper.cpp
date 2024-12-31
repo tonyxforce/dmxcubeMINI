@@ -1,6 +1,6 @@
 #include "IPHelper.h"
 
-String IPToString(IPAddress ip)
+String IPAddressToString(IPAddress ip)
 {
 	String dot = ".";
 	return ip[0] + dot + ip[1] + dot + ip[2] + dot + ip[3];
