@@ -26,7 +26,7 @@ In order to recieve one, please complete one of the following tasks.  You can "w
 				Adding other pixel strips (https://github.com/mtongnz/ESP8266_ArtNetNode_v2/issues/42)
 				Creating new web UI theme (https://github.com/mtongnz/ESP8266_ArtNetNode_v2/issues/22)
 
-These prizes will be based on the first person to submit a solution that I judge to be adequate.  My decision is final.
+These prizes will be based on the first person to submit a solution that I judge to be adequate. My decision is final.
 This competition will open to the general public a couple of weeks after the private code release to supporters.
 */
 
@@ -55,10 +55,11 @@ This competition will open to the general public a couple of weeks after the pri
 
 int frameCounter = 0;
 float factor = 25;
-unsigned long lastFpsCalc = millis();
+unsigned long lastFpsCalc = 0;
 float fps = 0;
 int remainingFrames = 10;
-unsigned long lastFrame = millis();
+unsigned long lastFrame = 0;
+unsigned long lastPacketTime = 0;
 
 int16_t encoderPos = 0; // Counts up or down depending which way the encoder is turned
 
@@ -125,6 +126,7 @@ uint8_t MAC_array[6];
 uint8_t dmxInSeqID = 0;
 uint8_t statusLedData[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 uint32_t statusTimer = 0;
+IPAddress lastPacketSource = IPAddress(0, 0, 0, 0);
 
 esp8266ArtNetRDM artRDM;
 ESP8266WebServer webServer(80);
@@ -348,7 +350,18 @@ void loop()
 				u8g2.drawStr(0, 20, "Disconnected from WiFi.");
 
 			if (deviceSettings.ip)
-				u8g2.drawStr(0, 30, ((String)("IP: " + IPToString(deviceSettings.ip))).c_str());
+				u8g2.drawStr(0, 30, ((String)("IP: " + IPAddressToString(deviceSettings.ip))).c_str());
+
+			if(lastPacketSource[0] == 0){
+				u8g2.drawStr(0, 40, "No packet received");
+			}else{
+				u8g2.drawStr(0, 40, String("Packet from " + IPAddressToString(lastPacketSource)).c_str());
+			}
+
+			if(millis()-lastPacketTime < 10000 && lastPacketTime != 0){
+				u8g2.drawStr(0, 50, String(String((now-lastPacketTime)/1000) + "s ago").c_str());
+			}
+
 		}
 		else
 		{
@@ -362,7 +375,7 @@ void loop()
 			if (deviceSettings.hotspotPass)
 				u8g2.drawStr(0, 30, String("Password: " + HPString).c_str());
 			if (deviceSettings.hotspotIp)
-				u8g2.drawStr(0, 40, ((String)("IP: " + IPToString(deviceSettings.hotspotIp))).c_str());
+				u8g2.drawStr(0, 40, ((String)("IP: " + IPAddressToString(deviceSettings.hotspotIp))).c_str());
 
 			u8g2.drawStr(0, 50, String("WiFi client count: " + String(wifi_softap_get_station_num())).c_str());
 		}
@@ -474,6 +487,7 @@ void loop()
 
 void dmxHandle(uint8_t group, uint8_t port, uint16_t numChans, bool syncEnabled)
 {
+	artRDM.getIP();
 	if (portA[0] == group)
 	{
 		if (deviceSettings.portAmode == TYPE_WS2812)
@@ -648,8 +662,8 @@ void ipHandle()
 
 void addressHandle()
 {
-	memcpy(&deviceSettings.nodeName, artRDM.getShortName(), ARTNET_SHORT_NAME_LENGTH);
-	memcpy(&deviceSettings.longName, artRDM.getLongName(), ARTNET_LONG_NAME_LENGTH);
+	//memcpy(&deviceSettings.nodeName, artRDM.getShortName(), ARTNET_SHORT_NAME_LENGTH);
+	//memcpy(&deviceSettings.longName, artRDM.getLongName(), ARTNET_LONG_NAME_LENGTH);
 
 	deviceSettings.portAnet = artRDM.getNet(portA[0]);
 	deviceSettings.portAsub = artRDM.getSubNet(portA[0]);

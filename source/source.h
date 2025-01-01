@@ -19,6 +19,8 @@ extern unsigned long lastFpsCalc;
 extern float fps;
 extern int remainingFrames;
 extern unsigned long lastFrame;
+extern IPAddress lastPacketSource;
+extern unsigned long lastPacketTime;
 
 extern int16_t encoderPos; // Counts up or down depending which way the encoder is turned
 

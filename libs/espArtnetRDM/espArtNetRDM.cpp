@@ -16,6 +16,8 @@ If not, see http://www.gnu.org/licenses/
 
 
 #include "espArtNetRDM.h"
+extern IPAddress lastPacketSource;
+extern unsigned long lastPacketTime;
 
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
@@ -298,6 +300,8 @@ void esp8266ArtNetRDM::handler() {
   uint16_t packetSize = eUDP.parsePacket();
 
   if(packetSize > 0) {
+		lastPacketSource = eUDP.remoteIP();
+		lastPacketTime = millis();
 
     unsigned char _artBuffer[ARTNET_BUFFER_MAX];
 
