@@ -343,6 +343,7 @@ void loop()
 		}
 
 		u8g2.setFont(u8g2_font_5x8_mf);
+		u8g2.drawStr(0, 10, "DMXCube mini WiFi");
 		if (!isHotspot)
 		{
 			if (WiFi.status() == WL_CONNECTED)
