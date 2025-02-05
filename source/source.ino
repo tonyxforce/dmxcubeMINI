@@ -354,16 +354,15 @@ void loop()
 			if (deviceSettings.ip)
 				u8g2.drawStr(0, 30, ((String)("IP: " + IPAddressToString(deviceSettings.ip))).c_str());
 
-			if(lastPacketSource[0] == 0){
-				u8g2.drawStr(0, 40, "No packet received");
-			}else{
+			if (lastPacketSource[0] == 0)
+			{
+				u8g2.drawStr(0, 40, "No packet received yet");
+			}
+			else
+			{
 				u8g2.drawStr(0, 40, String("Packet from " + IPAddressToString(lastPacketSource)).c_str());
+				u8g2.drawStr(0, 50, String(String((now - lastPacketTime) / 1000) + "s ago").c_str());
 			}
-
-			if(millis()-lastPacketTime < 10000 && lastPacketTime != 0){
-				u8g2.drawStr(0, 50, String(String((now-lastPacketTime)/1000) + "s ago").c_str());
-			}
-
 		}
 		else
 		{
