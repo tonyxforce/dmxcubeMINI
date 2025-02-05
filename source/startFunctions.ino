@@ -307,7 +307,7 @@ void webStart()
 
 	webServer.on("/style.css", []()
 							 {
-    artRDM.pause();
+    //artRDM.pause();
 
     File f = SPIFFS.open("/style.css", "r");
 
@@ -315,13 +315,15 @@ void webStart()
     if (!f)
       webServer.send_P(200, typeCSS, css);
     else
-      webServer.streamFile(f, typeCSS);
+			webServer.send(200, typeCSS, f.readString());
+      //webServer.streamFile(f, typeCSS);
     
     f.close();
     webServer.sendHeader("Connection", "close");
     
     yield();
-    artRDM.begin(); });
+    //artRDM.begin();
+		});
 
 	webServer.on("/ajax", HTTP_POST, ajaxHandle);
 
