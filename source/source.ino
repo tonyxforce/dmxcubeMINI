@@ -319,7 +319,8 @@ int lastInputDelta = 0;
 
 void loop()
 {
-	ArduinoOTA.handle(); // Handles a code update request
+	if (deviceSettings.allowOTA)
+		ArduinoOTA.handle(); // Handles a code update request
 	unsigned long now = millis();
 
 	if (now - lastFpsCalc > (1000 / factor))

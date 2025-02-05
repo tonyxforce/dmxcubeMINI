@@ -64,6 +64,7 @@ struct StoreStruct {
   uint8_t portApixMode, portBpixMode;
   uint16_t portApixFXstart, portBpixFXstart;
   uint8_t resetCounter, wdtCounter;
+	bool allowOTA;
   
 } deviceSettings = {
   CONFIG_VERSION,
@@ -79,7 +80,8 @@ struct StoreStruct {
   false,
   FX_MODE_PIXEL_MAP, FX_MODE_PIXEL_MAP,
   1, 1,
-  0, 0
+  0, 0,
+	1
 };
 
 
