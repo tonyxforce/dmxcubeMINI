@@ -20,6 +20,10 @@ On your first boot, the device will start a WiFi hotspot called "DMXCube mini W"
 
 Note that the hotspot is, by default, only for accessing the settings page. You'll need to enable Standalone mode in the web UI if you want to send ArtNet to the device in hotspot mode.
 
+### Display & knob
+
+Updating the display often is very slow and makes the DMX lights flicker. Because of this, the display only updates while booting or if the knob is turned or pressed. Due to this, new values do not automatically appear on the screen, so you'll need to turn the knob back and forth for updates.
+
 ### Web UI
 
 Open the device's IP in the web browser (this is 2.0.0.1 in Hotspot Mode, but the display always shows the current IP)
