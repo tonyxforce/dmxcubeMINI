@@ -8,6 +8,12 @@ Please see the issues tab for known issues or to submit bugs or suggestions
 
 ## Getting Started
 
+### Powering up
+
+You can use the included USB to barrel jack adapter (only USB power is needed, no data transfer takes place), or any 5V power supply (center positive).
+Once power is applied, the screen should light up after 1-2 seconds and say "booting...".
+If the screen shows "emergency mode!", try reseting the device, and if the issue persists, contact support either at our issues tracker or on discord.
+
 ### First Boot
 
 On your first boot, the device will start a WiFi hotspot called "DMXCube-00000" with a password of "DMXCube2024" (You can always check the password by pressing and holding the knob). Connect to the hotspot, then "Log in" or open 2.0.0.1 in a browser.
