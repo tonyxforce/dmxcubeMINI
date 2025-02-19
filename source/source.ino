@@ -67,15 +67,6 @@ uint8_t encstate = 0;
 bool CLKstate = 0;
 bool DTstate = 0;
 
-extern "C"
-{
-#include "user_interface.h"
-	extern struct rst_info resetInfo;
-}
-
-#define FIRMWARE_VERSION "v2.0.0 (beta 5g)"
-#define ART_FIRM_VERSION 0x0200 // Firmware given over Artnet (2 bytes)
-
 // #define ESP_01              // Un comment for ESP_01 board settings
 // #define NO_RESET            // Un comment to disable the reset button
 
@@ -343,9 +334,9 @@ void loop()
 		}
 
 		u8g2.setFont(u8g2_font_5x8_mf);
-		u8g2.drawStr(0, 10, "DMXCube mini WiFi");
 		if (!isHotspot)
 		{
+			u8g2.drawStr(0, 10, "DMXCube mini WiFi");
 			if (WiFi.status() == WL_CONNECTED)
 				u8g2.drawStr(0, 20, String("WiFi: " + String(deviceSettings.wifiSSID)).c_str());
 			else
@@ -380,6 +371,9 @@ void loop()
 
 			u8g2.drawStr(0, 50, String("WiFi client count: " + String(wifi_softap_get_station_num())).c_str());
 		}
+			if(!digitalRead(ENCBTN)){
+				u8g2.drawStr(0, 60, String("FW version: " + String(FIRMWARE_VERSION)).c_str());
+			}
 
 		lastInputDelta = encoderPos;
 		/* u8g2.drawStr(0, 10, String(fps).c_str()); */

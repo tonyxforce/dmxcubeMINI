@@ -307,23 +307,23 @@ void webStart()
 
 	webServer.on("/style.css", []()
 							 {
-    //artRDM.pause();
+								 // artRDM.pause();
 
-    File f = SPIFFS.open("/style.css", "r");
+								 File f = SPIFFS.open("/style.css", "r");
 
-    // If no style.css in SPIFFS, send default
-    if (!f)
-      webServer.send_P(200, typeCSS, css);
-    else
-			webServer.send(200, typeCSS, f.readString());
-      //webServer.streamFile(f, typeCSS);
-    
-    f.close();
-    webServer.sendHeader("Connection", "close");
-    
-    yield();
-    //artRDM.begin();
-		});
+								 // If no style.css in SPIFFS, send default
+								 if (!f)
+									 webServer.send_P(200, typeCSS, css);
+								 else
+									 webServer.send(200, typeCSS, f.readString());
+								 // webServer.streamFile(f, typeCSS);
+
+								 f.close();
+								 webServer.sendHeader("Connection", "close");
+
+								 yield();
+								 // artRDM.begin();
+							 });
 
 	webServer.on("/ajax", HTTP_POST, ajaxHandle);
 
@@ -332,6 +332,11 @@ void webStart()
 	webServer.on("/style", []()
 							 {
     webServer.send_P(200, typeHTML, cssUploadPage);
+    webServer.sendHeader("Connection", "close"); });
+
+	webServer.on("/script.js", []()
+							 {
+    webServer.send_P(200, "text/javascript", scriptJs);
     webServer.sendHeader("Connection", "close"); });
 
 	webServer.on("/style_delete", []()
@@ -361,8 +366,8 @@ void webStart()
       if(fsUploadFile) {
         fsUploadFile.close();
         
-        if (upload.filename != "/style.css")
-          SPIFFS.rename(upload.filename, "/style.css");
+        //if (upload.filename != "/style.css")
+        //  SPIFFS.rename(upload.filename, "/style.css");
       }
     } });
 
@@ -445,19 +450,19 @@ void startHotspot()
 		return;
 
 	webStart();
-/* 
-	unsigned long endTime = millis() + 30000;
-	unsigned long lastUpdate = millis();
-	// Stay here if not in stand alone mode - no dmx or artnet
-	while ((endTime + (encoderPos * 1000)) > millis() || wifi_softap_get_station_num() > 0)
-	{
+	/*
+		unsigned long endTime = millis() + 30000;
+		unsigned long lastUpdate = millis();
+		// Stay here if not in stand alone mode - no dmx or artnet
+		while ((endTime + (encoderPos * 1000)) > millis() || wifi_softap_get_station_num() > 0)
+		{
 
 
-		webServer.handleClient();
-		yield();
-	}
+			webServer.handleClient();
+			yield();
+		}
 
-	ESP.restart();
-	isHotspot = false;
-	*/
+		ESP.restart();
+		isHotspot = false;
+		*/
 }
