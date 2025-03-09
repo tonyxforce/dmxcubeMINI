@@ -1,4 +1,5 @@
 .pio
 .vscode
-.vscode/*
 source/*.ino.cpp
+.vscode/*
+temp

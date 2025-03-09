@@ -8,23 +8,33 @@ Please see the issues tab for known issues or to submit bugs or suggestions
 
 ## Getting Started
 
+### Powering up
+
+You can use the included USB to barrel jack adapter (only USB power is needed, no data transfer takes place), or any 5V power supply (center positive).
+Once power is applied, the screen should light up after 1-2 seconds and say "booting...".
+If the screen shows "emergency mode!", try reseting the device, and if the issue persists, contact support either at our issues tracker or on discord.
+
 ### First Boot
 
-On your first boot, the device will start a hotspot called "DMXCube" with a password of "DMXCube2024" (case sensitive). Log in to the hotspot or open 2.0.0.1 in a browser.
+On your first boot, the device will start a WiFi hotspot called "DMXCube mini W" with a password of "DMXCube2024" (You can always check the password by pressing and holding the knob). Connect to the hotspot, then "Log in" or open 2.0.0.1 in a browser.
 
 Note that the hotspot is, by default, only for accessing the settings page. You'll need to enable Standalone mode in the web UI if you want to send ArtNet to the device in hotspot mode.
 
+### Display & knob
+
+Updating the display often is very slow and makes the DMX lights flicker. Because of this, the display only updates while booting or if the knob is turned or pressed. Due to this, new values do not automatically appear on the screen, so you'll need to turn the knob back and forth for updates.
+
 ### Web UI
 
-Open the device's IP in the web browser (this is 2.0.0.1 in Hotspot Mode and the display always shows the current IP)
+Open the device's IP in the web browser (this is 2.0.0.1 in Hotspot Mode, but the display always shows the current IP)
 
-In the Wifi tab, enter your SSID and password.  Click save (wait a bit and it should go green and say Settings Saved). Now click reboot and the device should connect to your Wifi.
+In the Wifi tab, enter your SSID and password. Click save (wait a bit and it should go green and say Settings Saved). Now click reboot and the device should connect to your Wifi.
 
 If the device can't connect to the wifi or get a DHCP assigned address within the specified timeout (by default 15 seconds), it will start the hotspot and wait for 30 seconds for you to connect. If a client doesn't connect to the WiFi hotspot in time, the device will restart and try again.
 
 ### Restore Factory Defaults
 
-I have allowed for 2 methods to restore the factory default settings: Pressing the encoder during power on or multiple power cycles.
+I have allowed for 2 methods to restore the factory default settings: Pressing the knob during power on or multiple power cycles.
 
 Method 1: Press the encoder while the device boots, then release it after about 1-2 seconds and then short press it again to make sure the device doesn't reset accidentally. Wait for about 10 seconds to abort factory reset
 

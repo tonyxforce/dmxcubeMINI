@@ -146,6 +146,8 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
       }
       
       deviceSettings.dhcpEnable = (bool)json["dhcpEnable"];
+
+			deviceSettings.allowOTA = (bool)json["allowOTA"];
       
       eepromSave();
       return true;
@@ -629,6 +631,8 @@ void ajaxLoad(uint8_t page, JsonObject& jsonReply) {
 
       jsonReply["nodeName"] = deviceSettings.nodeName;
       jsonReply["longName"] = deviceSettings.longName;
+
+			jsonReply["allowOTA"] = deviceSettings.allowOTA;
 
       jsonReply["success"] = 1;
       break;

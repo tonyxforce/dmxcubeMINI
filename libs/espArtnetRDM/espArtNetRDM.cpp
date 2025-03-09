@@ -82,7 +82,7 @@ void esp8266ArtNetRDM::init(IPAddress ip, IPAddress subnet, bool dhcp, char* sho
   _art->nodeReportCounter = 0;
   _art->nodeReportCode = ARTNET_RC_POWER_OK;
   _art->deviceIP = ip;
-  _art->subnet = ip;
+  _art->subnet = IPAddress(255, 255, 255, 0);
   _art->broadcastIP = IPAddress((uint32_t)ip | ~((uint32_t)subnet));
   _art->dhcp = dhcp;
   _art->oemLo = (byte)oem;
