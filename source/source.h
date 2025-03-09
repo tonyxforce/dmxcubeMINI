@@ -2,7 +2,7 @@
 #define SOURCE_H
 
 #include <ESP8266WiFi.h>
-#include <u8g2lib.h>
+#include <U8g2lib.h>
 #include "espDMX_RDM.h"
 #include "espArtNetRDM.h"
 #include "wsFX.h"
