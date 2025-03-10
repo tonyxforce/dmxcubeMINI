@@ -34,5 +34,6 @@ jobs:
         with:
           files: |
             .pio/build/esp12/firmware.bin
+          tag: "latest"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
