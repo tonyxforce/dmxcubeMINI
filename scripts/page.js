@@ -4,6 +4,8 @@ const fs = require("fs");
 console.log("Converting index.html");
 var file = fs.readFileSync("source/data/index.html").toString();
 
+if(!fs.existsSync("source/media")) fs.mkdirSync("source/media")
+
 file = file.replaceAll("\t", " ");
 file = file.replaceAll("\r\n", "");
 file = file.replaceAll("  ", "");
