@@ -21,7 +21,7 @@ If not, see http://www.gnu.org/licenses/
 
 
 // Change this if the settings structure changes
-#define CONFIG_VERSION "003"
+#define CONFIG_VERSION "004"
 
 // Dont change this
 #define CONFIG_START 0
@@ -55,7 +55,7 @@ struct StoreStruct {
   // Device settings:
   IPAddress ip, subnet, gateway, broadcast, hotspotIp, hotspotSubnet, hotspotBroadcast, dmxInBroadcast;
   bool dhcpEnable, standAloneEnable;
-  char nodeName[18], longName[64], wifiSSID[40], wifiPass[40], hotspotSSID[20], hotspotPass[20];
+  char nodeName[18], longName[64], wifiSSID[40], wifiPass[40], wifiUsername[40], hotspotSSID[20], hotspotPass[20];
   uint16_t hotspotDelay;
   uint8_t portAmode, portBmode, portAprot, portBprot, portAmerge, portBmerge;
   uint8_t portAnet, portAsub, portAuni[4], portBnet, portBsub, portBuni[4], portAsACNuni[4], portBsACNuni[4];
@@ -66,6 +66,7 @@ struct StoreStruct {
   uint8_t resetCounter, wdtCounter;
 	bool allowOTA;
 	bool autoRefresh;
+	bool wpa2Enterprise;
   
 } deviceSettings = {
   CONFIG_VERSION,
@@ -73,7 +74,7 @@ struct StoreStruct {
   // The default values
   IPAddress(2,0,0,1), IPAddress(255,0,0,0), IPAddress(2,0,0,1), IPAddress(2,255,255,255), IPAddress(2,0,0,1), IPAddress(255,0,0,0), IPAddress(2,255,255,255), IPAddress(2,255,255,255),
   true, false,
-  "DMXCube mini W", "DMXCube mini Wireless", "", "", "DMXCube mini W", "DMXCube2024",
+  "DMXCube mini W", "DMXCube mini Wireless", "", "", "", "DMXCube mini W", "DMXCube2024",
   15,
   TYPE_DMX_OUT, TYPE_DMX_OUT, PROT_ARTNET, PROT_ARTNET, MERGE_HTP, MERGE_HTP,
   0, 0, {0, 0, 0, 0}, 0, 0, {1, 1, 1, 1}, {1, 2, 3, 4}, {5, 6, 7, 8},
@@ -83,7 +84,8 @@ struct StoreStruct {
   1, 1,
   0, 0,
 	1,
-	1
+	1,
+	0
 };
 
 

@@ -349,6 +349,7 @@ void loop()
 		String HPString = "<Hold button>";
 		if (!digitalRead(ENCBTN))
 		{
+			u8g2.drawStr(0, 60, String("FW version: " + String(FIRMWARE_VERSION)).c_str());
 			HPString = deviceSettings.hotspotPass;
 		}
 		else
@@ -394,9 +395,6 @@ void loop()
 
 			u8g2.drawStr(0, 50, String("WiFi client count: " + String(wifi_softap_get_station_num())).c_str());
 		}
-			if(!digitalRead(ENCBTN)){
-				u8g2.drawStr(0, 60, String("FW version: " + String(FIRMWARE_VERSION)).c_str());
-			}
 
 		lastInputDelta = encoderPos;
 		/* u8g2.drawStr(0, 10, String(fps).c_str()); */

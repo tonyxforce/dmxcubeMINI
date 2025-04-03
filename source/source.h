@@ -36,6 +36,7 @@ extern "C"
 {
 #include "user_interface.h"
 	extern struct rst_info resetInfo;
+	 #include <wpa2_enterprise.h>
 }
 
 #define FIRMWARE_VERSION "v3.0.1"

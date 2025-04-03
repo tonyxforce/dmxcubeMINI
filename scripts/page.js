@@ -35,11 +35,9 @@ cssPurge.purgeCSS(
 console.log("Converting script.js");
 (async () => {
 	const { minify_sync } = require("terser");
-
-    var jsFile = minify_sync("source/data/script.js", {
-			mangle:{
-				reserved: ["menuClick"]
-			}
+		var jsFile = fs.readFileSync("source/data/script.js").toString();
+    jsFile = minify_sync(jsFile, {
+			mangle:false
 		}).code;
 
     fs.writeFileSync(

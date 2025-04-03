@@ -399,9 +399,27 @@ void wifiStart()
 
 	if (deviceSettings.wifiSSID[0] != '\0')
 	{
-		WiFi.begin(deviceSettings.wifiSSID, deviceSettings.wifiPass);
-		WiFi.mode(WIFI_STA);
-		WiFi.hostname(deviceSettings.nodeName);
+		if(deviceSettings.wpa2Enterprise){
+			wifi_set_opmode(STATION_MODE);
+			struct station_config wifi_config; 
+			memset(&wifi_config, 0, sizeof(wifi_config));
+			strcpy((char *)wifi_config.ssid, deviceSettings.wifiSSID);
+			wifi_station_set_config(&wifi_config);
+			// DISABLE authentication using certificates - But risk leaking your password to someone claiming to be "eduroam"
+			wifi_station_clear_cert_key();
+			wifi_station_clear_enterprise_ca_cert();
+			// Authenticate using username/password
+			wifi_station_set_wpa2_enterprise_auth(1); 
+			wifi_station_set_enterprise_identity((uint8 *)deviceSettings.wifiUsername, 40);
+			wifi_station_set_enterprise_username((uint8 *)deviceSettings.wifiUsername, 40);
+			wifi_station_set_enterprise_password((uint8 *)deviceSettings.wifiPass, 40);
+		
+			wifi_station_connect();
+		}else{
+			WiFi.begin(deviceSettings.wifiSSID, deviceSettings.wifiPass);
+			WiFi.mode(WIFI_STA);
+		}
+			WiFi.hostname(deviceSettings.nodeName);
 
 		unsigned long startTime = millis();
 		unsigned long length = (deviceSettings.hotspotDelay*1000);

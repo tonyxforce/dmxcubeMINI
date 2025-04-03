@@ -92,6 +92,7 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
       json.get<String>("hotspotPass").toCharArray(deviceSettings.hotspotPass, 20);
       deviceSettings.hotspotDelay = (uint8_t)json["hotspotDelay"];
       deviceSettings.standAloneEnable = (bool)json["standAloneEnable"];
+			deviceSettings.wpa2Enterprise = (bool)json["wpa2Enterprise"];
 
       eepromSave();
 
@@ -610,6 +611,7 @@ void ajaxLoad(uint8_t page, JsonObject& jsonReply) {
       jsonReply["hotspotPass"] = deviceSettings.hotspotPass;
       jsonReply["hotspotDelay"] = deviceSettings.hotspotDelay;
       jsonReply["standAloneEnable"] = deviceSettings.standAloneEnable;
+			jsonReply["wpa2Enterprise"] = deviceSettings.wpa2Enterprise;
       
       jsonReply["success"] = 1;
       break;
