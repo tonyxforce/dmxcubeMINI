@@ -53,16 +53,18 @@
 				<p class="right" name=firmwareStatus></p>
 			</div>
 			<div class="hide" name="sections">
-				<input name=save type=button value="Save Changes" />
+				<input name="save" type="button" value="Save Changes" />
 				<h2>WiFi Settings</h2>
 				<p class="left">MAC Address:</p>
 				<p class="right" name="macAddress"></p>
 				<p class="spacer"></p>
+				<p class="left">WiFi network is WPA2 Enterprise</p>
+				<p class="right"><input type="checkbox" name="wpa2Enterprise"></p>
 				<p class="left">Wifi SSID:</p>
-				<p class="right"><input type=text name=wifiSSID /></p>
+				<p class="right"><input type="text" name="wifiSSID" /></p>
 				<p class="left">Password:</p>
 				<p class="right">
-					<input type=text name=wifiPass />
+					<input type="text" name="wifiPass" />
 				</p>
 				<p class="spacer"></p>
 				<p class="left">Hotspot SSID:</p>
@@ -71,16 +73,16 @@
 				</p>
 				<p class="left">Password:</p>
 				<p class="right">
-					<input type=text name=hotspotPass />
+					<input type="text" name="hotspotPass" />
 				</p>
 				<p class="left">Connection timeout:</p>
 				<p class="right">
-					<input name=hotspotDelay type=number min=0 max=180 class=number /> (seconds)
+					<input name="hotspotDelay" type="number" min="0" max="180" class="number" /> (seconds)
 				</p>
 				<p class="spacer"></p>
 				<p class="left">Stand Alone:</p>
 				<p class="right">
-					<input name=standAloneEnable type=checkbox value=true />
+					<input name="standAloneEnable" type="checkbox" value="true" />
 				</p>
 				<p class="right">In normal mode, the hotspot will start after <i>delay</i> seconds if the main WiFi won"t
 					connect.
