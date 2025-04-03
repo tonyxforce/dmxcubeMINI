@@ -2,9 +2,9 @@
 
 console.log("JSfile V0.1.0");
 
-var cl = 0;
+var currentSectionIndex = 0;
 
-var num = 0;
+var targetSectionIndex = 0;
 var err = 0;
 var sections = document.getElementsByName("sections");
 var save = document.getElementsByName("save");
@@ -16,8 +16,10 @@ save.forEach((e) =>
 
 var nav = document.getElementsByClassName("nav")[0];
 
-for(let i = 0; i<nav.childElementCount; i++){
-	document.getElementById(`menuClick${i}`).addEventListener("click", _=>menuClick(i));
+for (let i = 1; i < nav.childElementCount; i++) {
+    document
+        .getElementById(`menuClick${i}`)
+        .addEventListener("click", (_) => menuClick(i));
 }
 
 var firmupload = document.getElementById("fUp");
@@ -117,7 +119,7 @@ function reboot() {
 
     if (!confirm("Are you sure you want to reboot?")) return;
 
-    sections[cl].className = "hide";
+    sections[currentSectionIndex].className = "hide";
     sections[0].childNodes[0].innerHTML = "Rebooting";
     sections[0].childNodes[1].innerHTML =
         "Please wait while the device reboots. This page will refresh shortly unless you changed the IP or Wifi.";
@@ -149,10 +151,10 @@ function reboot() {
     x.send('{"reboot":1,"success":1}');
 }
 function sendData() {
-    var d = { page: num };
+    var d = { page: targetSectionIndex };
     for (
         var i = 0, e;
-        (e = sections[cl].getElementsByTagName("INPUT")[i++]);
+        (e = sections[currentSectionIndex].getElementsByTagName("INPUT")[i++]);
 
     ) {
         var k = e.getAttribute("name");
@@ -172,7 +174,11 @@ function sendData() {
             console.log("k", k);
             console.log("v", v);
             for (var z = 1; z < 4; z++) {
-                c.push(sections[cl].getElementsByTagName("INPUT")[i++].value);
+                c.push(
+                    sections[currentSectionIndex].getElementsByTagName("INPUT")[
+                        i++
+                    ].value
+                );
             }
             d[k] = c;
             continue;
@@ -189,7 +195,7 @@ function sendData() {
     }
     for (
         var i = 0, e;
-        (e = sections[cl].getElementsByTagName("SELECT")[i++]);
+        (e = sections[currentSectionIndex].getElementsByTagName("SELECT")[i++]);
 
     ) {
         d[e.getAttribute("name")] = e.options[e.selectedIndex].value;
@@ -199,42 +205,48 @@ function sendData() {
     x.onreadystatechange = function () {
         handleAJAX(x);
     };
-    x.open("POST", "/ajax");
+    var url = "/ajax";
+    x.open("POST", url);
     x.setRequestHeader("Content-Type", "application/json");
     x.send(JSON.stringify(d));
     console.log(d);
 }
-function menuClick(n) {
-    if (err == 1) return;
-    num = n;
+function menuClick(newSectionIndex) {
+    if (err == 1) return console.log("errored");
+    console.log("clicked on", newSectionIndex);
     setTimeout(function () {
-        if (cl == num || err == 1) return;
-        sections[cl].className = "hide";
+        if (currentSectionIndex == newSectionIndex || err == 1) return;
+        sections[currentSectionIndex].className = "hide";
         sections[0].className = "show";
-        cl = 0;
+        currentSectionIndex = 0;
     }, 100);
+    targetSectionIndex = newSectionIndex;
     var x = new XMLHttpRequest();
     x.onreadystatechange = function () {
         handleAJAX(x);
     };
-    x.open("POST", "/ajax");
+    var url = "/ajax";
+    x.open("POST", url);
     x.setRequestHeader("Content-Type", "application/json");
-    x.send(JSON.stringify({ page: num, success: 1 }));
+    x.send(JSON.stringify({ page: newSectionIndex, success: 1 }));
 }
 function handleAJAX(request) {
+    console.log(request);
     if (request.readyState == XMLHttpRequest.DONE) {
         if (request.status == 200) {
             var response = JSON.parse(request.responseText);
             console.log(response);
             if (!response.hasOwnProperty("success")) {
+                console.log("no success");
                 err = 1;
-                sections[cl].className = "hide";
+                sections[currentSectionIndex].className = "hide";
                 document.getElementsByName("error")[0].className = "show";
                 return;
             }
             if (response["success"] != 1) {
+                console.log("unsuccessful");
                 err = 1;
-                sections[cl].className = "hide";
+                sections[currentSectionIndex].className = "hide";
                 document
                     .getElementsByName("error")[0]
                     .getElementsByTagName("P")[0].innerHTML =
@@ -254,9 +266,10 @@ function handleAJAX(request) {
                     }
                 }, 5000);
             }
-            sections[cl].className = "hide";
-            sections[num].className = "show";
-            cl = num;
+            console.log(currentSectionIndex, targetSectionIndex);
+            sections[currentSectionIndex].className = "hide";
+            sections[targetSectionIndex].className = "show";
+            currentSectionIndex = targetSectionIndex;
             for (var key in response) {
                 if (response.hasOwnProperty(key)) {
                     var elements = document.getElementsByName(key);
@@ -294,28 +307,32 @@ function handleAJAX(request) {
                             elements[z].value = response[key][z];
                         }
                         continue;
-                    };
-										["A", "B"].forEach((port)=>{
-											if(key == `port${port}mode`){
-												var portPix = document.getElementsByName(`port${port}pix`);
-                        var DmxInBcAddr =
-                            document.getElementsByName(`DmxInBcAddr${port}`);
-                        if (response[key] == 3) {
-                            for (let z = 0; z < portPix.length; z++) {
-                                portPix[z].style.display = "";
+                    }
+                    ["A", "B"].forEach((port) => {
+                        if (key == `port${port}mode`) {
+                            var portPix = document.getElementsByName(
+                                `port${port}pix`
+                            );
+                            var DmxInBcAddr = document.getElementsByName(
+                                `DmxInBcAddr${port}`
+                            );
+                            if (response[key] == 3) {
+                                for (let z = 0; z < portPix.length; z++) {
+                                    portPix[z].style.display = "";
+                                }
+                            } else {
+                                for (let z = 0; z < portPix.length; z++) {
+                                    portPix[z].style.display = "none";
+                                }
                             }
-                        } else {
-                            for (let z = 0; z < portPix.length; z++) {
-                                portPix[z].style.display = "none";
-                            }
+                            if (port == "A")
+                                if (response[key] == 2) {
+                                    DmxInBcAddr[0].style.display = "";
+                                } else {
+                                    DmxInBcAddr[0].style.display = "none";
+                                }
                         }
-                        if (response[key] == 2) {
-                            DmxInBcAddr[0].style.display = "";
-                        } else {
-                            DmxInBcAddr[0].style.display = "none";
-                        }
-											}
-										});
+                    });
                     /* if (key == "portAmode") {
                         var portApix = document.getElementsByName("portApix");
                         var DmxInBcAddrA =
@@ -378,7 +395,7 @@ function handleAJAX(request) {
             }
         } else {
             err = 1;
-            sections[cl].className = "hide";
+            sections[currentSectionIndex].className = "hide";
             document.getElementsByName("error")[0].className = "show";
         }
     }
