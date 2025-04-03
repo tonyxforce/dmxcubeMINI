@@ -20,6 +20,7 @@ If not, see http://www.gnu.org/licenses/
 #include "ajax.h"
 #include "firmUpdate.h"
 #include "IPHelper.h"
+#include "display.h"
 
 void doNodeReport()
 {
@@ -402,13 +403,34 @@ void wifiStart()
 		WiFi.mode(WIFI_STA);
 		WiFi.hostname(deviceSettings.nodeName);
 
-		unsigned long endTime = millis() + (deviceSettings.hotspotDelay * 1000);
-
+		unsigned long startTime = millis();
+		unsigned long length = (deviceSettings.hotspotDelay*1000);
+		unsigned long endTime = startTime + length;
 		if (deviceSettings.dhcpEnable)
 		{
+			int j = 0;
+			unsigned long lastDot = 0;
+			u8g2.setCursor(0, 20);
 			while (WiFi.status() != WL_CONNECTED && endTime > millis())
+			{
 				yield();
+				if (millis() - lastDot > 50)
+				{
+					lastDot = millis();
+					u8g2.setFont(u8g2_font_5x7_mf);
+					u8g2.drawStr(0, 10, "Connecting to WiFi...");
+					unsigned long elapsedTime = millis()-startTime;
 
+					//for(int i = 0;i<((elapsedTime*32)/length);i++)
+					//	u8g2.drawStr((i*4)%128, 20+(round(i/32)*10), ".");
+					u8g2.drawFrame(0, 12, 128, 10);
+					u8g2.drawBox(0, 12, (elapsedTime*128)/length, 10);
+					u8g2.drawStr(0, 30, String(String("Starting hotspot in ") + String((length-elapsedTime)/1000) + String("s...")).c_str());
+					u8g2.sendBuffer();
+					u8g2.clearBuffer();
+					j++;
+				}
+			}
 			if (millis() >= endTime)
 				startHotspot();
 

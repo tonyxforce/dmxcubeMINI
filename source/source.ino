@@ -91,8 +91,6 @@ bool DTstate = 0;
 #define WS2812_ALLOW_INT_SINGLE false
 #define WS2812_ALLOW_INT_DOUBLE false
 
-// #define NO_RESET // Comment to enable the reset button
-
 #ifndef NO_RESET
 #define SETTINGS_RESET 14
 bool factoryResetSelection = 0;
@@ -117,7 +115,12 @@ uint8_t MAC_array[6];
 uint8_t dmxInSeqID = 0;
 uint8_t statusLedData[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 uint32_t statusTimer = 0;
-IPAddress lastPacketSource = IPAddress(0, 0, 0, 0);
+IPAddress lastPacketSource = IPAddress(0,0,0,0);
+IPAddress lastLastPacketSource = IPAddress(0,0,0,0);
+uint8_t lastClientCount = 0;
+
+WiFiState_e WifiState = WIFISTATE_DEFAULT;
+WiFiState_e lastWiFiState = WIFISTATE_DEFAULT;
 
 esp8266ArtNetRDM artRDM;
 ESP8266WebServer webServer(80);
@@ -291,7 +294,11 @@ void setup()
 	{
 		deviceSettings.doFirmwareUpdate = false;
 		deviceSettings.wdtCounter = 0;
-		u8g2.drawStr(0, 12, "Recovery Mode!");
+		u8g2.setFont(u8g2_font_5x8_mf);
+		u8g2.drawStr(0, 10, "Recovery Mode!");
+		u8g2.drawStr(0, 20, "Everything except");
+		u8g2.drawStr(0, 30, "WiFi and arduinoOTA");
+		u8g2.drawStr(0, 40, "is disabled!");
 		u8g2.sendBuffer();
 		u8g2.clearBuffer();
 		eepromSave();
@@ -313,6 +320,22 @@ void loop()
 	if (deviceSettings.allowOTA)
 		ArduinoOTA.handle(); // Handles a code update request
 	unsigned long now = millis();
+
+	if(deviceSettings.autoRefresh){
+		if(lastPacketSource != lastLastPacketSource){
+			lastLastPacketSource = lastPacketSource;
+			remainingFrames += 2;
+		}
+		if(now - lastPacketTime > 2000 && remainingFrames == 0){
+			remainingFrames = 1;
+		};
+		if(lastWiFiState != WifiState){
+			remainingFrames += 2;
+		};
+		if(lastClientCount != wifi_softap_get_station_num()){
+			remainingFrames += 2;
+		}
+	}
 
 	if (now - lastFpsCalc > (1000 / factor))
 	{

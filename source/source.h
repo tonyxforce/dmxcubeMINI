@@ -103,6 +103,15 @@ extern bool statusLedsOff;
 extern pixPatterns pixFXA;
 extern pixPatterns pixFXB;
 
+enum WiFiState_e{
+	WIFISTATE_DEFAULT,
+	WIFISTATE_STARTUP,
+	WIFISTATE_CONNECTED,
+	WIFISTATE_TIMEOUT
+};
+
+extern WiFiState_e WifiState;
+
 /*const char PROGMEM mainPage[] = "<!DOCTYPE html><meta content='text/html; charset=utf-8' http-equiv=Content-Type /><title>DMXCube Config</title><meta content='Matthew Tong - http://github.com/mtongnz/' name=DC.creator /><meta content='Dominik Hörich - http://github.com/tonyxforce/' name=DC.creator /><meta content=en name=DC.language /><meta content='width=device-width,initial-scale=1' name=viewport /><link href=style.css rel=stylesheet /><div id=page><div class=inner><div class=mast><div class=title><br><h1>DMXCube</h1></div><ul class=nav><li class=first><a href='javascript: menuClick(1)'>Device Status</a><li><a href='javascript: menuClick(2)'>WiFi</a><li><a href='javascript: menuClick(3)'>IP settings</a><li><a href='javascript: menuClick(4)'>Port A</a>"
 #ifndef ONE_PORT
 																"<li><a href='javascript: menuClick(5)'>Port B</a>"

@@ -21,7 +21,7 @@ If not, see http://www.gnu.org/licenses/
 
 
 // Change this if the settings structure changes
-#define CONFIG_VERSION "b5g"
+#define CONFIG_VERSION "003"
 
 // Dont change this
 #define CONFIG_START 0
@@ -65,6 +65,7 @@ struct StoreStruct {
   uint16_t portApixFXstart, portBpixFXstart;
   uint8_t resetCounter, wdtCounter;
 	bool allowOTA;
+	bool autoRefresh;
   
 } deviceSettings = {
   CONFIG_VERSION,
@@ -81,6 +82,7 @@ struct StoreStruct {
   FX_MODE_PIXEL_MAP, FX_MODE_PIXEL_MAP,
   1, 1,
   0, 0,
+	1,
 	1
 };
 
