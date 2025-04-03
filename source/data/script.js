@@ -14,6 +14,12 @@ save.forEach((e) =>
     })
 );
 
+var nav = document.getElementsByClassName("nav")[0];
+
+for(let i = 0; i<nav.childElementCount; i++){
+	document.getElementById(`menuClick${i}`).addEventListener("click", _=>menuClick(i));
+}
+
 var firmupload = document.getElementById("fUp");
 var um = document.getElementById("uploadMsg");
 var fileSelect = document.getElementById("update");
@@ -108,8 +114,8 @@ var upload = function () {
 };
 function reboot() {
     if (err == 1) return console.log("Can't reboot with an error");
-	
-		if (!confirm("Are you sure you want to reboot?")) return;
+
+    if (!confirm("Are you sure you want to reboot?")) return;
 
     sections[cl].className = "hide";
     sections[0].childNodes[0].innerHTML = "Rebooting";
@@ -163,8 +169,8 @@ function sendData() {
             k == "dmxInBroadcast"
         ) {
             var c = [v];
-						console.log("k", k);
-						console.log("v", v);
+            console.log("k", k);
+            console.log("v", v);
             for (var z = 1; z < 4; z++) {
                 c.push(sections[cl].getElementsByTagName("INPUT")[i++].value);
             }
@@ -259,15 +265,21 @@ function handleAJAX(request) {
                         for (let octet = 0; octet < 4; octet++) {
                             elements[octet].value = response[key][octet];
                             if (octet == 0) portApix[0].innerHTML = "";
-                            else portApix[0].innerHTML = portApix[0].innerHTML + " . ";
-                            portApix[0].innerHTML = portApix[0].innerHTML + response[key][octet];
+                            else
+                                portApix[0].innerHTML =
+                                    portApix[0].innerHTML + " . ";
+                            portApix[0].innerHTML =
+                                portApix[0].innerHTML + response[key][octet];
                         }
                         continue;
                     } else if (key == "bcAddress") {
                         for (let octet = 0; octet < 4; octet++) {
                             if (octet == 0) elements[0].innerHTML = "";
-                            else elements[0].innerHTML = elements[0].innerHTML + " . ";
-                            elements[0].innerHTML = elements[0].innerHTML + response[key][octet];
+                            else
+                                elements[0].innerHTML =
+                                    elements[0].innerHTML + " . ";
+                            elements[0].innerHTML =
+                                elements[0].innerHTML + response[key][octet];
                         }
                         continue;
                     } else if (
@@ -278,20 +290,44 @@ function handleAJAX(request) {
                         key == "portAsACNuni" ||
                         key == "portBsACNuni"
                     ) {
-                        for (var z = 0; z < 4; z++) {
+                        for (var z = 0; z < elements.length; z++) {
                             elements[z].value = response[key][z];
                         }
                         continue;
-                    }
-                    if (key == "portAmode") {
-                        var portApix = document.getElementsByName("portApix");
-                        var DmxInBcAddrA = document.getElementsByName("DmxInBcAddrA");
+                    };
+										["A", "B"].forEach((port)=>{
+											if(key == `port${port}mode`){
+												var portPix = document.getElementsByName(`port${port}pix`);
+                        var DmxInBcAddr =
+                            document.getElementsByName(`DmxInBcAddr${port}`);
                         if (response[key] == 3) {
-                            portApix[0].style.display = "";
-                            portApix[1].style.display = "";
+                            for (let z = 0; z < portPix.length; z++) {
+                                portPix[z].style.display = "";
+                            }
                         } else {
-                            portApix[0].style.display = "none";
-                            portApix[1].style.display = "none";
+                            for (let z = 0; z < portPix.length; z++) {
+                                portPix[z].style.display = "none";
+                            }
+                        }
+                        if (response[key] == 2) {
+                            DmxInBcAddr[0].style.display = "";
+                        } else {
+                            DmxInBcAddr[0].style.display = "none";
+                        }
+											}
+										});
+                    /* if (key == "portAmode") {
+                        var portApix = document.getElementsByName("portApix");
+                        var DmxInBcAddrA =
+                            document.getElementsByName("DmxInBcAddrA");
+                        if (response[key] == 3) {
+                            for (let z = 0; z < portApix.length; z++) {
+                                portApix[z].style.display = "";
+                            }
+                        } else {
+                            for (let z = 0; z < portApix.length; z++) {
+                                portApix[z].style.display = "none";
+                            }
                         }
                         if (response[key] == 2) {
                             DmxInBcAddrA[0].style.display = "";
@@ -307,7 +343,7 @@ function handleAJAX(request) {
                             portApix[0].style.display = "none";
                             portApix[1].style.display = "none";
                         }
-                    }
+                    } */
                     for (let i = 0; i < elements.length; i++) {
                         switch (elements[i].nodeName) {
                             case "P":
@@ -316,14 +352,20 @@ function handleAJAX(request) {
                                 break;
                             case "INPUT":
                                 if (elements[i].type == "checkbox") {
-                                    if (response[key] == 1) elements[i].checked = true;
+                                    if (response[key] == 1)
+                                        elements[i].checked = true;
                                     else elements[i].checked = false;
                                 } else elements[i].value = response[key];
                                 break;
                             case "SELECT":
-                                for (let j = 0; j < elements[i].options.length; j++) {
+                                for (
+                                    let j = 0;
+                                    j < elements[i].options.length;
+                                    j++
+                                ) {
                                     if (
-                                        elements[i].options[j].value == response[key]
+                                        elements[i].options[j].value ==
+                                        response[key]
                                     ) {
                                         elements[i].options.selectedIndex = j;
                                         break;
@@ -341,7 +383,6 @@ function handleAJAX(request) {
         }
     }
 }
-
 
 var update = document.getElementById("update");
 var label = update.nextElementSibling;
