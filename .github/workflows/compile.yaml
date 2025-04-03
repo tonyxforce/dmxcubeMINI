@@ -34,10 +34,10 @@ jobs:
           name: firmware.bin
           path: |
             .pio/build/esp12/firmware.bin
-      - name: Release with Notes
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            .pio/build/esp12/firmware.bin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Release with Notes
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: |
+#            .pio/build/esp12/firmware.bin
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
