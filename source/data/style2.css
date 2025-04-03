@@ -377,25 +377,6 @@ svg g rect.task {
 	fill: var(--darkreader-selection-background) !important;
 }
 
-svg line.messageLine0,
-svg line.messageLine1 {
-	stroke: var(--darkreader-neutral-text) !important;
-}
-
-div.mermaid .actor {
-	fill: var(--darkreader-neutral-background) !important;
-}
-
-mitid-authenticators-code-app>.code-app-container {
-	background-color: white !important;
-	padding-top: 1rem;
-}
-
-iframe#unpaywall[src$="unpaywall.html"] {
-	color-scheme: light !important;
-}
-
-
 .author, .title, ul.nav a {
 	text-align: center
 }
@@ -471,21 +452,6 @@ a:hover {
 	padding-top: 0
 }
 
-.title h1 {
-	font: 700 20px/1.2 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
-	padding-top: 0
-}
-
-.author {
-	font: 400 100% Cambria, Georgia, serif
-}
-
-.author i {
-	font: 400 12px Baskerville, Garamond, Palatino, 'Palatino Linotype', 'Hoefler Text', 'Times New Roman', serif;
-	letter-spacing: .05em;
-	padding-top: .7em
-}
-
 .footer, .main {
 	float: right;
 	width: 65.9375%
@@ -494,14 +460,6 @@ a:hover {
 ul.nav {
 	margin: 1em auto 0;
 	width: 11em
-}
-
-ul.nav a {
-	font: 700 14px/1.2 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
-	letter-spacing: .1em;
-	padding: .7em .5em;
-	margin-bottom: 0;
-	text-transform: uppercase
 }
 
 input[type=button], input[type=button]:focus {
