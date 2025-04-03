@@ -3,3 +3,5 @@
 source/*.ino.cpp
 .vscode/*
 temp
+source/media/*
+scripts/node_modules

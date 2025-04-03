@@ -21,66 +21,54 @@ _______|_______/__/ ____ \__\__|___\__\__|___\__\____
 
 /*! Dark reader generated CSS | Licensed under MIT https://github.com/darkreader/darkreader/blob/main/LICENSE */
 
-/* User-Agent Style */
-@layer {
-	html {
-		background-color: #181a1b !important;
-	}
-
-	html {
-		color-scheme: dark !important;
-	}
-
-	iframe {
-		color-scheme: dark !important;
-	}
-
-	html, body {
-		background-color: #181a1b;
-	}
-
-	html, body {
-		border-color: #736b5e;
-		color: #e8e6e3;
-	}
-
-	a {
-		color: #3391ff;
-	}
-
-	table {
-		border-color: #545b5e;
-	}
-
-	mark {
-		color: #e8e6e3;
-	}
-
-	::placeholder {
-		color: #b2aba1;
-	}
-
-	input:-webkit-autofill,
-	textarea:-webkit-autofill,
-	select:-webkit-autofill {
-		background-color: #404400 !important;
-		color: #e8e6e3 !important;
-	}
-
-	::selection {
-		background-color: #004daa !important;
-		color: #e8e6e3 !important;
-	}
-
-	::-moz-selection {
-		background-color: #004daa !important;
-		color: #e8e6e3 !important;
-	}
+html {
+	color-scheme: dark !important;
 }
 
-/* Invert Style */
-.jfk-bubble.gtx-bubble, .captcheck_answer_label>input+img, span#closed_text>img[src^="https://www.gstatic.com/images/branding/googlelogo"], span[data-href^="https://www.hcaptcha.com/"]>#icon, img.Wirisformula {
-	filter: invert(100%) hue-rotate(180deg) contrast(90%) !important;
+iframe {
+	color-scheme: dark !important;
+}
+
+html, body {
+	background-color: #181a1b;
+}
+
+html, body {
+	border-color: #736b5e;
+	color: #e8e6e3;
+}
+
+a {
+	color: #3391ff;
+}
+
+table {
+	border-color: #545b5e;
+}
+
+mark {
+	color: #e8e6e3;
+}
+
+::placeholder {
+	color: #b2aba1;
+}
+
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+	background-color: #404400 !important;
+	color: #e8e6e3 !important;
+}
+
+::selection {
+	background-color: #004daa !important;
+	color: #e8e6e3 !important;
+}
+
+::-moz-selection {
+	background-color: #004daa !important;
+	color: #e8e6e3 !important;
 }
 
 /* Variables Style */
@@ -848,3 +836,411 @@ select {
 	}
 }
 
+/*
+                        _______
+                       /       \
+                      .==.    .==.
+                     ((  ))==((  ))
+                    / "=="    "=="\
+                   /____|| || ||___\
+       ________     ____    ________  ___    ___
+       |  ___  \   /    \   |  ___  \ |  |  /  /
+       |  |  \  \ /  /\  \  |  |  \  \|  |_/  /
+       |  |   )  /  /__\  \ |  |__/  /|  ___  \
+       |  |__/  /  ______  \|  ____  \|  |  \  \
+_______|_______/__/ ____ \__\__|___\__\__|___\__\____
+|  ___  \ |  ____/ /    \   |  ___  \ |  ____|  ___  \
+|  |  \  \|  |___ /  /\  \  |  |  \  \|  |___|  |  \  \
+|  |__/  /|  ____/  /__\  \ |  |   )  |  ____|  |__/  /
+|  ____  \|  |__/  ______  \|  |__/  /|  |___|  ____  \
+|__|   \__\____/__/      \__\_______/ |______|__|   \__\
+                https://darkreader.org
+*/
+
+/*! Dark reader generated CSS | Licensed under MIT https://github.com/darkreader/darkreader/blob/main/LICENSE */
+
+/* User-Agent Style */
+html {
+	background-color: #181a1b !important;
+}
+
+html {
+	color-scheme: dark !important;
+}
+
+iframe {
+	color-scheme: dark !important;
+}
+
+html, body {
+	background-color: #181a1b;
+}
+
+html, body {
+	border-color: #736b5e;
+	color: #e8e6e3;
+}
+
+a {
+	color: #3391ff;
+}
+
+table {
+	border-color: #545b5e;
+}
+
+mark {
+	color: #e8e6e3;
+}
+
+::placeholder {
+	color: #b2aba1;
+}
+
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+	background-color: #404400 !important;
+	color: #e8e6e3 !important;
+}
+
+
+::selection {
+	background-color: #004daa !important;
+	color: #e8e6e3 !important;
+}
+
+::-moz-selection {
+	background-color: #004daa !important;
+	color: #e8e6e3 !important;
+}
+
+/* Invert Style */
+.jfk-bubble.gtx-bubble, .captcheck_answer_label>input+img, span#closed_text>img[src^="https://www.gstatic.com/images/branding/googlelogo"], span[data-href^="https://www.hcaptcha.com/"]>#icon, img.Wirisformula {
+	filter: invert(100%) hue-rotate(180deg) contrast(90%) !important;
+}
+
+/* Variables Style */
+:root {
+	--darkreader-neutral-background: #181a1b;
+	--darkreader-neutral-text: #e8e6e3;
+	--darkreader-selection-background: #004daa;
+	--darkreader-selection-text: #e8e6e3;
+}
+
+/* Modified CSS */
+input,
+ul.nav a:hover {
+	background-color: rgb(45, 49, 51);
+}
+
+a,
+abbr,
+acronym,
+address,
+applet,
+b,
+big,
+blockquote,
+body,
+caption,
+center,
+cite,
+code,
+dd,
+del,
+dfn,
+div,
+dl,
+dt,
+em,
+fieldset,
+font,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+html,
+i,
+iframe,
+img,
+ins,
+kbd,
+label,
+legend,
+li,
+object,
+ol,
+p,
+pre,
+q,
+s,
+samp,
+small,
+span,
+strike,
+strong,
+sub,
+sup,
+table,
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr,
+tt,
+u,
+ul,
+var {
+	background-color: initial;
+	background-image: initial;
+	border-width: 0px;
+}
+
+.main h2,
+li.last {
+	border-bottom-color: rgb(82, 89, 93);
+}
+
+body {
+	background-color: rgb(39, 43, 44);
+	background-image: initial;
+	color: rgba(232, 230, 227, 0.82);
+}
+
+ol,
+ul {
+	list-style-image: initial;
+}
+
+a {
+	color: rgb(254, 108, 108);
+	text-decoration-color: initial;
+}
+
+a:hover {
+	color: rgb(226, 66, 66);
+}
+
+input[type="button"],
+input[type="button"]:focus {
+	background-color: rgb(39, 43, 44);
+	color: rgb(254, 108, 108);
+}
+
+li {
+	border-top-color: rgb(82, 89, 93);
+}
+
+input {
+	border-color: initial;
+	border-style: initial;
+	border-width: 0px;
+	color: rgb(254, 108, 108);
+}
+
+input:focus {
+	background-color: rgb(60, 65, 67);
+	color: rgb(232, 230, 227);
+}
+
+input[type="checkbox"] {
+	background-color: rgb(27, 29, 30);
+	border-color: rgb(62, 68, 70);
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px, rgba(0, 0, 0, 0.05) 0px -15px 10px -12px inset;
+}
+
+input[type="checkbox"]:active,
+input[type="checkbox"]:checked:active {
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px, rgba(0, 0, 0, 0.1) 0px 1px 3px inset;
+}
+
+input[type="checkbox"]:checked {
+	background-color: rgb(27, 29, 30);
+	border-color: rgb(68, 74, 77);
+	color: rgb(172, 165, 154);
+}
+
+input[type="checkbox"]:checked::after {
+	color: rgb(254, 108, 108);
+}
+
+input[type="button"] {
+	border-color: rgb(68, 74, 77);
+}
+
+input[type="button"]:hover {
+	background-color: rgb(87, 94, 98);
+	color: rgb(232, 230, 227);
+}
+
+input.showMessage,
+input.showMessage:focus,
+input.showMessage:hover {
+	background-color: rgb(112, 204, 0);
+	color: rgb(232, 230, 227);
+}
+
+input[type="file"]+label {
+	background-color: rgb(39, 43, 44);
+	border-color: rgb(68, 74, 77);
+	color: rgb(254, 108, 108);
+}
+
+input[type="file"]+label:hover,
+input[type="file"]:focus+label {
+	background-color: rgb(87, 94, 98);
+	color: rgb(232, 230, 227);
+}
+
+input[type="file"]+label svg {
+	fill: currentcolor;
+}
+
+select {
+	background-color: rgb(45, 49, 51);
+	border-color: initial;
+	border-style: initial;
+	border-width: 0px;
+	color: rgb(254, 108, 108);
+}
+
+.footer {
+	border-top-color: rgb(82, 89, 93);
+}
+
+@media (max-width: 600px) {
+	.mast {
+		border-bottom-color: rgb(82, 89, 93);
+		border-top-color: rgb(82, 89, 93);
+	}
+
+	.title {
+		border-bottom-color: rgb(82, 89, 93);
+	}
+
+	li,
+	li.first,
+	li.last {
+		border-color: initial;
+		border-style: initial;
+		border-width: 0px;
+	}
+}
+
+/* Override Style */
+.vimvixen-hint {
+	background-color: #684b00 !important;
+	border-color: #9e7e00 !important;
+	color: #d7d4cf !important;
+}
+
+#vimvixen-console-frame {
+	color-scheme: light !important;
+}
+
+::placeholder {
+	opacity: 0.5 !important;
+}
+
+#edge-translate-panel-body,
+.MuiTypography-body1,
+.nfe-quote-text {
+	color: var(--darkreader-neutral-text) !important;
+}
+
+gr-main-header {
+	background-color: #1b4958 !important;
+}
+
+.tou-z65h9k,
+.tou-mignzq,
+.tou-1b6i2ox,
+.tou-lnqlqk {
+	background-color: var(--darkreader-neutral-background) !important;
+}
+
+.tou-75mvi {
+	background-color: #0f3a47 !important;
+}
+
+.tou-ta9e87,
+.tou-1w3fhi0,
+.tou-1b8t2us,
+.tou-py7lfi,
+.tou-1lpmd9d,
+.tou-1frrtv8,
+.tou-17ezmgn {
+	background-color: #1e2021 !important;
+}
+
+.tou-uknfeu {
+	background-color: #432c09 !important;
+}
+
+.tou-6i3zyv {
+	background-color: #245d70 !important;
+}
+
+div.mermaid-viewer-control-panel .btn {
+	background-color: var(--darkreader-neutral-background);
+	fill: var(--darkreader-neutral-text);
+}
+
+svg g rect.er {
+	fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g rect.er.entityBox {
+	fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g rect.er.attributeBoxOdd {
+	fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g rect.er.attributeBoxEven {
+	fill: var(--darkreader-selection-background);
+	fill-opacity: 0.8 !important;
+}
+
+svg rect.er.relationshipLabelBox {
+	fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g g.nodes rect,
+svg g g.nodes polygon {
+	fill: var(--darkreader-neutral-background) !important;
+}
+
+svg g rect.task {
+	fill: var(--darkreader-selection-background) !important;
+}
+
+svg line.messageLine0,
+svg line.messageLine1 {
+	stroke: var(--darkreader-neutral-text) !important;
+}
+
+div.mermaid .actor {
+	fill: var(--darkreader-neutral-background) !important;
+}
+
+mitid-authenticators-code-app>.code-app-container {
+	background-color: white !important;
+	padding-top: 1rem;
+}
+
+iframe#unpaywall[src$="unpaywall.html"] {
+	color-scheme: light !important;
+}
+
+* {
+	font-family: Arial, Helvetica, sans-serif !important;
+	outline: 0;
+	border: 0;
+}
