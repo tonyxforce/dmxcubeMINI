@@ -399,6 +399,14 @@ a, abbr, acronym, address, applet, b, big, blockquote, body, caption, center, ci
 	background: 0 0
 }
 
+ul.nav a {
+	font: 700 14px/1.2 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
+	letter-spacing: .1em;
+	padding: .7em .5em;
+	margin-bottom: 0;
+	text-transform: uppercase
+}
+
 .main h2, li.last {
 	border-bottom: 1px solid #888583
 }
