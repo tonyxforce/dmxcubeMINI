@@ -30,6 +30,7 @@ void ajaxHandle() {
     jsonReply["doUpdate"] = 1;
     
     jsonReply.printTo(reply);
+		webServer.sendHeader("Access-Control-Allow-Origin", "*");
     webServer.send(200, "application/json", reply);
 
     if (json["doUpdate"] == 1) {
@@ -71,6 +72,7 @@ void ajaxHandle() {
   } 
 
   jsonReply.printTo(reply);
+	webServer.sendHeader("Access-Control-Allow-Origin", "*");
   webServer.send(200, "application/json", reply);
 }
 
