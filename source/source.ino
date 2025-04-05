@@ -310,14 +310,14 @@ void setup()
 	}
 
 	delay(10);
-	ArduinoOTA.onProgress([](int a,int b){
-		u8g2.setFont(u8g2_font_5x7_mf);
-		u8g2.drawStr(0, 50, "ArduinoOTA updating...");
-		u8g2.drawFrame(0, 54, 128, 10);
-		u8g2.drawBox(0, 54, (a*128/b), 10);
-		u8g2.sendBuffer();
-
-	});
+	ArduinoOTA.onProgress([](int a, int b)
+												{
+													u8g2.setFont(u8g2_font_5x7_mf);
+													u8g2.drawStr(0, 50, "ArduinoOTA updating...");
+													u8g2.drawFrame(0, 54, 128, 10);
+													u8g2.drawBox(0, 54, (a * 128 / b), 10);
+													u8g2.sendBuffer();
+												});
 	ArduinoOTA.begin(); // Starts OTA
 }
 
