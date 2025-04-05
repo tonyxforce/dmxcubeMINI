@@ -3,11 +3,29 @@
 console.log("JSfile V0.1.0");
 
 var currentSectionIndex = 0;
+var currentURL = new URL(document.URL);
+var ajaxEndpoint = `/ajax`;
+if (currentURL.port != 80 && currentURL.port != "") {
+    ajaxEndpoint = `http://localhost:8080/2.0.0.1/ajax`;
+}
 
 var targetSectionIndex = 0;
 var err = 0;
 var sections = document.getElementsByName("sections");
 var save = document.getElementsByName("save");
+
+var isWPA2E = document.getElementById("wpa2Enterprise");
+var wpa2e = document.getElementsByClassName("wpa2e");
+var checkWPAE = () => {
+    for (let a = 0; a < wpa2e.length; a++)
+        wpa2e[a].style.display = isWPA2E.checked ? "" : "none";
+    return isWPA2E.checked;
+};
+checkWPAE();
+
+function bodyLoad() {
+    isWPA2E.addEventListener("click", checkWPAE);
+}
 save.forEach((e) =>
     e.addEventListener("click", function () {
         sendData();
