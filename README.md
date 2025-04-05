@@ -12,7 +12,7 @@ Please see the issues tab for known issues or to submit bugs or suggestions
 
 You can use the included USB to barrel jack adapter (only USB power is needed, no data transfer takes place), or any 5V power supply (center positive).
 Once power is applied, the screen should light up after 1-2 seconds and say "booting...".
-If the screen shows "emergency mode!", try reseting the device, and if the issue persists, contact support either at our issues tracker or on discord.
+If the screen shows `Recovery mode`, try reseting the device, and if the issue persists, contact support either at our issues tracker or on discord.
 
 ### First Boot
 
@@ -23,6 +23,8 @@ Note that the hotspot is, by default, only for accessing the settings page. You'
 ### Display & knob
 
 Updating the display often is very slow and makes the DMX lights flicker. Because of this, the display only updates while booting or if the knob is turned or pressed. Due to this, new values do not automatically appear on the screen, so you'll need to turn the knob back and forth for updates.
+
+In V3.1.0 a new feature was added enabling automatic display updates
 
 ### Web UI
 
@@ -89,7 +91,7 @@ Modify FX is only currently used for the Static effect and is used to resize col
 
 I'd like to thank these people.  They have either contributed with donations, a large amount of testing and feedback, or with their own code/projects that have been of assistance or inspiration.
 
-- Matthew Tong for creating the base code for our DMXCube mini
+- [Matthew Tong](https://github.com/mtongnz) for creating the base code for our DMXCube mini
 - Tristan Thiltges
 - Cyprien Leduc
 - Jochen Schefe
