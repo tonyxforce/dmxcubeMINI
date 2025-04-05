@@ -404,9 +404,10 @@ void wifiStart()
 
 	if (deviceSettings.wifiSSID[0] != '\0')
 	{
-		if(deviceSettings.wpa2Enterprise){
+		if (deviceSettings.wpa2Enterprise)
+		{
 			wifi_set_opmode(STATION_MODE);
-			struct station_config wifi_config; 
+			struct station_config wifi_config;
 			memset(&wifi_config, 0, sizeof(wifi_config));
 			strcpy((char *)wifi_config.ssid, deviceSettings.wifiSSID);
 			wifi_station_set_config(&wifi_config);
@@ -414,45 +415,48 @@ void wifiStart()
 			wifi_station_clear_cert_key();
 			wifi_station_clear_enterprise_ca_cert();
 			// Authenticate using username/password
-			wifi_station_set_wpa2_enterprise_auth(1); 
-			wifi_station_set_enterprise_identity((uint8 *)deviceSettings.wifiUsername, 40);
-			wifi_station_set_enterprise_username((uint8 *)deviceSettings.wifiUsername, 40);
-			wifi_station_set_enterprise_password((uint8 *)deviceSettings.wifiPass, 40);
-		
+			wifi_station_set_wpa2_enterprise_auth(1);
+			wifi_station_set_enterprise_identity((uint8 *)deviceSettings.wifiUsername, strlen(deviceSettings.wifiUsername));
+			wifi_station_set_enterprise_username((uint8 *)deviceSettings.wifiUsername, strlen(deviceSettings.wifiUsername));
+			wifi_station_set_enterprise_password((uint8 *)deviceSettings.wifiPass, strlen(deviceSettings.wifiPass));
+
 			wifi_station_connect();
-		}else{
+		}
+		else
+		{
 			WiFi.begin(deviceSettings.wifiSSID, deviceSettings.wifiPass);
 			WiFi.mode(WIFI_STA);
 		}
-			WiFi.hostname(deviceSettings.nodeName);
+		WiFi.hostname(deviceSettings.nodeName);
 
 		unsigned long startTime = millis();
-		unsigned long length = (deviceSettings.hotspotDelay*1000);
+		unsigned long length = (deviceSettings.hotspotDelay * 1000);
 		unsigned long endTime = startTime + length;
 		if (deviceSettings.dhcpEnable)
 		{
 			int j = 0;
-			unsigned long lastDot = 0;
 			u8g2.setCursor(0, 20);
 			while (WiFi.status() != WL_CONNECTED && endTime > millis())
 			{
 				yield();
-				if (millis() - lastDot > 50)
-				{
-					lastDot = millis();
-					u8g2.setFont(u8g2_font_5x7_mf);
-					u8g2.drawStr(0, 10, "Connecting to WiFi...");
-					unsigned long elapsedTime = millis()-startTime;
-
-					//for(int i = 0;i<((elapsedTime*32)/length);i++)
-					//	u8g2.drawStr((i*4)%128, 20+(round(i/32)*10), ".");
-					u8g2.drawFrame(0, 12, 128, 10);
-					u8g2.drawBox(0, 12, (elapsedTime*128)/length, 10);
-					u8g2.drawStr(0, 30, String(String("Starting hotspot in ") + String((length-elapsedTime)/1000) + String("s...")).c_str());
-					u8g2.sendBuffer();
-					u8g2.clearBuffer();
-					j++;
+				wl_status_t status = WiFi.status();
+				if(status == WL_CONNECT_FAILED) {
+					startHotspot();
+					break;
 				}
+				u8g2.setFont(u8g2_font_5x7_mf);
+				u8g2.drawStr(0, 10, String("Connecting to " + String(deviceSettings.wifiSSID) + "...").c_str());
+				unsigned long elapsedTime = millis() - startTime;
+
+				// for(int i = 0;i<((elapsedTime*32)/length);i++)
+				//	u8g2.drawStr((i*4)%128, 20+(round(i/32)*10), ".");
+				u8g2.drawFrame(0, 12, 128, 10);
+				u8g2.drawBox(0, 12, (elapsedTime * 128) / length, 10);
+				u8g2.drawStr(0, 30, String(String("Starting hotspot in ") + String((length - elapsedTime) / 1000) + String("s...")).c_str());
+				u8g2.drawStr(0, 40, "WPA2 Enterprise");
+				u8g2.sendBuffer();
+				u8g2.clearBuffer();
+				j++;
 			}
 			if (millis() >= endTime)
 				startHotspot();

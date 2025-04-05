@@ -88,6 +88,7 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
       break;
 
     case 2:     // Wifi
+			json.get<String>("wifiUsername").toCharArray(deviceSettings.wifiUsername, 40);
       json.get<String>("wifiSSID").toCharArray(deviceSettings.wifiSSID, 40);
       json.get<String>("wifiPass").toCharArray(deviceSettings.wifiPass, 40);
       json.get<String>("hotspotSSID").toCharArray(deviceSettings.hotspotSSID, 20);
@@ -607,6 +608,7 @@ void ajaxLoad(uint8_t page, JsonObject& jsonReply) {
       jsonReply.remove("portBsACNuni");
       jsonReply.remove("dmxInBroadcast");
       
+			jsonReply["wifiUsername"] = deviceSettings.wifiUsername;
       jsonReply["wifiSSID"] = deviceSettings.wifiSSID;
       jsonReply["wifiPass"] = deviceSettings.wifiPass;
       jsonReply["hotspotSSID"] = deviceSettings.hotspotSSID;
