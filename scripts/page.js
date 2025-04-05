@@ -16,7 +16,7 @@ fs.writeFileSync(
 
 console.log("Converting style.css");
 var cssPurge = require("css-purge");
-var cssFile = fs.readFileSync("source/data/style2.css").toString();
+var cssFile = fs.readFileSync("source/data/style.css").toString();
 
 cssPurge.purgeCSS(
     cssFile,
@@ -34,8 +34,8 @@ cssPurge.purgeCSS(
     }
 );
 
-console.log("Converting script.js");
 (async () => {
+	console.log("Converting script.js");
 	const { minify_sync } = require("terser");
 		var jsFile = fs.readFileSync("source/data/script.js").toString();
     jsFile = minify_sync(jsFile, {
@@ -46,4 +46,10 @@ console.log("Converting script.js");
         "source/media/script.js.h",
         `const char PROGMEM scriptJs[] = ${JSON.stringify(jsFile)};`
     );
-})();
+
+		console.log("Converting favicon.ico");
+
+		var favicon = fs.readFileSync("source/data/favicon.svg").toString();
+		fs.writeFileSync("source/media/favicon.svg.h", `const char PROGMEM favicon[] = ${JSON.stringify(favicon)};`);
+	})();
+
