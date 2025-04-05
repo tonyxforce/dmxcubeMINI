@@ -4,7 +4,7 @@ const fs = require("fs");
 console.log("Converting index.html");
 var file = fs.readFileSync("source/data/index.html").toString();
 
-if(!fs.existsSync("source/media")) fs.mkdirSync("source/media")
+if (!fs.existsSync("source/media")) fs.mkdirSync("source/media");
 
 file = file.replaceAll("\t", " ");
 file = file.replaceAll("\r\n", "");
@@ -35,21 +35,44 @@ cssPurge.purgeCSS(
 );
 
 (async () => {
-	console.log("Converting script.js");
-	const { minify_sync } = require("terser");
-		var jsFile = fs.readFileSync("source/data/script.js").toString();
+    console.log("Converting script.js");
+    const { minify_sync } = require("terser");
+    var jsFile = fs.readFileSync("source/data/script.js").toString();
     jsFile = minify_sync(jsFile, {
-			mangle:false
-		}).code;
+        mangle: false,
+    }).code;
 
     fs.writeFileSync(
         "source/media/script.js.h",
         `const char PROGMEM scriptJs[] = ${JSON.stringify(jsFile)};`
     );
 
-		console.log("Converting favicon.ico");
+    console.log("Converting favicon.ico");
 
-		var favicon = fs.readFileSync("source/data/favicon.svg").toString();
-		fs.writeFileSync("source/media/favicon.svg.h", `const char PROGMEM favicon[] = ${JSON.stringify(favicon)};`);
-	})();
+    var favicon = fs.readFileSync("source/data/favicon.svg").toString();
+    fs.writeFileSync(
+        "source/media/favicon.svg.h",
+        `const char PROGMEM favicon[] = ${JSON.stringify(favicon)};`
+    );
 
+    console.log("Incrementing version number");
+
+    var versionFile = fs.readFileSync("source/firmVer.h").toString();
+
+    var versionNum = versionFile
+        .split('#define FIRMWARE_VERSION "')[1]
+        .split('"')[0];
+
+    console.log(`old firmware ver: ${versionNum}`);
+    var major = versionNum.split(".")[0];
+    var minor = versionNum.split(".")[1];
+    var patch = versionNum.split(".")[2];
+
+    if (!major || !minor || !patch) {
+        console.log("Invalid version num");
+    } else {
+        patch++;
+        console.log(`New firmvare rev: ${major}.${minor}.${patch}`);
+				fs.writeFileSync("source/firmVer.h", `#define FIRMWARE_VERSION "${major}.${minor}.${patch}"`);
+    }
+})();

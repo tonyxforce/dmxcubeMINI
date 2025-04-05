@@ -1,0 +1,1 @@
+#define FIRMWARE_VERSION "v3.0.2"

@@ -39,7 +39,7 @@ extern "C"
 	 #include <wpa2_enterprise.h>
 }
 
-#define FIRMWARE_VERSION "v3.0.1"
+#include "firmVer.h"
 #define ART_FIRM_VERSION 0x0200 // Firmware given over Artnet (2 bytes)
 
 // #define ESP_01              // Un comment for ESP_01 board settings
