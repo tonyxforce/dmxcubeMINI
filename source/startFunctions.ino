@@ -453,7 +453,7 @@ void wifiStart()
 				u8g2.drawFrame(0, 12, 128, 10);
 				u8g2.drawBox(0, 12, (elapsedTime * 128) / length, 10);
 				u8g2.drawStr(0, 30, String(String("Starting hotspot in ") + String((length - elapsedTime) / 1000) + String("s...")).c_str());
-				u8g2.drawStr(0, 40, "WPA2 Enterprise");
+				if(deviceSettings.wpa2Enterprise) u8g2.drawStr(0, 40, "WPA2 Enterprise");
 				u8g2.sendBuffer();
 				u8g2.clearBuffer();
 				j++;
