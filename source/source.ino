@@ -115,8 +115,8 @@ uint8_t MAC_array[6];
 uint8_t dmxInSeqID = 0;
 uint8_t statusLedData[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 uint32_t statusTimer = 0;
-IPAddress lastPacketSource = IPAddress(0,0,0,0);
-IPAddress lastLastPacketSource = IPAddress(0,0,0,0);
+IPAddress lastPacketSource = IPAddress(0, 0, 0, 0);
+IPAddress lastLastPacketSource = IPAddress(0, 0, 0, 0);
 uint8_t lastClientCount = 0;
 
 WiFiState_e WifiState = WIFISTATE_DEFAULT;
@@ -329,18 +329,23 @@ void loop()
 		ArduinoOTA.handle(); // Handles a code update request
 	unsigned long now = millis();
 
-	if(deviceSettings.autoRefresh){
-		if(lastPacketSource != lastLastPacketSource){
+	if (deviceSettings.autoRefresh)
+	{
+		if (lastPacketSource != lastLastPacketSource)
+		{
 			lastLastPacketSource = lastPacketSource;
 			remainingFrames += 2;
 		}
-		if(now - lastPacketTime > 2000 && remainingFrames == 0){
+		if (now - lastPacketTime > 2000 && remainingFrames == 0)
+		{
 			remainingFrames = 1;
 		};
-		if(lastWiFiState != WifiState){
+		if (lastWiFiState != WifiState)
+		{
 			remainingFrames += 2;
 		};
-		if(lastClientCount != wifi_softap_get_station_num()){
+		if (lastClientCount != wifi_softap_get_station_num())
+		{
 			remainingFrames += 2;
 		}
 	}
@@ -686,8 +691,8 @@ void ipHandle()
 
 void addressHandle()
 {
-	//memcpy(&deviceSettings.nodeName, artRDM.getShortName(), ARTNET_SHORT_NAME_LENGTH);
-	//memcpy(&deviceSettings.longName, artRDM.getLongName(), ARTNET_LONG_NAME_LENGTH);
+	// memcpy(&deviceSettings.nodeName, artRDM.getShortName(), ARTNET_SHORT_NAME_LENGTH);
+	// memcpy(&deviceSettings.longName, artRDM.getLongName(), ARTNET_LONG_NAME_LENGTH);
 
 	deviceSettings.portAnet = artRDM.getNet(portA[0]);
 	deviceSettings.portAsub = artRDM.getSubNet(portA[0]);
