@@ -338,7 +338,12 @@ void webStart()
 	webServer.on("/script.js", []()
 							 {
     webServer.send_P(200, "text/javascript", scriptJs);
-    webServer.sendHeader("Connection", "close"); });
+    webServer.sendHeader("Connection", "close");});
+
+	webServer.on("/favicon.svg", [](){
+		webServer.send_P(200, "image/svg+xml", favicon);
+		webServer.sendHeader("Connection", "close");
+	});
 
 	webServer.on("/style_delete", []()
 							 {
