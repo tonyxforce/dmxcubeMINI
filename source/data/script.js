@@ -13,6 +13,11 @@ var targetSectionIndex = 0;
 var err = 0;
 var sections = document.getElementsByName("sections");
 var save = document.getElementsByName("save");
+save.forEach((e) =>
+    e.addEventListener("click", function () {
+        sendData();
+    })
+);
 
 var isWPA2E = document.getElementById("wpa2Enterprise");
 var wpa2e = document.getElementsByClassName("wpa2e");
@@ -26,11 +31,6 @@ checkWPAE();
 function bodyLoad() {
     isWPA2E.addEventListener("click", checkWPAE);
 }
-save.forEach((e) =>
-    e.addEventListener("click", function () {
-        sendData();
-    })
-);
 
 var nav = document.getElementsByClassName("nav")[0];
 
@@ -169,65 +169,65 @@ function reboot() {
     x.send('{"reboot":1,"success":1}');
 }
 function sendData() {
-    var d = { page: targetSectionIndex };
+    var data = { page: targetSectionIndex };
     for (
-        var i = 0, e;
-        (e = sections[currentSectionIndex].getElementsByTagName("INPUT")[i++]);
+        var index = 0, element;
+        (element = sections[currentSectionIndex].getElementsByTagName("INPUT")[index++]);
 
     ) {
-        var k = e.getAttribute("name");
-        var v = e.value;
-        if (k in d) continue;
+        var name = element.getAttribute("name");
+        var v = element.value;
+        if (name in data) continue;
         if (
-            k == "ipAddress" ||
-            k == "subAddress" ||
-            k == "gwAddress" ||
-            k == "portAuni" ||
-            k == "portBuni" ||
-            k == "portAsACNuni" ||
-            k == "portBsACNuni" ||
-            k == "dmxInBroadcast"
+            name == "ipAddress" ||
+            name == "subAddress" ||
+            name == "gwAddress" ||
+            name == "portAuni" ||
+            name == "portBuni" ||
+            name == "portAsACNuni" ||
+            name == "portBsACNuni" ||
+            name == "dmxInBroadcast"
         ) {
             var c = [v];
-            console.log("k", k);
+            console.log("k", name);
             console.log("v", v);
             for (var z = 1; z < 4; z++) {
                 c.push(
                     sections[currentSectionIndex].getElementsByTagName("INPUT")[
-                        i++
+                        index++
                     ].value
                 );
             }
-            d[k] = c;
+            data[name] = c;
             continue;
         }
-        if (e.type === "text") d[k] = v;
-        if (e.type === "number") {
+        if (element.type === "text") data[name] = v;
+        if (element.type === "number") {
             if (v == "") v = 0;
-            d[k] = v;
+            data[name] = v;
         }
-        if (e.type === "checkbox") {
-            if (e.checked) d[k] = 1;
-            else d[k] = 0;
+        if (element.type === "checkbox") {
+            if (element.checked) data[name] = 1;
+            else data[name] = 0;
         }
     }
     for (
-        var i = 0, e;
-        (e = sections[currentSectionIndex].getElementsByTagName("SELECT")[i++]);
+        var index = 0, element;
+        (element = sections[currentSectionIndex].getElementsByTagName("SELECT")[index++]);
 
     ) {
-        d[e.getAttribute("name")] = e.options[e.selectedIndex].value;
+        data[element.getAttribute("name")] = element.options[element.selectedIndex].value;
     }
-    d["success"] = 1;
+    data["success"] = 1;
     var x = new XMLHttpRequest();
     x.onreadystatechange = function () {
         handleAJAX(x);
     };
-    var url = "/ajax";
-    x.open("POST", url);
+
+    x.open("POST", ajaxEndpoint);
     x.setRequestHeader("Content-Type", "application/json");
-    x.send(JSON.stringify(d));
-    console.log(d);
+    x.send(JSON.stringify(data));
+    console.log(data);
 }
 function menuClick(newSectionIndex) {
     if (err == 1) return console.log("errored");
@@ -243,8 +243,8 @@ function menuClick(newSectionIndex) {
     x.onreadystatechange = function () {
         handleAJAX(x);
     };
-    var url = "/ajax";
-    x.open("POST", url);
+
+    x.open("POST", ajaxEndpoint);
     x.setRequestHeader("Content-Type", "application/json");
     x.send(JSON.stringify({ page: newSectionIndex, success: 1 }));
 }
@@ -321,8 +321,8 @@ function handleAJAX(request) {
                         key == "portAsACNuni" ||
                         key == "portBsACNuni"
                     ) {
-                        for (var z = 0; z < elements.length; z++) {
-                            elements[z].value = response[key][z];
+                        for (var octet = 0; octet < elements.length; octet++) {
+                            elements[octet].value = response[key][octet];
                         }
                         continue;
                     }
@@ -335,12 +335,20 @@ function handleAJAX(request) {
                                 `DmxInBcAddr${port}`
                             );
                             if (response[key] == 3) {
-                                for (let z = 0; z < portPix.length; z++) {
-                                    portPix[z].style.display = "";
+                                for (
+                                    let octet = 0;
+                                    octet < portPix.length;
+                                    octet++
+                                ) {
+                                    portPix[octet].style.display = "";
                                 }
                             } else {
-                                for (let z = 0; z < portPix.length; z++) {
-                                    portPix[z].style.display = "none";
+                                for (
+                                    let octet = 0;
+                                    octet < portPix.length;
+                                    octet++
+                                ) {
+                                    portPix[octet].style.display = "none";
                                 }
                             }
                             if (port == "A")
