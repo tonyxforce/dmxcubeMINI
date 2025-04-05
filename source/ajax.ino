@@ -140,7 +140,7 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
         artRDM.setDHCP(deviceSettings.dhcpEnable);
         */
 
-        doReboot = true;
+
       }
 
       if (!isHotspot) {
