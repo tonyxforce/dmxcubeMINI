@@ -72,7 +72,7 @@ cssPurge.purgeCSS(
         console.log("Invalid version num");
     } else {
         patch++;
-        console.log(`New firmvare rev: ${major}.${minor}.${patch}`);
+        console.log(`New firmvare ver: ${major}.${minor}.${patch}`);
 				fs.writeFileSync("source/firmVer.h", `#define FIRMWARE_VERSION "${major}.${minor}.${patch}"`);
     }
 })();
