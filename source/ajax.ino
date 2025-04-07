@@ -29,26 +29,7 @@ void ajaxHandle() {
 		};
   String reply;
   
-  // Handle request to reboot into update mode
-  if (jsonRequest.containsKey("success") && jsonRequest["success"] == 1 && jsonRequest.containsKey("doUpdate")) {
-    artRDM.end();
-    
-    jsonReply["success"] = 1;
-    jsonReply["doUpdate"] = 1;
-
-    if (jsonRequest["doUpdate"] == 1) {
-      // Turn pixel strips off if they're on
-      pixDriver.updateStrip(0, 0, deviceSettings.portApixConfig);
-      pixDriver.updateStrip(1, 0, deviceSettings.portBpixConfig);
-      
-      deviceSettings.doFirmwareUpdate = true;
-      eepromSave();
-      
-      doReboot = true;
-    }
-    
-  // Handle load and save of data
-  } else if (jsonRequest.containsKey("success") && jsonRequest["success"] == 1 && jsonRequest.containsKey("page")) {
+  if (jsonRequest.containsKey("success") && jsonRequest["success"] == 1 && jsonRequest.containsKey("page")) {
     if (ajaxSave((uint8_t)jsonRequest["page"], jsonRequest, jsonRequestDoc)) {
       ajaxLoad((uint8_t)jsonRequest["page"], jsonReply, jsonReplyDoc);
 
@@ -70,8 +51,6 @@ void ajaxHandle() {
     pixDriver.updateStrip(1, 0, deviceSettings.portBpixConfig);
     
     doReboot = true;
-
-  // Handle errors
   } 
 
   //jsonReply.printTo(reply);
@@ -544,7 +523,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
       jsonReply.remove("portBsACNuni");
       jsonReply.remove("dmxInBroadcast");
       
-      jsonReply["nodeName"] = deviceSettings.nodeName;
       jsonReply["wifiStatus"] = wifiStatus;
       
       if (isHotspot) {
@@ -596,7 +574,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
       }
       
       jsonReply["sceneStatus"] = "Not outputting<br />0 Scenes Recorded<br />0 of 250KB used";
-      jsonReply["firmwareStatus"] = FIRMWARE_VERSION;
+      jsonReply["firmVer"] = FIRMWARE_VERSION;
 
       jsonReply["success"] = 1;
       break;

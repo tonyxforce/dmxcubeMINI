@@ -18,7 +18,6 @@ If not, see http://www.gnu.org/licenses/
 #include "source.h"
 #include "store.h"
 #include "ajax.h"
-#include "firmUpdate.h"
 #include "IPHelper.h"
 #include "display.h"
 
@@ -328,8 +327,6 @@ void webStart()
 
 	webServer.on("/ajax", HTTP_POST, ajaxHandle);
 
-	webServer.on("/upload", HTTP_POST, webFirmwareUpdate, webFirmwareUpload);
-
 	webServer.on("/style", []()
 							 {
     webServer.send_P(200, typeHTML, cssUploadPage);
@@ -424,6 +421,8 @@ void wifiStart()
 		}
 		else
 		{
+			WiFi.hostname("cubeminiw");
+			wifi_station_set_hostname("cubeminiw");
 			WiFi.begin(deviceSettings.wifiSSID, deviceSettings.wifiPass);
 			WiFi.mode(WIFI_STA);
 		}

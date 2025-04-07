@@ -6,7 +6,7 @@ var currentSectionIndex = 0;
 var currentURL = new URL(document.URL);
 var ajaxEndpoint = `/ajax`;
 if (currentURL.port != 80 && currentURL.port != "") {
-    ajaxEndpoint = `http://localhost:8080/2.0.0.1/ajax`;
+    ajaxEndpoint = `http://localhost:8080/http://cubeminiw.local/ajax`;
 }
 
 var targetSectionIndex = 0;
@@ -43,95 +43,6 @@ for (let i = 1; i < nav.childElementCount; i++) {
 var firmupload = document.getElementById("fUp");
 var um = document.getElementById("uploadMsg");
 var fileSelect = document.getElementById("update");
-firmupload.addEventListener("click", function () {
-    uploadPrep();
-});
-function uploadPrep() {
-    if (fileSelect.files.length === 0) return;
-    firmupload.disabled = !0;
-    firmupload.value = "Preparing Device…";
-    var x = new XMLHttpRequest();
-    x.onreadystatechange = function () {
-        if (x.readyState == XMLHttpRequest.DONE) {
-            try {
-                var r = JSON.parse(x.response);
-            } catch (e) {
-                var r = { success: 0, doUpdate: 1 };
-            }
-            if (r.success == 1 && r.doUpdate == 1) {
-                uploadWait();
-            } else {
-                um.value = "<b>Update failed!</b>";
-                firmupload.value = "Upload Now";
-                firmupload.disabled = !1;
-            }
-        }
-    };
-    x.open("POST", "/ajax", 1);
-    x.setRequestHeader("Content-Type", "application/json");
-    x.send('{"doUpdate":1,"success":1}');
-}
-function uploadWait() {
-    setTimeout(function () {
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (request.readyState == XMLHttpRequest.DONE) {
-                try {
-                    var resp = JSON.parse(request.response);
-                } catch (e) {
-                    var resp = { success: 0 };
-                }
-                console.log("r=" + resp.success);
-                if (resp.success == 1) {
-                    upload();
-                } else {
-                    uploadWait();
-                }
-            }
-        };
-        request.open("POST", "/ajax", !0);
-        request.setRequestHeader("Content-Type", "application/json");
-        request.send('{"doUpdate":2,"success":1}');
-    }, 1000);
-}
-var upload = function () {
-    firmupload.value = "Uploading… 0%";
-    var data = new FormData();
-    data.append("update", fileSelect.files[0]);
-    var x = new XMLHttpRequest();
-    x.onreadystatechange = function () {
-        if (x.readyState == 4) {
-            try {
-                var resp = JSON.parse(x.response);
-            } catch (e) {
-                var resp = { success: 0, message: "No response from device." };
-            }
-            console.log(resp.success + ": " + resp.message);
-            if (resp.success == 1) {
-                firmupload.value = resp.message;
-                setTimeout(function () {
-                    location.reload();
-                }, 15000);
-            } else {
-                um.value = "<b>Update failed!</b> " + resp.message;
-                firmupload.value = "Upload Now";
-                firmupload.disabled = !1;
-            }
-        }
-    };
-    x.upload.addEventListener(
-        "progress",
-        function (e) {
-            var p = Math.ceil((e.loaded / e.total) * 100);
-            console.log("Progress: " + p + "%");
-            if (p < 100) firmupload.value = "Uploading... " + p + "%";
-            else firmupload.value = "Upload complete. Processing…";
-        },
-        !1
-    );
-    x.open("POST", "/upload", 1);
-    x.send(data);
-};
 function reboot() {
     if (err == 1) return console.log("Can't reboot with an error");
 
@@ -426,14 +337,4 @@ function handleAJAX(request) {
         }
     }
 }
-
-var update = document.getElementById("update");
-var label = update.nextElementSibling;
-var labelVal = label.innerHTML;
-update.addEventListener("change", function (e) {
-    var fileName = e.target.value.split("\\").pop();
-    if (fileName) label.querySelector("span").innerHTML = fileName;
-    else label.innerHTML = labelVal;
-    update.blur();
-});
 menuClick(1);
