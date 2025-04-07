@@ -17,23 +17,26 @@ If not, see http://www.gnu.org/licenses/
 #include "store.h"
 
 void ajaxHandle() {
-  JsonObject& json = jsonBuffer.parseObject(webServer.arg("plain"));
-  JsonObject& jsonReply = jsonBuffer.createObject();
+	DynamicJsonDocument jsonRequestDoc(512);
+  JsonObject jsonRequest = jsonRequestDoc.to<JsonObject>();
+	DeserializationError err = deserializeJson(jsonRequestDoc,String(webServer.arg("plain")).c_str());
+	
+	DynamicJsonDocument jsonReplyDoc(768);
+  JsonObject jsonReply = jsonReplyDoc.to<JsonObject>();
   
+	if (err) {
+		jsonReplyDoc["err"] = err.f_str();
+		};
   String reply;
   
   // Handle request to reboot into update mode
-  if (json.containsKey("success") && json["success"] == 1 && json.containsKey("doUpdate")) {
+  if (jsonRequest.containsKey("success") && jsonRequest["success"] == 1 && jsonRequest.containsKey("doUpdate")) {
     artRDM.end();
     
     jsonReply["success"] = 1;
     jsonReply["doUpdate"] = 1;
-    
-    jsonReply.printTo(reply);
-		webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    webServer.send(200, "application/json", reply);
 
-    if (json["doUpdate"] == 1) {
+    if (jsonRequest["doUpdate"] == 1) {
       // Turn pixel strips off if they're on
       pixDriver.updateStrip(0, 0, deviceSettings.portApixConfig);
       pixDriver.updateStrip(1, 0, deviceSettings.portBpixConfig);
@@ -45,11 +48,11 @@ void ajaxHandle() {
     }
     
   // Handle load and save of data
-  } else if (json.containsKey("success") && json["success"] == 1 && json.containsKey("page")) {
-    if (ajaxSave((uint8_t)json["page"], json)) {
-      ajaxLoad((uint8_t)json["page"], jsonReply);
+  } else if (jsonRequest.containsKey("success") && jsonRequest["success"] == 1 && jsonRequest.containsKey("page")) {
+    if (ajaxSave((uint8_t)jsonRequest["page"], jsonRequest, jsonRequestDoc)) {
+      ajaxLoad((uint8_t)jsonRequest["page"], jsonReply, jsonReplyDoc);
 
-      if (json.size() > 2)
+      if (jsonRequest.size() > 2)
         jsonReply["message"] = "Settings Saved";
 
     } else {
@@ -58,7 +61,7 @@ void ajaxHandle() {
     }
     
   // Handle reboots
-  } else if (json.containsKey("success") && json.containsKey("reboot") && json["reboot"] == 1) {
+  } else if (jsonRequest.containsKey("success") && jsonRequest.containsKey("reboot") && jsonRequest["reboot"] == 1) {
     jsonReply["success"] = 1;
     jsonReply["message"] = "Device Restarting.";
     
@@ -71,14 +74,15 @@ void ajaxHandle() {
   // Handle errors
   } 
 
-  jsonReply.printTo(reply);
+  //jsonReply.printTo(reply);
+	serializeJson(jsonReply, reply);
 	webServer.sendHeader("Access-Control-Allow-Origin", "*");
   webServer.send(200, "application/json", reply);
 }
 
-bool ajaxSave(uint8_t page, JsonObject& json) {
+bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequestDoc) {
   // This is a load request, not a save
-  if (json.size() == 2)
+  if (jsonRequest.size() == 2)
     return true;
   
   switch (page) {
@@ -88,14 +92,14 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
       break;
 
     case 2:     // Wifi
-			json.get<String>("wifiUsername").toCharArray(deviceSettings.wifiUsername, 40);
-      json.get<String>("wifiSSID").toCharArray(deviceSettings.wifiSSID, 40);
-      json.get<String>("wifiPass").toCharArray(deviceSettings.wifiPass, 40);
-      json.get<String>("hotspotSSID").toCharArray(deviceSettings.hotspotSSID, 20);
-      json.get<String>("hotspotPass").toCharArray(deviceSettings.hotspotPass, 20);
-      deviceSettings.hotspotDelay = (uint8_t)json["hotspotDelay"];
-      deviceSettings.standAloneEnable = (bool)json["standAloneEnable"];
-			deviceSettings.wpa2Enterprise = (bool)json["wpa2Enterprise"];
+			strcpy(deviceSettings.wifiUsername, jsonRequest["wifiUsername"].as<const char*>());
+			strcpy(deviceSettings.wifiSSID, jsonRequest["wifiSSID"]);
+      strcpy(deviceSettings.wifiPass, jsonRequest["wifiPass"]);
+      strcpy(deviceSettings.hotspotSSID, jsonRequest["hotspotSSID"]);
+      strcpy(deviceSettings.hotspotPass, jsonRequest["hotspotPass"]);
+      deviceSettings.hotspotDelay = (uint8_t)jsonRequest["hotspotDelay"];
+      deviceSettings.standAloneEnable = (bool)jsonRequest["standAloneEnable"];
+			deviceSettings.wpa2Enterprise = (bool)jsonRequest["wpa2Enterprise"];
 
       eepromSave();
 
@@ -104,15 +108,15 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
       break;
 
     case 3:     // IP Address & Node Name
-      deviceSettings.ip = IPAddress(json["ipAddress"][0],json["ipAddress"][1],json["ipAddress"][2],json["ipAddress"][3]);
-      deviceSettings.subnet = IPAddress(json["subAddress"][0],json["subAddress"][1],json["subAddress"][2],json["subAddress"][3]);
-      deviceSettings.gateway = IPAddress(json["gwAddress"][0],json["gwAddress"][1],json["gwAddress"][2],json["gwAddress"][3]);
+      deviceSettings.ip = IPAddress(jsonRequest["ipAddress"][0],jsonRequest["ipAddress"][1],jsonRequest["ipAddress"][2],jsonRequest["ipAddress"][3]);
+      deviceSettings.subnet = IPAddress(jsonRequest["subAddress"][0],jsonRequest["subAddress"][1],jsonRequest["subAddress"][2],jsonRequest["subAddress"][3]);
+      deviceSettings.gateway = IPAddress(jsonRequest["gwAddress"][0],jsonRequest["gwAddress"][1],jsonRequest["gwAddress"][2],jsonRequest["gwAddress"][3]);
       deviceSettings.broadcast = uint32_t(deviceSettings.ip) | (~uint32_t(deviceSettings.subnet));
       //deviceSettings.broadcast = {~deviceSettings.subnet[0] | (deviceSettings.ip[0] & deviceSettings.subnet[0]), ~deviceSettings.subnet[1] | (deviceSettings.ip[1] & deviceSettings.subnet[1]), ~deviceSettings.subnet[2] | (deviceSettings.ip[2] & deviceSettings.subnet[2]), ~deviceSettings.subnet[3] | (deviceSettings.ip[3] & deviceSettings.subnet[3])};
 
-      if (!isHotspot && (bool)json["dhcpEnable"] != deviceSettings.dhcpEnable) {
+      if (!isHotspot && (bool)jsonRequest["dhcpEnable"] != deviceSettings.dhcpEnable) {
         
-        if ((bool)json["dhcpEnable"]) {
+        if ((bool)jsonRequest["dhcpEnable"]) {
           /*
           // Re-enable DHCP
           WiFi.begin(deviceSettings.wifiSSID, deviceSettings.wifiPass);
@@ -149,10 +153,10 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
         artRDM.setLongName(deviceSettings.longName);
       }
       
-      deviceSettings.dhcpEnable = (bool)json["dhcpEnable"];
+      deviceSettings.dhcpEnable = (bool)jsonRequest["dhcpEnable"];
 
-			deviceSettings.allowOTA = (bool)json["allowOTA"];
-			deviceSettings.autoRefresh = (bool)json["autoRefresh"];
+			deviceSettings.allowOTA = (bool)jsonRequest["allowOTA"];
+			deviceSettings.autoRefresh = (bool)jsonRequest["autoRefresh"];
       
       eepromSave();
       return true;
@@ -160,29 +164,29 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
 
     case 4:     // Port A
       {
-        deviceSettings.portAprot = (uint8_t)json["portAprot"];
+        deviceSettings.portAprot = (uint8_t)jsonRequest["portAprot"];
         bool e131 = (deviceSettings.portAprot == PROT_ARTNET_SACN) ? true : false;
         
-        deviceSettings.portAmerge = (uint8_t)json["portAmerge"];
+        deviceSettings.portAmerge = (uint8_t)jsonRequest["portAmerge"];
   
-        if ((uint8_t)json["portAnet"] < 128)
-          deviceSettings.portAnet = (uint8_t)json["portAnet"];
+        if ((uint8_t)jsonRequest["portAnet"] < 128)
+          deviceSettings.portAnet = (uint8_t)jsonRequest["portAnet"];
   
-        if ((uint8_t)json["portAsub"] < 16)
-        deviceSettings.portAsub = (uint8_t)json["portAsub"];
+        if ((uint8_t)jsonRequest["portAsub"] < 16)
+        deviceSettings.portAsub = (uint8_t)jsonRequest["portAsub"];
   
         for (uint8_t x = 0; x < 4; x++) {
-          if ((uint8_t)json["portAuni"][x] < 16)
-            deviceSettings.portAuni[x] = (uint8_t)json["portAuni"][x];
+          if ((uint8_t)jsonRequest["portAuni"][x] < 16)
+            deviceSettings.portAuni[x] = (uint8_t)jsonRequest["portAuni"][x];
           
-          if ((uint16_t)json["portAsACNuni"][x] > 0 && (uint16_t)json["portAsACNuni"][x] < 64000)
-            deviceSettings.portAsACNuni[x] = (uint16_t)json["portAsACNuni"][x];
+          if ((uint16_t)jsonRequest["portAsACNuni"][x] > 0 && (uint16_t)jsonRequest["portAsACNuni"][x] < 64000)
+            deviceSettings.portAsACNuni[x] = (uint16_t)jsonRequest["portAsACNuni"][x];
 
           artRDM.setE131(portA[0], portA[x+1], e131);
           artRDM.setE131Uni(portA[0], portA[x+1], deviceSettings.portAsACNuni[x]);
         }
   
-        uint8_t newMode = json["portAmode"];
+        uint8_t newMode = jsonRequest["portAmode"];
         uint8_t oldMode = deviceSettings.portAmode;
         bool updatePorts = false;
 
@@ -194,8 +198,8 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
           }
         #endif
         
-        if (newMode == TYPE_DMX_IN && json.containsKey("dmxInBroadcast"))
-          deviceSettings.dmxInBroadcast = IPAddress(json["dmxInBroadcast"][0],json["dmxInBroadcast"][1],json["dmxInBroadcast"][2],json["dmxInBroadcast"][3]);
+        if (newMode == TYPE_DMX_IN && jsonRequest.containsKey("dmxInBroadcast"))
+          deviceSettings.dmxInBroadcast = IPAddress(jsonRequest["dmxInBroadcast"][0],jsonRequest["dmxInBroadcast"][1],jsonRequest["dmxInBroadcast"][2],jsonRequest["dmxInBroadcast"][3]);
          
         
         if (newMode != oldMode) {
@@ -268,7 +272,7 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
         // Lengthen or shorten our pixel strip & handle required Artnet ports
         if (newMode == TYPE_WS2812 && !doReboot) {
           // Get the new & old lengths of pixel strip
-          uint16_t newLen = (json.containsKey("portAnumPix")) ? (uint16_t)json["portAnumPix"] : deviceSettings.portAnumPix;
+          uint16_t newLen = (jsonRequest.containsKey("portAnumPix")) ? (uint16_t)jsonRequest["portAnumPix"] : deviceSettings.portAnumPix;
           if (newLen > 680)
             newLen = 680;
           
@@ -290,16 +294,16 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
             oldLen = 12;
   
           // If our mode changes then update the Artnet ports
-          if (deviceSettings.portApixMode != (uint8_t)json["portApixMode"])
+          if (deviceSettings.portApixMode != (uint8_t)jsonRequest["portApixMode"])
             updatePorts = true;
   
           // Store the new pixel mode
-          deviceSettings.portApixMode = (uint8_t)json["portApixMode"];
+          deviceSettings.portApixMode = (uint8_t)jsonRequest["portApixMode"];
   
           // If our new mode is FX12 then we need 12 channels & store the start address
           if (deviceSettings.portApixMode == FX_MODE_12) {
-            if ((uint16_t)json["portApixFXstart"] <= 501 && (uint16_t)json["portApixFXstart"] > 0)
-              deviceSettings.portApixFXstart = (uint16_t)json["portApixFXstart"];
+            if ((uint16_t)jsonRequest["portApixFXstart"] <= 501 && (uint16_t)jsonRequest["portApixFXstart"] > 0)
+              deviceSettings.portApixFXstart = (uint16_t)jsonRequest["portApixFXstart"];
             newLen = 12;
           }
 
@@ -333,29 +337,29 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
     case 5:     // Port B
       #ifndef ONE_PORT
       {
-        deviceSettings.portBprot = (uint8_t)json["portBprot"];
+        deviceSettings.portBprot = (uint8_t)jsonRequest["portBprot"];
         bool e131 = (deviceSettings.portBprot == PROT_ARTNET_SACN) ? true : false;
         
-        deviceSettings.portBmerge = (uint8_t)json["portBmerge"];
+        deviceSettings.portBmerge = (uint8_t)jsonRequest["portBmerge"];
   
-        if ((uint8_t)json["portBnet"] < 128)
-          deviceSettings.portBnet = (uint8_t)json["portBnet"];
+        if ((uint8_t)jsonRequest["portBnet"] < 128)
+          deviceSettings.portBnet = (uint8_t)jsonRequest["portBnet"];
   
-        if ((uint8_t)json["portBsub"] < 16)
-        deviceSettings.portBsub = (uint8_t)json["portBsub"];
+        if ((uint8_t)jsonRequest["portBsub"] < 16)
+        deviceSettings.portBsub = (uint8_t)jsonRequest["portBsub"];
   
         for (uint8_t x = 0; x < 4; x++) {
-          if ((uint8_t)json["portBuni"][x] < 16)
-            deviceSettings.portBuni[x] = (uint8_t)json["portBuni"][x];
+          if ((uint8_t)jsonRequest["portBuni"][x] < 16)
+            deviceSettings.portBuni[x] = (uint8_t)jsonRequest["portBuni"][x];
           
-          if ((uint16_t)json["portBsACNuni"][x] > 0 && (uint16_t)json["portBsACNuni"][x] < 64000)
-            deviceSettings.portBsACNuni[x] = (uint16_t)json["portBsACNuni"][x];
+          if ((uint16_t)jsonRequest["portBsACNuni"][x] > 0 && (uint16_t)jsonRequest["portBsACNuni"][x] < 64000)
+            deviceSettings.portBsACNuni[x] = (uint16_t)jsonRequest["portBsACNuni"][x];
 
           artRDM.setE131(portB[0], portB[x+1], e131);
           artRDM.setE131Uni(portB[0], portB[x+1], deviceSettings.portBsACNuni[x]);
         }
   
-        uint8_t newMode = json["portBmode"];
+        uint8_t newMode = jsonRequest["portBmode"];
         uint8_t oldMode = deviceSettings.portBmode;
         bool updatePorts = false;
         
@@ -426,7 +430,7 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
         // Lengthen or shorten our pixel strip & handle required Artnet ports
         if (newMode == TYPE_WS2812 && !doReboot) {
           // Get the new & old lengths of pixel strip
-          uint16_t newLen = (json.containsKey("portBnumPix")) ? (uint16_t)json["portBnumPix"] : deviceSettings.portBnumPix;
+          uint16_t newLen = (jsonRequest.containsKey("portBnumPix")) ? (uint16_t)jsonRequest["portBnumPix"] : deviceSettings.portBnumPix;
           if (newLen > 680)
             newLen = 680;
           
@@ -448,16 +452,16 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
             oldLen = 12;
   
           // If our mode changes then update the Artnet ports
-          if (deviceSettings.portBpixMode != (uint8_t)json["portBpixMode"])
+          if (deviceSettings.portBpixMode != (uint8_t)jsonRequest["portBpixMode"])
             updatePorts = true;
   
           // Store the new pixel mode
-          deviceSettings.portBpixMode = (uint8_t)json["portBpixMode"];
+          deviceSettings.portBpixMode = (uint8_t)jsonRequest["portBpixMode"];
   
           // If our new mode is FX12 then we need 12 channels & store the start address
           if (deviceSettings.portBpixMode == FX_MODE_12) {
-            if ((uint16_t)json["portBpixFXstart"] <= 501 && (uint16_t)json["portBpixFXstart"] > 0)
-              deviceSettings.portBpixFXstart = (uint16_t)json["portBpixFXstart"];
+            if ((uint16_t)jsonRequest["portBpixFXstart"] <= 501 && (uint16_t)jsonRequest["portBpixFXstart"] > 0)
+              deviceSettings.portBpixFXstart = (uint16_t)jsonRequest["portBpixFXstart"];
             newLen = 12;
           }
 
@@ -507,18 +511,18 @@ bool ajaxSave(uint8_t page, JsonObject& json) {
   return true;
 }
 
-void ajaxLoad(uint8_t page, JsonObject& jsonReply) {
+void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyDoc) {
 
   // Create the needed arrays here - doesn't work within the switch below
-  JsonArray& ipAddress = jsonReply.createNestedArray("ipAddress");
-  JsonArray& subAddress = jsonReply.createNestedArray("subAddress");
-  JsonArray& gwAddress = jsonReply.createNestedArray("gwAddress");
-  JsonArray& bcAddress = jsonReply.createNestedArray("bcAddress");
-  JsonArray& portAuni = jsonReply.createNestedArray("portAuni");
-  JsonArray& portBuni = jsonReply.createNestedArray("portBuni");
-  JsonArray& portAsACNuni = jsonReply.createNestedArray("portAsACNuni");
-  JsonArray& portBsACNuni = jsonReply.createNestedArray("portBsACNuni");
-  JsonArray& dmxInBroadcast = jsonReply.createNestedArray("dmxInBroadcast");
+  JsonArray ipAddress = jsonReply.createNestedArray("ipAddress");
+  JsonArray subAddress = jsonReply.createNestedArray("subAddress");
+  JsonArray gwAddress = jsonReply.createNestedArray("gwAddress");
+  JsonArray bcAddress = jsonReply.createNestedArray("bcAddress");
+  JsonArray portAuni = jsonReply.createNestedArray("portAuni");
+  JsonArray portBuni = jsonReply.createNestedArray("portBuni");
+  JsonArray portAsACNuni = jsonReply.createNestedArray("portAsACNuni");
+  JsonArray portBsACNuni = jsonReply.createNestedArray("portBsACNuni");
+  JsonArray dmxInBroadcast = jsonReply.createNestedArray("dmxInBroadcast");
 
   // Get MAC Address
   char MAC_char[30] = "";
@@ -636,9 +640,6 @@ void ajaxLoad(uint8_t page, JsonObject& jsonReply) {
         bcAddress.add(deviceSettings.broadcast[x]);
       }
 
-      jsonReply["nodeName"] = deviceSettings.nodeName;
-      jsonReply["longName"] = deviceSettings.longName;
-
 			jsonReply["allowOTA"] = deviceSettings.allowOTA;
 			jsonReply["autoRefresh"] = deviceSettings.autoRefresh;
 
@@ -669,13 +670,16 @@ void ajaxLoad(uint8_t page, JsonObject& jsonReply) {
       jsonReply["portApixMode"] = deviceSettings.portApixMode;
       jsonReply["portApixFXstart"] = deviceSettings.portApixFXstart;
 
+			jsonReply["teszt"] = 1;
+
       for (uint8_t x = 0; x < 4; x++) {
         portAuni.add(deviceSettings.portAuni[x]);
         portAsACNuni.add(deviceSettings.portAsACNuni[x]);
         dmxInBroadcast.add(deviceSettings.dmxInBroadcast[x]);
-      }
-
-      jsonReply["success"] = 1;
+      
+			}
+			
+			jsonReply["success"] = 1;
       break;
 
     case 5:     // Port B

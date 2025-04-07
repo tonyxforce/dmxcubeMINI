@@ -81,7 +81,7 @@ bool DTstate = 0;
 #define DMX_TX_A 1
 #define DMX_TX_B 2
 
-#define STATUS_LED_PIN 0
+//#define STATUS_LED_PIN 0
 #define STATUS_LED_MODE_WS2812
 // #define STATUS_LED_MODE_APA106
 #define STATUS_LED_A 0 // Physical wiring order for status LEDs
@@ -124,7 +124,7 @@ WiFiState_e lastWiFiState = WIFISTATE_DEFAULT;
 
 esp8266ArtNetRDM artRDM;
 ESP8266WebServer webServer(80);
-DynamicJsonBuffer jsonBuffer;
+DynamicJsonDocument jsonDoc(512);
 ws2812Driver pixDriver;
 File fsUploadFile;
 bool statusLedsDim = true;

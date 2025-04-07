@@ -95,7 +95,7 @@ extern uint32_t statusTimer;
 
 extern esp8266ArtNetRDM artRDM;
 extern ESP8266WebServer webServer;
-extern DynamicJsonBuffer jsonBuffer;
+extern DynamicJsonDocument jsonDoc;
 extern ws2812Driver pixDriver;
 extern File fsUploadFile;
 extern bool statusLedsDim;
