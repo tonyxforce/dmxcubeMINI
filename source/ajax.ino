@@ -670,8 +670,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
       jsonReply["portApixMode"] = deviceSettings.portApixMode;
       jsonReply["portApixFXstart"] = deviceSettings.portApixFXstart;
 
-			jsonReply["teszt"] = 1;
-
       for (uint8_t x = 0; x < 4; x++) {
         portAuni.add(deviceSettings.portAuni[x]);
         portAsACNuni.add(deviceSettings.portAsACNuni[x]);
