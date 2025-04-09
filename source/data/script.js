@@ -13,6 +13,8 @@ var targetSectionIndex = 0;
 var err = 0;
 var sections = document.getElementsByName("sections");
 var save = document.getElementsByName("save");
+var errComm = document.getElementById("errComm");
+var errFetch = document.getElementById("errFetch");
 save.forEach((e) =>
     e.addEventListener("click", function () {
         sendData();
@@ -48,7 +50,7 @@ function reboot() {
 
     if (!confirm("Are you sure you want to reboot?")) return;
 
-    sections[currentSectionIndex].className = "hide";
+    hide(currentSectionIndex);
     sections[0].childNodes[0].innerHTML = "Rebooting";
     sections[0].childNodes[1].innerHTML =
         "Please wait while the device reboots. This page will refresh shortly unless you changed the IP or Wifi.";
@@ -83,7 +85,10 @@ function sendData() {
     var data = { page: targetSectionIndex };
     for (
         var index = 0, element;
-        (element = sections[currentSectionIndex].getElementsByTagName("INPUT")[index++]);
+        (element =
+            sections[currentSectionIndex].getElementsByTagName("INPUT")[
+                index++
+            ]);
 
     ) {
         var name = element.getAttribute("name");
@@ -124,10 +129,14 @@ function sendData() {
     }
     for (
         var index = 0, element;
-        (element = sections[currentSectionIndex].getElementsByTagName("SELECT")[index++]);
+        (element =
+            sections[currentSectionIndex].getElementsByTagName("SELECT")[
+                index++
+            ]);
 
     ) {
-        data[element.getAttribute("name")] = element.options[element.selectedIndex].value;
+        data[element.getAttribute("name")] =
+            element.options[element.selectedIndex].value;
     }
     data["success"] = 1;
     var x = new XMLHttpRequest();
@@ -141,12 +150,11 @@ function sendData() {
     console.log(data);
 }
 function menuClick(newSectionIndex) {
-    if (err == 1) return console.log("errored");
-    console.log("clicked on", newSectionIndex);
+    if (err == 1) return console.error("errored");
     setTimeout(function () {
         if (currentSectionIndex == newSectionIndex || err == 1) return;
-        sections[currentSectionIndex].className = "hide";
-        sections[0].className = "show";
+        hide(currentSectionIndex);
+        show(0);
         currentSectionIndex = 0;
     }, 100);
     targetSectionIndex = newSectionIndex;
@@ -160,27 +168,26 @@ function menuClick(newSectionIndex) {
     x.send(JSON.stringify({ page: newSectionIndex, success: 1 }));
 }
 function handleAJAX(request) {
-    console.log(request);
     if (request.readyState == XMLHttpRequest.DONE) {
         if (request.status == 200) {
             var response = JSON.parse(request.responseText);
             console.log(response);
             if (!response.hasOwnProperty("success")) {
-                console.log("no success");
+                console.error("no success");
                 err = 1;
-                sections[currentSectionIndex].className = "hide";
-                document.getElementsByName("error")[0].className = "show";
+                hide(currentSectionIndex);
+                showErr(errComm);
                 return;
             }
             if (response["success"] != 1) {
-                console.log("unsuccessful");
+                console.error("unsuccessful");
                 err = 1;
-                sections[currentSectionIndex].className = "hide";
+                hide(currentSectionIndex);
+                showErr(errComm);
                 document
-                    .getElementsByName("error")[0]
+                    .getElementsByClassName("error")[0]
                     .getElementsByTagName("P")[0].innerHTML =
                     response["message"];
-                document.getElementsByName("error")[0].className = "show";
                 return;
             }
             if (response.hasOwnProperty("message")) {
@@ -195,9 +202,9 @@ function handleAJAX(request) {
                     }
                 }, 5000);
             }
-            console.log(currentSectionIndex, targetSectionIndex);
-            sections[currentSectionIndex].className = "hide";
-            sections[targetSectionIndex].className = "show";
+            hide(currentSectionIndex);
+            show(targetSectionIndex);
+
             currentSectionIndex = targetSectionIndex;
             for (var key in response) {
                 if (response.hasOwnProperty(key)) {
@@ -219,7 +226,7 @@ function handleAJAX(request) {
                             if (octet == 0) elements[0].innerHTML = "";
                             else
                                 elements[0].innerHTML =
-                                    elements[0].innerHTML + " . ";
+                                    elements[0].innerHTML + ".";
                             elements[0].innerHTML =
                                 elements[0].innerHTML + response[key][octet];
                         }
@@ -242,7 +249,7 @@ function handleAJAX(request) {
                             var portPix = document.getElementsByName(
                                 `port${port}pix`
                             );
-                            var DmxInBcAddr = document.getElementsByName(
+                            var DmxInBcAddr = document.getElementsByClassName(
                                 `DmxInBcAddr${port}`
                             );
                             if (response[key] == 3) {
@@ -264,9 +271,21 @@ function handleAJAX(request) {
                             }
                             if (port == "A")
                                 if (response[key] == 2) {
-                                    DmxInBcAddr[0].style.display = "";
+                                    for (
+                                        let a = 0;
+                                        a < DmxInBcAddr.length;
+                                        a++
+                                    ) {
+                                        DmxInBcAddr[a].style.display = "";
+                                    }
                                 } else {
-                                    DmxInBcAddr[0].style.display = "none";
+                                    for (
+                                        let a = 0;
+                                        a < DmxInBcAddr.length;
+                                        a++
+                                    ) {
+                                        DmxInBcAddr[a].style.display = "none";
+                                    }
                                 }
                         }
                     });
@@ -300,6 +319,7 @@ function handleAJAX(request) {
                     } */
                     for (let i = 0; i < elements.length; i++) {
                         switch (elements[i].nodeName) {
+                            case "SPAN":
                             case "P":
                             case "DIV":
                                 elements[i].innerHTML = response[key];
@@ -331,10 +351,30 @@ function handleAJAX(request) {
                 }
             }
         } else {
+            console.error("not 200");
             err = 1;
-            sections[currentSectionIndex].className = "hide";
-            document.getElementsByName("error")[0].className = "show";
+            show(currentSectionIndex);
+            showErr(errComm);
         }
     }
+}
+
+function show(id) {
+    sections[id].classList.remove("hide");
+    sections[id].classList.add("show");
+}
+function hide(id) {
+    sections[id].classList.add("hide");
+    sections[id].classList.remove("show");
+}
+function showErr(errName) {
+    var errors = document.getElementsByClassName("error");
+    for (let i = 0; i < errors.length; i++) {
+        error = errors[i];
+        error.classList.add("hide");
+        error.classList.remove("show");
+    }
+    errName.classList.add("show");
+    errName.classList.remove("hide");
 }
 menuClick(1);
