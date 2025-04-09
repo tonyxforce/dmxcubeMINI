@@ -14,6 +14,17 @@ fs.writeFileSync(
     `const char PROGMEM mainPage[] = ${JSON.stringify(file)};`
 );
 
+console.log("Converting cssupload.html")
+file = fs.readFileSync("source/data/cssupload.html").toString();
+
+file = file.replaceAll("\t", " ");
+file = file.replaceAll("\r\n", "");
+file = file.replaceAll("  ", "");
+fs.writeFileSync(
+    "source/media/cssupload.html.h",
+    `const char PROGMEM cssUploadPage[] = ${JSON.stringify(file)};`
+);
+
 console.log("Converting style.css");
 var cssPurge = require("css-purge");
 var cssFile = fs.readFileSync("source/data/style.css").toString();
