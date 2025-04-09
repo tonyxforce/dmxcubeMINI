@@ -71,6 +71,7 @@ unsigned long lastFrame = 0;
 unsigned long lastPacketTime = 0;
 
 int16_t encoderPos = 0; // Counts up or down depending which way the encoder is turned
+int16_t absEncoderPos = 0; // Counts up or down depending which way the encoder is turned
 
 uint8_t encstate = 0;
 bool CLKstate = 0;
@@ -321,8 +322,11 @@ void setup()
 
 int lastInputDelta = 0;
 
+int displayScroll = 0;
+
 void loop()
 {
+	displayScroll = (absEncoderPos*2.5)-1;
 	if (deviceSettings.allowOTA)
 		ArduinoOTA.handle(); // Handles a code update request
 	unsigned long now = millis();
@@ -360,7 +364,7 @@ void loop()
 		String HPString = "<Hold button>";
 		if (!digitalRead(ENCBTN))
 		{
-			u8g2.drawStr(0, 60, String("FW version: " + String(FIRMWARE_VERSION)).c_str());
+			u8g2.drawStr(0, displayScroll+60, String("FW version: " + String(FIRMWARE_VERSION)).c_str());
 			HPString = deviceSettings.hotspotPass;
 		}
 		else
@@ -371,44 +375,44 @@ void loop()
 		u8g2.setFont(u8g2_font_5x8_mf);
 		if (!isHotspot)
 		{
-			u8g2.drawStr(0, 10, "DMXCube mini WiFi");
+			u8g2.drawStr(0, displayScroll+10, "DMXCube mini WiFi");
 			if (WiFi.status() == WL_CONNECTED)
-				u8g2.drawStr(0, 20, String("WiFi: " + String(deviceSettings.wifiSSID)).c_str());
+				u8g2.drawStr(0, displayScroll+20, String("WiFi: " + String(deviceSettings.wifiSSID)).c_str());
 			else
-				u8g2.drawStr(0, 20, "Disconnected from WiFi.");
+				u8g2.drawStr(0, displayScroll+20, "Disconnected from WiFi.");
 
 			if (deviceSettings.ip)
-				u8g2.drawStr(0, 30, ((String)("IP: " + IPAddressToString(deviceSettings.ip))).c_str());
+				u8g2.drawStr(0, displayScroll+30, ((String)("IP: " + IPAddressToString(deviceSettings.ip))).c_str());
 
 			if (lastPacketSource[0] == 0)
 			{
-				u8g2.drawStr(0, 40, "No packet received yet");
+				u8g2.drawStr(0, displayScroll+40, "No packet received yet");
 			}
 			else
 			{
-				u8g2.drawStr(0, 40, String("Packet from " + IPAddressToString(lastPacketSource)).c_str());
-				u8g2.drawStr(0, 50, String(String((now - lastPacketTime) / 1000) + "s ago").c_str());
+				u8g2.drawStr(0, displayScroll+40, String("Packet from " + IPAddressToString(lastPacketSource)).c_str());
+				u8g2.drawStr(0, displayScroll+50, String(String((now - lastPacketTime) / 1000) + "s ago").c_str());
 			}
 		}
 		else
 		{
 			if (deviceSettings.wifiSSID[0] == '\0')
-				u8g2.drawStr(0, 10, "Wifi unset.");
+				u8g2.drawStr(0, displayScroll+10, "Wifi unset.");
 			else
-				u8g2.drawStr(0, 10, String("WiFi set to " + String(deviceSettings.wifiSSID)).c_str());
+				u8g2.drawStr(0, displayScroll+10, String("WiFi set to " + String(deviceSettings.wifiSSID)).c_str());
 
 			if (deviceSettings.hotspotSSID)
-				u8g2.drawStr(0, 20, ("WiFi: " + String(deviceSettings.hotspotSSID)).c_str());
+				u8g2.drawStr(0, displayScroll+20, ("WiFi: " + String(deviceSettings.hotspotSSID)).c_str());
 			if (deviceSettings.hotspotPass)
-				u8g2.drawStr(0, 30, String("Password: " + HPString).c_str());
+				u8g2.drawStr(0, displayScroll+30, String("Password: " + HPString).c_str());
 			if (deviceSettings.hotspotIp)
-				u8g2.drawStr(0, 40, ((String)("IP: " + IPAddressToString(deviceSettings.hotspotIp))).c_str());
+				u8g2.drawStr(0, displayScroll+40, ((String)("IP: " + IPAddressToString(deviceSettings.hotspotIp))).c_str());
 
-			u8g2.drawStr(0, 50, String("WiFi client count: " + String(wifi_softap_get_station_num())).c_str());
+			u8g2.drawStr(0, displayScroll+50, String("WiFi client count: " + String(wifi_softap_get_station_num())).c_str());
 		}
 
 		lastInputDelta = encoderPos;
-		/* u8g2.drawStr(0, 10, String(fps).c_str()); */
+		/* u8g2.drawStr(0, displayScroll+10, String(fps).c_str()); */
 		u8g2.sendBuffer();
 		u8g2.clearBuffer();
 		remainingFrames--;
@@ -829,10 +833,12 @@ void ICACHE_RAM_ATTR readEncoder()
 		if (!CLKstate)
 		{ // Turn clockwise and CLK goes low first
 			encstate = 1;
+			absEncoderPos++;
 		}
 		else if (!DTstate)
 		{ // Turn anticlockwise and DT goes low first
 			encstate = 4;
+			absEncoderPos--;
 		}
 		break;
 	// Clockwise rotation
@@ -840,12 +846,14 @@ void ICACHE_RAM_ATTR readEncoder()
 		if (!DTstate)
 		{ // Continue clockwise and DT will go low after CLK
 			encstate = 2;
+			absEncoderPos++;
 		}
 		break;
 	case 2:
 		if (CLKstate)
 		{ // Turn further and CLK will go high first
 			encstate = 3;
+			absEncoderPos++;
 		}
 		break;
 	case 3:
@@ -854,6 +862,7 @@ void ICACHE_RAM_ATTR readEncoder()
 			encstate = 0;
 			++encoderPos;
 			remainingFrames += 2;
+			absEncoderPos++;
 		}
 		break;
 	// Anticlockwise rotation
@@ -861,12 +870,14 @@ void ICACHE_RAM_ATTR readEncoder()
 		if (!CLKstate)
 		{
 			encstate = 5;
+			absEncoderPos--;
 		}
 		break;
 	case 5:
 		if (DTstate)
 		{
 			encstate = 6;
+			absEncoderPos--;
 		}
 		break;
 	case 6:
@@ -875,6 +886,7 @@ void ICACHE_RAM_ATTR readEncoder()
 			encstate = 0;
 			--encoderPos;
 			remainingFrames += 2;
+			absEncoderPos--;
 		}
 		break;
 	}

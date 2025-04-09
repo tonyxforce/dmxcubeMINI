@@ -32,6 +32,7 @@ extern IPAddress lastPacketSource;
 extern unsigned long lastPacketTime;
 
 extern int16_t encoderPos; // Counts up or down depending which way the encoder is turned
+extern int16_t absEncoderPos;
 
 void ICACHE_RAM_ATTR readEncoder();
 void ICACHE_RAM_ATTR encBtnChange();

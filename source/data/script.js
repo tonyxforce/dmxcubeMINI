@@ -200,7 +200,7 @@ function handleAJAX(request) {
                         e.value = "Save Changes";
                         e.className = "";
                     }
-                }, 5000);
+                }, 1000);
             }
             hide(currentSectionIndex);
             show(targetSectionIndex);
