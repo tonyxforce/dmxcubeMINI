@@ -21,7 +21,7 @@ If not, see http://www.gnu.org/licenses/
 
 
 // Change this if the settings structure changes
-#define CONFIG_VERSION "004"
+#define CONFIG_VERSION "005"
 
 // Dont change this
 #define CONFIG_START 0
@@ -67,7 +67,7 @@ struct StoreStruct {
 	bool allowOTA;
 	bool autoRefresh;
 	bool wpa2Enterprise;
-  
+  bool startupUpdates;
 } deviceSettings = {
   CONFIG_VERSION,
   
@@ -83,9 +83,9 @@ struct StoreStruct {
   FX_MODE_PIXEL_MAP, FX_MODE_PIXEL_MAP,
   1, 1,
   0, 0,
-	1,
-	1,
-	0
+	true,
+	true,
+	false,
 };
 
 

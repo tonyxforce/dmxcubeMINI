@@ -43,11 +43,20 @@ This competition will open to the general public a couple of weeks after the pri
 #include "ws2812Driver.h"
 #include "wsFX.h"
 #include <ArduinoOTA.h> // For enabling over-the-air updates
+#include "startFunctions.h"
 
 #include <Wire.h>
 #include "display.h"
 #include "source.h"
 #include "IPHelper.h"
+
+#include <CertStoreBearSSL.h>
+// A single, global CertStore which can be used by all
+// connections.  Needs to stay live the entire time any of
+// the WiFiClientBearSSLs are present.
+BearSSL::CertStore certStore;
+ESPOTAGitHub gitOTA(&certStore, GHOTA_USER, GHOTA_REPO, GHOTA_CURRENT_TAG, GHOTA_BIN_FILE, 0);
+
 
 #define CLK 12
 #define DT 13
@@ -144,10 +153,7 @@ bool newDmxIn = false;
 bool doReboot = false;
 byte *dataIn;
 
-void artStart();
-void wifiStart();
-void webStart();
-void portSetup();
+
 void doNodeReport();
 void setStatusLed();
 void doStatusLedOutput();
@@ -309,17 +315,8 @@ void setup()
 		}
 	}
 
+	OTAstart();
 	delay(10);
-	ArduinoOTA.onProgress([](int a, int b)
-												{
-													u8g2.setFont(u8g2_font_5x7_mf);
-													u8g2.drawStr(0, 50, "ArduinoOTA updating...");
-													u8g2.drawFrame(0, 54, 128, 10);
-													u8g2.drawBox(0, 54, (a * 128 / b), 10);
-													u8g2.sendBuffer();
-												});
-	ArduinoOTA.setHostname("cubeminiw");
-	ArduinoOTA.begin(); // Starts OTA
 }
 
 int lastInputDelta = 0;

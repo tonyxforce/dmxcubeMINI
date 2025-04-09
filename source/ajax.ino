@@ -472,15 +472,10 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
       #endif
       break;
 
-    case 6:     // Scenes
-      // Not yet implemented
-      
-      return true;
-      break;
-
-    case 7:     // Firmware
-      // Doesn't come here
-      
+    case 6:     // Firmware
+		if(jsonRequest.containsKey("checkUpdate") && jsonRequest["checkUpdate"]){
+			
+		}
       break;
 
     default:
@@ -685,7 +680,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
       jsonReply["success"] = 1;
       break;
 
-    case 6:     // Scenes
+    case 6:     // Firmware
       jsonReply.remove("ipAddress");
       jsonReply.remove("subAddress");
       jsonReply.remove("gwAddress");
@@ -696,22 +691,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
       jsonReply.remove("portBsACNuni");
       jsonReply.remove("dmxInBroadcast");
       
-
-      jsonReply["success"] = 1;
-      break;
-
-    case 7:     // Firmware
-      jsonReply.remove("ipAddress");
-      jsonReply.remove("subAddress");
-      jsonReply.remove("gwAddress");
-      jsonReply.remove("bcAddress");
-      jsonReply.remove("portAuni");
-      jsonReply.remove("portBuni");
-      jsonReply.remove("portAsACNuni");
-      jsonReply.remove("portBsACNuni");
-      jsonReply.remove("dmxInBroadcast");
-      
-      jsonReply["firmwareStatus"] = FIRMWARE_VERSION;
+      jsonReply["firmVer"] = FIRMWARE_VERSION;
       jsonReply["success"] = 1;
       break;
 

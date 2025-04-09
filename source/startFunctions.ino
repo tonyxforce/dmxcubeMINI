@@ -20,6 +20,8 @@ If not, see http://www.gnu.org/licenses/
 #include "ajax.h"
 #include "IPHelper.h"
 #include "display.h"
+#include "startFunctions.h"
+#include <ArduinoOTA.h>
 
 void doNodeReport()
 {
@@ -374,6 +376,27 @@ void webStart()
       }
     } });
 
+		webServer.on("/cert_upload", HTTP_POST, []()
+							 { webServer.send(200, "text/plain", "Upload successful!"); }, []()
+							 {
+    HTTPUpload& upload = webServer.upload();
+    
+    if(upload.status == UPLOAD_FILE_START){
+      String filename = upload.filename;
+      if(!filename.startsWith("/")) filename = "/"+filename;
+      fsUploadFile = SPIFFS.open(filename, "w");
+      filename = String();
+      
+    } else if(upload.status == UPLOAD_FILE_WRITE){
+      if(fsUploadFile)
+        fsUploadFile.write(upload.buf, upload.currentSize);
+        
+    } else if(upload.status == UPLOAD_FILE_END){
+      if(fsUploadFile) {
+        fsUploadFile.close();
+      }
+    } });
+
 	webServer.onNotFound([]()
 											 { webServer.send(404, "text/plain", "Page not found"); });
 
@@ -514,3 +537,22 @@ void startHotspot()
 		isHotspot = false;
 		*/
 }
+
+void OTAstart(){
+	ArduinoOTA.onProgress([](int a, int b)
+	{
+		u8g2.setFont(u8g2_font_5x7_mf);
+		u8g2.drawStr(0, 50, "ArduinoOTA updating...");
+		u8g2.drawFrame(0, 54, 128, 10);
+		u8g2.drawBox(0, 54, (a * 128 / b), 10);
+		u8g2.sendBuffer();
+	});
+ArduinoOTA.setHostname("cubeminiw");
+ArduinoOTA.begin(); // Starts OTA
+
+int numCerts = certStore.initCertStore(SPIFFS, PSTR("/certs.idx"), PSTR("/certs.ar"));
+u8g2.drawStr(0, 20, String("certs: " + String(numCerts)).c_str());
+u8g2.sendBuffer();
+delay(500);
+#warning Setup delay here
+};
