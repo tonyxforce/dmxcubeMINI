@@ -17,6 +17,8 @@ If not, see http://www.gnu.org/licenses/
 #include "store.h"
 #include "update.h"
 
+bool _doUpdate = 0;
+
 void ajaxHandle()
 {
 	DynamicJsonDocument jsonRequestDoc(512);
@@ -66,6 +68,10 @@ void ajaxHandle()
 	serializeJson(jsonReply, reply);
 	webServer.sendHeader("Access-Control-Allow-Origin", "*");
 	webServer.send(200, "application/json", reply);
+
+	if(_doUpdate){
+		doUpdate();
+	}
 }
 
 bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequestDoc)
@@ -509,7 +515,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 			checkForUpdate();
 		};
 		if(jsonRequest.containsKey("doUpdate") && jsonRequest["doUpdate"]){
-			doUpdate();
+			_doUpdate=1;
 		}
 		break;
 
