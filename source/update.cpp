@@ -40,19 +40,12 @@ u8g2.drawStr(0, 50, "Automatic updating...");
 u8g2.drawFrame(0, 54, 128, 10);
 u8g2.drawBox(0, 54, (a * 128 / b), 10);
 u8g2.sendBuffer(); });
-
-	checkForUpdate();
-
-	if (webUpdateAvail)
-	{
-		u8g2.drawStr(0, 10, "Update available!");
-		u8g2.sendBuffer();
-		delay(2000);
-	}
 };
 
 bool checkForUpdate()
 {
+	if(WiFi.status() != WL_CONNECTED) return false;
+	
 	String serverName = updateServer + String("/checkUpdate.php") + params;
 
 	HTTPClient http;

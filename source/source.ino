@@ -310,7 +310,7 @@ void setup()
 
 	updateSetup();
 
-	if (WiFi.status())
+	if (WiFi.status() == WL_CONNECTED)
 	{
 
 		checkForUpdate();

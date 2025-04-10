@@ -538,7 +538,3 @@ void startHotspot()
 		isHotspot = false;
 		*/
 }
-
-void OTAstart(){
-	updateSetup();
-};
