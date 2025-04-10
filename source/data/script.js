@@ -120,13 +120,13 @@ function sendData() {
             var c = [v];
             console.log("k", name);
             console.log("v", v);
-            for (var z = 1; z < 4; z++) {
+
+            for (let i = 0; i < 3; i++)
                 c.push(
                     sections[currentSectionIndex].getElementsByTagName("INPUT")[
                         index++
                     ].value
                 );
-            }
             data[name] = c;
             continue;
         }
@@ -207,12 +207,13 @@ function handleAJAX(request) {
                 return;
             }
             if (response.hasOwnProperty("message")) {
-                for (var i = 0, e; (e = save[i++]); ) {
+                for (let i = 0; i < save.length; i++) {
+                    let e = save[i];
                     e.value = response["message"];
                     e.className = "showMessage";
                 }
                 setTimeout(function () {
-                    for (var i = 0, e; (e = save[i++]); ) {
+                    for (let i = 0, e; (e = save[i++]); ) {
                         e.value = "Save Changes";
                         e.className = "";
                     }
@@ -222,7 +223,7 @@ function handleAJAX(request) {
             show(targetSectionIndex);
 
             currentSectionIndex = targetSectionIndex;
-            for (var key in response) {
+            for (let key in response) {
                 if (response.hasOwnProperty(key)) {
                     var elements = document.getElementsByName(key);
                     if (key == "ipAddress" || key == "subAddress") {
@@ -255,14 +256,14 @@ function handleAJAX(request) {
                         key == "portAsACNuni" ||
                         key == "portBsACNuni"
                     ) {
-                        for (var octet = 0; octet < elements.length; octet++) {
+                        for (let octet = 0; octet < elements.length; octet++) {
                             elements[octet].value = response[key][octet];
                         }
                         continue;
                     }
                     ["A", "B"].forEach((port) => {
                         if (key == `port${port}mode`) {
-                            var portPix = document.getElementsByName(
+                            var portPix = document.getElementsByClassName(
                                 `port${port}pix`
                             );
                             var DmxInBcAddr = document.getElementsByClassName(
@@ -274,7 +275,8 @@ function handleAJAX(request) {
                                     octet < portPix.length;
                                     octet++
                                 ) {
-                                    portPix[octet].style.display = "";
+                                    portPix[octet].classList.add("show");
+                                    portPix[octet].classList.remove("hide");
                                 }
                             } else {
                                 for (
@@ -282,7 +284,8 @@ function handleAJAX(request) {
                                     octet < portPix.length;
                                     octet++
                                 ) {
-                                    portPix[octet].style.display = "none";
+                                    portPix[octet].classList.remove("show");
+                                    portPix[octet].classList.add("hide");
                                 }
                             }
                             if (port == "A")
@@ -303,6 +306,27 @@ function handleAJAX(request) {
                                         DmxInBcAddr[a].style.display = "none";
                                     }
                                 }
+                        } else if (key == `port${port}prot`) {
+                            var prot = response[key];
+                            var sacn = document.getElementsByClassName(
+                                `sacn${port}`
+                            );
+                            switch (prot) {
+                                case 0:
+                                    //artnet
+                                    for (let a = 0; a < sacn.length; a++) {
+                                        sacn[a].classList.add("hide");
+                                        sacn[a].classList.remove("show");
+                                    }
+                                    break;
+                                case 1:
+                                    //artnet with sacn
+                                    for (let a = 0; a < sacn.length; a++) {
+                                        sacn[a].classList.add("show");
+                                        sacn[a].classList.remove("hide");
+                                    }
+                                    break;
+                            }
                         }
                     });
                     for (let i = 0; i < elements.length; i++) {
@@ -350,10 +374,10 @@ function handleAJAX(request) {
                             document.getElementById("newFirmVer").innerText =
                                 response.latestVer;
                         } else {
-													for (let i = 0; i < newFirm.length; i++) {
-														newFirm[i].classList.remove("show");
-														newFirm[i].classList.add("hide");
-												}
+                            for (let i = 0; i < newFirm.length; i++) {
+                                newFirm[i].classList.remove("show");
+                                newFirm[i].classList.add("hide");
+                            }
                         }
                         break;
                 }
