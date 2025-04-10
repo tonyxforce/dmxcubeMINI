@@ -31,6 +31,7 @@ void ajaxHandle()
 		jsonReplyDoc["err"] = err.f_str();
 	};
 	String reply;
+	jsonReply["message"] = "";
 
 	if (jsonRequest.containsKey("success") && jsonRequest["success"] == 1 && jsonRequest.containsKey("page"))
 	{
@@ -38,7 +39,7 @@ void ajaxHandle()
 		{
 			ajaxLoad((uint8_t)jsonRequest["page"], jsonReply, jsonReplyDoc);
 
-			if (jsonRequest.size() > 2 && jsonReply["message"] == "")
+			if (jsonReply["message"] == "")
 				jsonReply["message"] = "Settings Saved";
 		}
 		else
@@ -81,7 +82,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		break;
 
 	case 2: // Wifi
-		strcpy(deviceSettings.wifiUsername, jsonRequest["wifiUsername"].as<const char *>());
+		strcpy(deviceSettings.wifiUsername, jsonRequest["wifiUsername"]);
 		strcpy(deviceSettings.wifiSSID, jsonRequest["wifiSSID"]);
 		strcpy(deviceSettings.wifiPass, jsonRequest["wifiPass"]);
 		strcpy(deviceSettings.hotspotSSID, jsonRequest["hotspotSSID"]);
@@ -147,6 +148,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 
 		deviceSettings.allowOTA = (bool)jsonRequest["allowOTA"];
 		deviceSettings.autoRefresh = (bool)jsonRequest["autoRefresh"];
+		strcpy(deviceSettings.hostName, jsonRequest["hostName"]);
 
 		eepromSave();
 		return true;
@@ -658,6 +660,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["allowOTA"] = deviceSettings.allowOTA;
 		jsonReply["autoRefresh"] = deviceSettings.autoRefresh;
+		jsonReply["hostName"] = deviceSettings.hostName;
 
 		jsonReply["success"] = 1;
 		break;
