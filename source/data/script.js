@@ -31,7 +31,7 @@ var checkWPAE = () => {
     return isWPA2E.checked;
 };
 function doUpdate() {
-    if (!confirm("Are you sure you want to start updating?")) return;
+    if (!confirm("Are you sure you want to start updating? WiFi and other settings may be reset to factory defauls")) return;
     var x = new XMLHttpRequest();
     x.onreadystatechange = function () {};
     x.open("POST", ajaxEndpoint, true);
