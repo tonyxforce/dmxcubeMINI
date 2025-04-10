@@ -445,8 +445,8 @@ void wifiStart()
 		}
 		else
 		{
-			WiFi.hostname("cubeminiw");
-			wifi_station_set_hostname("cubeminiw");
+			WiFi.hostname(deviceSettings.hostName);
+			wifi_station_set_hostname(deviceSettings.hostName);
 			WiFi.begin(deviceSettings.wifiSSID, deviceSettings.wifiPass);
 			WiFi.mode(WIFI_STA);
 		}

@@ -27,7 +27,7 @@ void updateSetup()
 			u8g2.drawBox(0, 54, (a * 128 / b), 10);
 			u8g2.sendBuffer();
 		} });
-	ArduinoOTA.setHostname("cubeminiw");
+	ArduinoOTA.setHostname(deviceSettings.hostName);
 	ArduinoOTA.begin(); // Starts OTA
 
 	ESPhttpUpdate.rebootOnUpdate(true);
