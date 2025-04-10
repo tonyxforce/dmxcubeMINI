@@ -50,14 +50,6 @@ This competition will open to the general public a couple of weeks after the pri
 #include "source.h"
 #include "IPHelper.h"
 
-#include <CertStoreBearSSL.h>
-// A single, global CertStore which can be used by all
-// connections.  Needs to stay live the entire time any of
-// the WiFiClientBearSSLs are present.
-BearSSL::CertStore certStore;
-ESPOTAGitHub gitOTA(&certStore, GHOTA_USER, GHOTA_REPO, GHOTA_CURRENT_TAG, GHOTA_BIN_FILE, 0);
-bool gitUpdateAvailable = 0;
-
 #define CLK 12
 #define DT 13
 #define ENCBTN 14

@@ -15,6 +15,7 @@ If not, see http://www.gnu.org/licenses/
 #include "source.h"
 #include <ArduinoJson.h>
 #include "store.h"
+#include "update.h"
 
 void ajaxHandle()
 {
@@ -503,7 +504,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 	case 6: // Firmware
 		if (jsonRequest.containsKey("checkUpdate") && jsonRequest["checkUpdate"])
 		{
-			gitUpdateAvailable = gitOTA.checkUpgrade();
+			checkForUpdate();
 		}
 		break;
 
@@ -731,7 +732,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("portBsACNuni");
 		jsonReply.remove("dmxInBroadcast");
 
-		jsonReply["updateAvail"] = gitUpdateAvailable;
+		jsonReply["updateAvail"] = webUpdateAvail;
 		jsonReply["firmVer"] = FIRMWARE_VERSION;
 		jsonReply["latestVer"] = FIRMWARE_VERSION;
 		jsonReply["success"] = 1;

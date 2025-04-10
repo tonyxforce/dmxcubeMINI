@@ -9,16 +9,6 @@
 #include <ESP8266WebServer.h>
 #include <ArduinoJson.h>
 
-#define GHOTA_USER "tonyxforce"
-#define GHOTA_REPO "dmxcube_minitest"
-#define GHOTA_CURRENT_TAG FIRMWARE_VERSION
-#define GHOTA_BIN_FILE "firmware.bin"
-#include <ESP_OTA_GitHub.h>
-
-extern BearSSL::CertStore certStore;
-extern ESPOTAGitHub gitOTA;
-extern bool gitUpdateAvailable;
-
 #define CLK 12
 #define DT 13
 #define ENCBTN 14

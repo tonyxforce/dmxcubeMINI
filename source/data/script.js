@@ -9,6 +9,7 @@ if (currentURL.port != 80 && currentURL.port != "") {
     ajaxEndpoint = `http://localhost:8080/http://cubeminiw.local/ajax`;
 }
 
+var checkUpdate = document.getElementById("checkUpdate");
 var targetSectionIndex = 0;
 var err = 0;
 var sections = document.getElementsByName("sections");
@@ -321,13 +322,12 @@ function handleAJAX(request) {
                         }
                     }
                 }
-							switch(currentSectionIndex){
-								case 6:
-									if(response.updateAvail){
-										
-									}
-									break;
-							}
+                switch (currentSectionIndex) {
+                    case 6:
+                        if (response.updateAvail) {
+                        }
+                        break;
+                }
             }
         } else {
             console.error("not 200");
