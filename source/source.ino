@@ -37,13 +37,13 @@ This competition will open to the general public a couple of weeks after the pri
 #include <ArduinoJson.h>
 #include <EEPROM.h>
 #include <FS.h>
-#include "store.h"
 #include "espDMX_RDM.h"
 #include "espArtNetRDM.h"
 #include "ws2812Driver.h"
 #include "wsFX.h"
 #include <ArduinoOTA.h> // For enabling over-the-air updates
 #include "startFunctions.h"
+#include "update.h"
 
 #include <Wire.h>
 #include "display.h"
@@ -308,7 +308,20 @@ void setup()
 		}
 	}
 
-	OTAstart();
+	updateSetup();
+
+	if (WiFi.status())
+	{
+
+		checkForUpdate();
+
+		if (webUpdateAvail)
+		{
+			u8g2.drawStr(0, 10, "Update available!");
+			u8g2.sendBuffer();
+			delay(2000);
+		}
+	}
 	delay(10);
 }
 

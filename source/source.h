@@ -6,6 +6,8 @@
 #include "espDMX_RDM.h"
 #include "espArtNetRDM.h"
 #include "wsFX.h"
+#include "store.h"
+
 #include <ESP8266WebServer.h>
 #include <ArduinoJson.h>
 
