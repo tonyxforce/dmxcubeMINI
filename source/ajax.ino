@@ -503,7 +503,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 	case 6: // Firmware
 		if (jsonRequest.containsKey("checkUpdate") && jsonRequest["checkUpdate"])
 		{
-			gitOTA.checkUpgrade();
+			gitUpdateAvailable = gitOTA.checkUpgrade();
 		}
 		break;
 
@@ -731,7 +731,9 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("portBsACNuni");
 		jsonReply.remove("dmxInBroadcast");
 
+		jsonReply["updateAvail"] = gitUpdateAvailable;
 		jsonReply["firmVer"] = FIRMWARE_VERSION;
+		jsonReply["latestVer"] = FIRMWARE_VERSION;
 		jsonReply["success"] = 1;
 		break;
 

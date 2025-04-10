@@ -17,6 +17,7 @@
 
 extern BearSSL::CertStore certStore;
 extern ESPOTAGitHub gitOTA;
+extern bool gitUpdateAvailable;
 
 #define CLK 12
 #define DT 13

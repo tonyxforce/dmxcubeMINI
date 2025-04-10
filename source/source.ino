@@ -56,7 +56,7 @@ This competition will open to the general public a couple of weeks after the pri
 // the WiFiClientBearSSLs are present.
 BearSSL::CertStore certStore;
 ESPOTAGitHub gitOTA(&certStore, GHOTA_USER, GHOTA_REPO, GHOTA_CURRENT_TAG, GHOTA_BIN_FILE, 0);
-
+bool gitUpdateAvailable = 0;
 
 #define CLK 12
 #define DT 13

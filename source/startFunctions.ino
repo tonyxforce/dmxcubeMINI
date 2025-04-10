@@ -21,6 +21,7 @@ If not, see http://www.gnu.org/licenses/
 #include "IPHelper.h"
 #include "display.h"
 #include "startFunctions.h"
+#include "update.h"
 #include <ArduinoOTA.h>
 
 void doNodeReport()
@@ -539,20 +540,5 @@ void startHotspot()
 }
 
 void OTAstart(){
-	ArduinoOTA.onProgress([](int a, int b)
-	{
-		u8g2.setFont(u8g2_font_5x7_mf);
-		u8g2.drawStr(0, 50, "ArduinoOTA updating...");
-		u8g2.drawFrame(0, 54, 128, 10);
-		u8g2.drawBox(0, 54, (a * 128 / b), 10);
-		u8g2.sendBuffer();
-	});
-ArduinoOTA.setHostname("cubeminiw");
-ArduinoOTA.begin(); // Starts OTA
-
-int numCerts = certStore.initCertStore(SPIFFS, PSTR("/certs.idx"), PSTR("/certs.ar"));
-u8g2.drawStr(0, 20, String("certs: " + String(numCerts)).c_str());
-u8g2.sendBuffer();
-delay(500);
-#warning Setup delay here
+	updateSetup();
 };

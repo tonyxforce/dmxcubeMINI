@@ -289,34 +289,6 @@ function handleAJAX(request) {
                                 }
                         }
                     });
-                    /* if (key == "portAmode") {
-                        var portApix = document.getElementsByName("portApix");
-                        var DmxInBcAddrA =
-                            document.getElementsByName("DmxInBcAddrA");
-                        if (response[key] == 3) {
-                            for (let z = 0; z < portApix.length; z++) {
-                                portApix[z].style.display = "";
-                            }
-                        } else {
-                            for (let z = 0; z < portApix.length; z++) {
-                                portApix[z].style.display = "none";
-                            }
-                        }
-                        if (response[key] == 2) {
-                            DmxInBcAddrA[0].style.display = "";
-                        } else {
-                            DmxInBcAddrA[0].style.display = "none";
-                        }
-                    } else if (key == "portBmode") {
-                        var portApix = document.getElementsByName("portBpix");
-                        if (response[key] == 3) {
-                            portApix[0].style.display = "";
-                            portApix[1].style.display = "";
-                        } else {
-                            portApix[0].style.display = "none";
-                            portApix[1].style.display = "none";
-                        }
-                    } */
                     for (let i = 0; i < elements.length; i++) {
                         switch (elements[i].nodeName) {
                             case "SPAN":
@@ -349,6 +321,13 @@ function handleAJAX(request) {
                         }
                     }
                 }
+							switch(currentSectionIndex){
+								case 6:
+									if(response.updateAvail){
+										
+									}
+									break;
+							}
             }
         } else {
             console.error("not 200");
