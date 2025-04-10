@@ -283,10 +283,11 @@
 						<div class="grid">
 							<span class="grid-item grid-item-left colored">Currently installed version:</span>
 							<span class="grid-item grid-item-right" name="firmVer"></span>
-							<span class="grid-item grid-item-left colored">Newest version:</span>
-							<span class="grid-item grid-item-right" name="newFirmVer"></span>
-							<span class="grid-item grid-item-right" id="updateMsg"></span>
-							<span class="grid-item grid-item-right"><input type="button" class="submit" value="Check for updates" id="updateCheck"></span>
+							<span class="grid-item grid-item-left colored hide newFirm">Newest version:</span>
+							<span class="grid-item grid-item-right hide newFirm" id="newFirmVer"></span>
+							<span class="grid-item grid-item-right colored-red hide newFirm textCenter">New Firmware available!</span>
+							<span class="grid-item grid-item-right hide newFirm"><input type="button" class="submit" value="Update" id="doUpdate" style="margin:0px"></span>
+							<span class="grid-item grid-item-right"><input type="button" class="submit" value="Check for updates" id="checkUpdate" style="margin:0px"></span>
 						</div>
 				</div>
 			</div>

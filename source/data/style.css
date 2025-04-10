@@ -178,11 +178,6 @@ input[type="button"] {
 	border-color: rgb(68, 74, 77);
 }
 
-input[type="button"]:hover {
-	background-color: rgb(87, 94, 98);
-	color: rgb(232, 230, 227);
-}
-
 select {
 	background-color: rgb(45, 49, 51);
 	border-color: initial;
@@ -332,7 +327,8 @@ p.left {
 .grid-item {
 	display: flex;
 	align-items: center;
-	padding-bottom: 1em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
 	font-size: 1.5em;
 }
 
@@ -442,10 +438,18 @@ input[type=checkbox]:checked:after {
 	width: 100%;
 }
 
+.textCenter{
+	text-align: center;
+	vertical-align: middle;
+}
+
 .colored{
 	color: #B3D529;
 }
 
+.colored-red{
+	color: #e72e00;
+}
 
 input[type=button], input[type=file]+label {
 	font: 700 16px/1.2 Arial;
@@ -462,12 +466,6 @@ input[type=button] {
 	padding: 5px 20px 2px 23px;
 	-webkit-transition-duration: .3s;
 	transition-duration: .3s
-}
-
-input[type=button]:hover {
-	background-color: #909090;
-	color: #fff;
-	padding: 5px 62px 2px 65px
 }
 
 input.submit {

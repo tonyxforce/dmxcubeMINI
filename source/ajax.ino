@@ -38,7 +38,7 @@ void ajaxHandle()
 		{
 			ajaxLoad((uint8_t)jsonRequest["page"], jsonReply, jsonReplyDoc);
 
-			if (jsonRequest.size() > 2)
+			if (jsonRequest.size() > 2 && jsonReply["message"] == "")
 				jsonReply["message"] = "Settings Saved";
 		}
 		else
@@ -505,6 +505,9 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		if (jsonRequest.containsKey("checkUpdate") && jsonRequest["checkUpdate"])
 		{
 			checkForUpdate();
+		};
+		if(jsonRequest.containsKey("doUpdate") && jsonRequest["doUpdate"]){
+			doUpdate();
 		}
 		break;
 
@@ -734,7 +737,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["updateAvail"] = webUpdateAvail;
 		jsonReply["firmVer"] = FIRMWARE_VERSION;
-		jsonReply["latestVer"] = FIRMWARE_VERSION;
+		jsonReply["latestVer"] = latestFirm;
 		jsonReply["success"] = 1;
 		break;
 

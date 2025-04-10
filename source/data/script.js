@@ -9,13 +9,14 @@ if (currentURL.port != 80 && currentURL.port != "") {
     ajaxEndpoint = `http://localhost:8080/http://cubeminiw.local/ajax`;
 }
 
-var checkUpdate = document.getElementById("checkUpdate");
+var updateBtn = document.getElementById("doUpdate");
 var targetSectionIndex = 0;
 var err = 0;
 var sections = document.getElementsByName("sections");
 var save = document.getElementsByName("save");
 var errComm = document.getElementById("errComm");
 var errFetch = document.getElementById("errFetch");
+var checkUpdateBtn = document.getElementById("checkUpdate");
 save.forEach((e) =>
     e.addEventListener("click", function () {
         sendData();
@@ -29,10 +30,24 @@ var checkWPAE = () => {
         wpa2e[a].style.display = isWPA2E.checked ? "" : "none";
     return isWPA2E.checked;
 };
-checkWPAE();
+function doUpdate() {
+    if (!confirm("Are you sure you want to start updating?")) return;
+    var x = new XMLHttpRequest();
+    x.onreadystatechange = function () {};
+    x.open("POST", ajaxEndpoint, true);
+    x.setRequestHeader("Content-Type", "application/json");
+    x.send('{"page":6,"success":1,"doUpdate":1}');
+}
+function checkUpdate() {
+    checkUpdateBtn.value = "Checking for updates...";
+    menuClick(6, { checkUpdate: 1 });
+}
 
 function bodyLoad() {
     isWPA2E.addEventListener("click", checkWPAE);
+    checkWPAE();
+    updateBtn.addEventListener("click", doUpdate);
+    checkUpdateBtn.addEventListener("click", checkUpdate);
 }
 
 var nav = document.getElementsByClassName("nav")[0];
@@ -43,9 +58,6 @@ for (let i = 1; i < nav.childElementCount; i++) {
         .addEventListener("click", (_) => menuClick(i));
 }
 
-var firmupload = document.getElementById("fUp");
-var um = document.getElementById("uploadMsg");
-var fileSelect = document.getElementById("update");
 function reboot() {
     if (err == 1) return console.log("Can't reboot with an error");
 
@@ -78,7 +90,7 @@ function reboot() {
             }, 5000);
         }
     };
-    x.open("POST", "/ajax", true);
+    x.open("POST", ajaxEndpoint, true);
     x.setRequestHeader("Content-Type", "application/json");
     x.send('{"reboot":1,"success":1}');
 }
@@ -150,7 +162,7 @@ function sendData() {
     x.send(JSON.stringify(data));
     console.log(data);
 }
-function menuClick(newSectionIndex) {
+function menuClick(newSectionIndex, extraReq) {
     if (err == 1) return console.error("errored");
     setTimeout(function () {
         if (currentSectionIndex == newSectionIndex || err == 1) return;
@@ -166,7 +178,10 @@ function menuClick(newSectionIndex) {
 
     x.open("POST", ajaxEndpoint);
     x.setRequestHeader("Content-Type", "application/json");
-    x.send(JSON.stringify({ page: newSectionIndex, success: 1 }));
+    var data = { page: newSectionIndex, success: 1 };
+    data = Object.assign(data, extraReq);
+    console.log("req", data);
+    x.send(JSON.stringify(data));
 }
 function handleAJAX(request) {
     if (request.readyState == XMLHttpRequest.DONE) {
@@ -324,7 +339,21 @@ function handleAJAX(request) {
                 }
                 switch (currentSectionIndex) {
                     case 6:
+                        checkUpdateBtn.value = "Check for updates";
+                        var newFirm =
+                            document.getElementsByClassName("newFirm");
                         if (response.updateAvail) {
+                            for (let i = 0; i < newFirm.length; i++) {
+                                newFirm[i].classList.remove("hide");
+                                newFirm[i].classList.add("show");
+                            }
+                            document.getElementById("newFirmVer").innerText =
+                                response.latestVer;
+                        } else {
+													for (let i = 0; i < newFirm.length; i++) {
+														newFirm[i].classList.remove("show");
+														newFirm[i].classList.add("hide");
+												}
                         }
                         break;
                 }
