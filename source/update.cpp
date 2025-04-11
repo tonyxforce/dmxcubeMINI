@@ -22,9 +22,9 @@ void updateSetup()
 												{
 		if((a*100/b)%10 == 0){
 		u8g2.setFont(u8g2_font_5x7_mf);
-		u8g2.drawStr(0, 50, "ArduinoOTA updating...");
-		u8g2.drawFrame(0, 54, 128, 10);
-			u8g2.drawBox(0, 54, (a * 128 / b), 10);
+		u8g2.drawStr(0, 10, "ArduinoOTA updating...");
+		u8g2.drawFrame(0, 14, 128, 10);
+			u8g2.drawBox(0, 14, (a * 128 / b), 10);
 			u8g2.sendBuffer();
 		} });
 	ArduinoOTA.setHostname(deviceSettings.hostName);
@@ -36,9 +36,9 @@ void updateSetup()
 													 {
 	webServer.handleClient();
 u8g2.setFont(u8g2_font_5x7_mf);
-u8g2.drawStr(0, 50, "Automatic updating...");
-u8g2.drawFrame(0, 54, 128, 10);
-u8g2.drawBox(0, 54, (a * 128 / b), 10);
+u8g2.drawStr(0, 10, "Automatic updating...");
+u8g2.drawFrame(0, 14, 128, 10);
+u8g2.drawBox(0, 14, (a * 128 / b), 10);
 u8g2.sendBuffer(); });
 };
 
