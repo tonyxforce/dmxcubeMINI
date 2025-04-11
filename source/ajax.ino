@@ -17,6 +17,8 @@ If not, see http://www.gnu.org/licenses/
 #include "store.h"
 #include "update.h"
 
+bool _doUpdate = 0;
+
 void ajaxHandle()
 {
 	DynamicJsonDocument jsonRequestDoc(512);
@@ -31,6 +33,7 @@ void ajaxHandle()
 		jsonReplyDoc["err"] = err.f_str();
 	};
 	String reply;
+	jsonReply["message"] = "";
 
 	if (jsonRequest.containsKey("success") && jsonRequest["success"] == 1 && jsonRequest.containsKey("page"))
 	{
@@ -38,7 +41,7 @@ void ajaxHandle()
 		{
 			ajaxLoad((uint8_t)jsonRequest["page"], jsonReply, jsonReplyDoc);
 
-			if (jsonRequest.size() > 2)
+			if (jsonReply["message"] == "")
 				jsonReply["message"] = "Settings Saved";
 		}
 		else
@@ -65,6 +68,10 @@ void ajaxHandle()
 	serializeJson(jsonReply, reply);
 	webServer.sendHeader("Access-Control-Allow-Origin", "*");
 	webServer.send(200, "application/json", reply);
+
+	if(_doUpdate){
+		doUpdate();
+	}
 }
 
 bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequestDoc)
@@ -81,7 +88,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		break;
 
 	case 2: // Wifi
-		strcpy(deviceSettings.wifiUsername, jsonRequest["wifiUsername"].as<const char *>());
+		strcpy(deviceSettings.wifiUsername, jsonRequest["wifiUsername"]);
 		strcpy(deviceSettings.wifiSSID, jsonRequest["wifiSSID"]);
 		strcpy(deviceSettings.wifiPass, jsonRequest["wifiPass"]);
 		strcpy(deviceSettings.hotspotSSID, jsonRequest["hotspotSSID"]);
@@ -147,6 +154,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 
 		deviceSettings.allowOTA = (bool)jsonRequest["allowOTA"];
 		deviceSettings.autoRefresh = (bool)jsonRequest["autoRefresh"];
+		strcpy(deviceSettings.hostName, jsonRequest["hostName"]);
 
 		eepromSave();
 		return true;
@@ -505,6 +513,9 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		if (jsonRequest.containsKey("checkUpdate") && jsonRequest["checkUpdate"])
 		{
 			checkForUpdate();
+		};
+		if(jsonRequest.containsKey("doUpdate") && jsonRequest["doUpdate"]){
+			_doUpdate=1;
 		}
 		break;
 
@@ -655,6 +666,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["allowOTA"] = deviceSettings.allowOTA;
 		jsonReply["autoRefresh"] = deviceSettings.autoRefresh;
+		jsonReply["hostName"] = deviceSettings.hostName;
 
 		jsonReply["success"] = 1;
 		break;
@@ -734,7 +746,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["updateAvail"] = webUpdateAvail;
 		jsonReply["firmVer"] = FIRMWARE_VERSION;
-		jsonReply["latestVer"] = FIRMWARE_VERSION;
+		jsonReply["latestVer"] = latestFirm;
 		jsonReply["success"] = 1;
 		break;
 

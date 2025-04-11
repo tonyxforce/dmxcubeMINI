@@ -26,7 +26,7 @@
 					<li><a href="javascript: void(0)" id="menuClick3">IP settings</a></li>
 					<li><a href="javascript: void(0)" id="menuClick4">Port A</a></li>
 					<li><a href="javascript: void(0)" id="menuClick5">Port B</a></li>
-					<li><a href="javascript: void(0)" id="menuClick6">Firmware</a></li>
+					<li><a href="javascript: void(0)" id="menuClick6">Update</a></li>
 					<li class="last"><a href="javascript: reboot()">Reboot</a></li>
 				</ul>
 				<div class="author"><i>Design by</i> Matthew Tong and Dominik Hörich</div>
@@ -76,6 +76,7 @@
 							<input type="checkbox" id="wpa2Enterprise" name="wpa2Enterprise">
 						</span>
 
+
 						<span class="grid-item grid-item-left">Wifi SSID:</span>
 						<span class="grid-item grid-item-right">
 							<input type="text" name="wifiSSID" />
@@ -113,15 +114,15 @@
 						<span class="grid-item grid-item-right"><input name="standAloneEnable" type="checkbox"
 								value="true" /></span>
 
-						<p class="right">In normal mode, the hotspot will start after <i>delay</i> seconds if the main WiFi won"t
-							connect.
-							If no users connect, the device will reset and attempt the main WiFi again. This feature is purely for
-							changing settings and ArtNet data is ignored.</p>
-						<p class="right">Stand alone mode disables the primary WiFi connection and allows ArtNet data to be
-							received
-							via
-							the hotspot connection.</p>
 					</div>
+					<p class="center">In normal mode, the hotspot will start after <i>delay</i> seconds if the main WiFi won"t
+						connect.
+						If no users connect, the device will reset and attempt the main WiFi again. This feature is purely for
+						changing settings and ArtNet data is ignored.</p>
+					<p class="center">Stand alone mode disables the primary WiFi connection and allows ArtNet data to be
+						received
+						via
+						the hotspot connection.</p>
 				</div>
 				<div class="hide section" name="sections">
 					<input name="save" type="button" value="Save Changes" />
@@ -129,6 +130,11 @@
 					<div class="grid">
 						<span class="grid-item grid-item-left">Enable DHCP:</span>
 						<span class="grid-item grid-item-right"><input name="dhcpEnable" type="checkbox" value="true" /></span>
+
+						<span class="grid-item grid-item-left">Hostname:</span>
+						<span class="grid-item grid-item-right">
+							<input type="text" name="hostName" />
+						</span>
 
 						<span class="grid-item grid-item-left">IP Address:</span>
 						<span class="grid-item grid-item-right">
@@ -215,11 +221,23 @@
 						<span class="grid-item grid-item-left">Universe:</span>
 						<span class="grid-item grid-item-right">
 							<input type="number" min="0" max="15" name="portAuni" class="number portUni" />
+							<span class="portApix hide">
+								,
+								<input type="number" min="0" max="15" name="portAuni" class="number portUni" />,
+								<input type="number" min="0" max="15" name="portAuni" class="number portUni" />,
+								<input type="number" min="0" max="15" name="portAuni" class="number portUni" />
+							</span>
 						</span>
 
-						<span class="grid-item grid-item-left">sACN Universe:</span>
-						<span class="grid-item grid-item-right">
+						<span class="grid-item grid-item-left sacnA hide">sACN Universe:</span>
+						<span class="grid-item grid-item-right sacnA hide">
 							<input type="number" min="0" max="63999" name="portAsACNuni" class="number portUni" />
+							<span class="portApix hide">
+								,
+								<input type="number" min="0" max="63999" name="portAsACNuni" class="number portUni" />,
+								<input type="number" min="0" max="63999" name="portAsACNuni" class="number portUni" />,
+								<input type="number" min="0" max="63999" name="portAsACNuni" class="number portUni" />
+							</span>
 						</span>
 
 						<span class="grid-item grid-item-left DmxInBcAddrA">Broadcast Address:</span>
@@ -247,6 +265,7 @@
 								<option value=3>LED Pixels - WS2812
 							</select>
 						</span>
+
 						<span class="grid-item grid-item-left">Protocol:</span>
 						<span class="grid-item grid-item-right">
 							<select class="select" name="portBprot">
@@ -254,6 +273,7 @@
 								<option value=1>Artnet v4 with sACN DMX
 							</select>
 						</span>
+
 						<span class="grid-item grid-item-left">Merge Mode:</span>
 						<span class="grid-item grid-item-right">
 							<select class="select" name="portBmerge">
@@ -261,19 +281,34 @@
 								<option value=1>Merge HTP
 							</select>
 						</span>
+
 						<span class="grid-item grid-item-left">Net:</span>
 						<span class="grid-item grid-item-right"><input name="portBnet" type="number" min="0" max="127"
 								class="number portUni" /></span>
+
 						<span class="grid-item grid-item-left">Subnet:</span>
 						<span class="grid-item grid-item-right"><input name="portBsub" type="number" min="0" max="15"
 								class="number portUni" /></span>
+
 						<span class="grid-item grid-item-left">Universe:</span>
 						<span class="grid-item grid-item-right">
 							<input type="number" min="0" max="15" name="portBuni" class="number portUni" />
+							<span class="portBpix hide">
+								,
+								<input type="number" min="0" max="15" name="portBuni" class="number portUni" />,
+								<input type="number" min="0" max="15" name="portBuni" class="number portUni" />,
+								<input type="number" min="0" max="15" name="portBuni" class="number portUni" />
+							</span>
 						</span>
-						<span class="grid-item grid-item-left">sACN Universe:</span>
-						<span class="grid-item grid-item-right">
+						<span class="grid-item grid-item-left sacnB hide">sACN Universe:</span>
+						<span class="grid-item grid-item-right sacnB hide">
 							<input type="number" min="1" max="63999" name="portBsACNuni" class="number portUni" />
+							<span class="portBpix hide">
+								,
+								<input type="number" min="1" max="63999" name="portBsACNuni" class="number portUni" />,
+								<input type="number" min="1" max="63999" name="portBsACNuni" class="number portUni" />,
+								<input type="number" min="1" max="63999" name="portBsACNuni" class="number portUni" />
+							</span>
 						</span>
 					</div>
 				</div>
@@ -283,10 +318,13 @@
 						<div class="grid">
 							<span class="grid-item grid-item-left colored">Currently installed version:</span>
 							<span class="grid-item grid-item-right" name="firmVer"></span>
-							<span class="grid-item grid-item-left colored">Newest version:</span>
-							<span class="grid-item grid-item-right" name="newFirmVer"></span>
-							<span class="grid-item grid-item-right" id="updateMsg"></span>
-							<span class="grid-item grid-item-right"><input type="button" class="submit" value="Check for updates" id="updateCheck"></span>
+							<span class="grid-item grid-item-left colored hide newFirm">Newest version:</span>
+							<span class="grid-item grid-item-right hide newFirm" id="newFirmVer"></span>
+							<span class="grid-item grid-item-right colored-red hide newFirm textCenter">New Firmware available!</span>
+							<span class="grid-item grid-item-right hide newFirm"><input type="button" class="submit" value="Update"
+									id="doUpdate" style="margin:0px"></span>
+							<span class="grid-item grid-item-right"><input type="button" class="submit" value="Check for updates"
+									id="checkUpdate" style="margin:0px"></span>
 						</div>
 				</div>
 			</div>
