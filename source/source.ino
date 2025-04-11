@@ -331,7 +331,7 @@ int displayScroll = 0;
 
 void loop()
 {
-	displayScroll = (absEncoderPos*2.5)-1;
+	//displayScroll = (absEncoderPos*2.5)-1;
 	if (deviceSettings.allowOTA)
 		ArduinoOTA.handle(); // Handles a code update request
 	unsigned long now = millis();
