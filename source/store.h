@@ -21,7 +21,7 @@ If not, see http://www.gnu.org/licenses/
 
 
 // Change this if the settings structure changes
-#define CONFIG_VERSION "005"
+#define CONFIG_VERSION "006"
 
 // Dont change this
 #define CONFIG_START 0
@@ -55,7 +55,7 @@ struct StoreStruct {
   // Device settings:
   IPAddress ip, subnet, gateway, broadcast, hotspotIp, hotspotSubnet, hotspotBroadcast, dmxInBroadcast;
   bool dhcpEnable, standAloneEnable;
-  char nodeName[18], longName[64], wifiSSID[40], wifiPass[40], wifiUsername[40], hotspotSSID[20], hotspotPass[20];
+  char nodeName[18], longName[64], wifiSSID[40], wifiPass[40], wifiUsername[40], hotspotSSID[31], hotspotPass[63];
 	char hostName[18];
   uint16_t hotspotDelay;
   uint8_t portAmode, portBmode, portAprot, portBprot, portAmerge, portBmerge;

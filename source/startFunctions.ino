@@ -508,7 +508,11 @@ void wifiStart()
 void startHotspot()
 {
 	yield();
-
+	
+	if(strcmp(deviceSettings.hotspotSSID, "DMXCube mini W") == 0){
+		//If the hotspot SSID is the default, make it unique
+		strcpy(deviceSettings.hotspotSSID, String(deviceSettings.hotspotSSID + String(system_get_chip_id())).c_str());
+	}
 	WiFi.mode(WIFI_AP);
 	WiFi.softAP(deviceSettings.hotspotSSID, deviceSettings.hotspotPass);
 	WiFi.softAPConfig(deviceSettings.hotspotIp, deviceSettings.hotspotIp, deviceSettings.hotspotSubnet);
