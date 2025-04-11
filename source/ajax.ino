@@ -69,7 +69,8 @@ void ajaxHandle()
 	webServer.sendHeader("Access-Control-Allow-Origin", "*");
 	webServer.send(200, "application/json", reply);
 
-	if(_doUpdate){
+	if (_doUpdate)
+	{
 		doUpdate();
 	}
 }
@@ -514,8 +515,9 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		{
 			checkForUpdate();
 		};
-		if(jsonRequest.containsKey("doUpdate") && jsonRequest["doUpdate"]){
-			_doUpdate=1;
+		if (jsonRequest.containsKey("doUpdate") && jsonRequest["doUpdate"])
+		{
+			_doUpdate = 1;
 		}
 		break;
 
@@ -551,6 +553,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 	switch (page)
 	{
 	case 1: // Device Status
+	{
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
@@ -623,8 +626,10 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["success"] = 1;
 		break;
+	}
 
 	case 2: // Wifi
+	{
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
@@ -646,8 +651,10 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["success"] = 1;
 		break;
+	}
 
 	case 3: // IP Address & Node Name
+	{
 		jsonReply.remove("portAuni");
 		jsonReply.remove("portBuni");
 		jsonReply.remove("portAsACNuni");
@@ -670,8 +677,10 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["success"] = 1;
 		break;
+	}
 
 	case 4: // Port A
+	{
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
@@ -704,8 +713,10 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["success"] = 1;
 		break;
+	}
 
 	case 5: // Port B
+	{
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
@@ -732,8 +743,10 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["success"] = 1;
 		break;
+	}
 
 	case 6: // Firmware
+	{
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
@@ -749,8 +762,10 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply["latestVer"] = latestFirm;
 		jsonReply["success"] = 1;
 		break;
+	}
 
 	default:
+	{
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
@@ -763,5 +778,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 		jsonReply["success"] = 0;
 		jsonReply["message"] = "Invalid or incomplete data received.";
+	}
 	}
 }
