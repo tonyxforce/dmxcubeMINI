@@ -16,7 +16,7 @@ If the screen shows `Recovery mode`, try reseting the device, and if the issue p
 
 ### First Boot
 
-On your first boot, the device will start a WiFi hotspot called "DMXCube mini W" with a password of "DMXCube2024" (You can always check the password by pressing and holding the knob). Connect to the hotspot, then "Log in" or open 2.0.0.1 in a browser.
+On your first boot, the device will start a WiFi hotspot called `DMXCube mini W XXXXXX`, where `XXXXXX` is a 6 digit unique ID to distinguish multiple Cubes, with a password of "DMXCube2024" (You can always check the password by pressing and holding the knob). Connect to the hotspot, then "Log in" or open 2.0.0.1 in a browser.
 
 Note that the hotspot is, by default, only for accessing the settings page. You'll need to enable Standalone mode in the web UI if you want to send ArtNet to the device in hotspot mode.
 
