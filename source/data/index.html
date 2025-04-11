@@ -165,12 +165,12 @@
 
 						<span class="grid-item grid-item-left">Enable ArduinoOTA:</span>
 						<span class="grid-item grid-item-right">
-							<input name=allowOTA type=checkbox value=false />
+							<input name="allowOTA" type="checkbox" value="false" />
 						</span>
 
 						<span class="grid-item grid-item-left">Enable Automatic display refresh:</span>
 						<span class="grid-item grid-item-right">
-							<input name=autoRefresh type=checkbox value=false />
+							<input name="autoRefresh" type="checkbox" value="false" />
 						</span>
 					</div>
 
@@ -314,11 +314,15 @@
 				</div>
 				<div class="hide section" name="sections">
 					<form action="/update" enctype="multipart/form-data" method="POST" id="firmForm">
+					<input name="save" type="button" value="Save Changes" />
+
 						<h2>Update Firmware</h2>
 						<div class="grid">
 							<span class="grid-item grid-item-left colored">Currently installed version:</span>
 							<span class="grid-item grid-item-right" name="firmVer"></span>
 							<span class="grid-item grid-item-left colored hide newFirm">Newest version:</span>
+							<span class="grid-item grid-item-left">Enable automatic updates on startup:</span>
+							<span class="grid-item grid-item-right"><input type="checkbox" name="startupUpdates"></span>
 							<span class="grid-item grid-item-right hide newFirm" id="newFirmVer"></span>
 							<span class="grid-item grid-item-right colored-red hide newFirm textCenter">New Firmware available!</span>
 							<span class="grid-item grid-item-right hide newFirm"><input type="button" class="submit" value="Update"

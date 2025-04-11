@@ -519,6 +519,8 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		{
 			_doUpdate = 1;
 		}
+		deviceSettings.startupUpdates = jsonRequest["startupUpdates"];
+		eepromSave();
 		break;
 
 	default:
@@ -761,6 +763,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply["firmVer"] = FIRMWARE_VERSION;
 		jsonReply["latestVer"] = latestFirm;
 		jsonReply["success"] = 1;
+		jsonReply["startupUpdates"] = deviceSettings.startupUpdates;
 		break;
 	}
 
