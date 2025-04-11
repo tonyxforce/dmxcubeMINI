@@ -71,7 +71,7 @@ cssPurge.purgeCSS(
     var versionFile = fs.readFileSync("source/firmVer.h").toString();
 
     var versionNum = versionFile
-        .split('#define FIRMWARE_VERSION "')[1]
+        .split('#define FIRMWARE_VERSION "v')[1]
         .split('"')[0];
 
     console.log(`old firmware ver: ${versionNum}`);
@@ -85,5 +85,9 @@ cssPurge.purgeCSS(
         patch++;
         console.log(`New firmvare ver: ${major}.${minor}.${patch}`);
 				fs.writeFileSync("source/firmVer.h", `#define FIRMWARE_VERSION "${major}.${minor}.${patch}"`);
-    }
+    };
+
+		if(fs.existsSync("./bin") && fs.existsSync(".pio/build/esp12/firmware.bin")){
+			fs.copyFileSync(".pio/build/esp12/firmware.bin", `./bin/${versionNum}`);
+		}
 })();

@@ -5,3 +5,4 @@ source/*.ino.cpp
 temp
 source/media/*
 scripts/node_modules
+bin
