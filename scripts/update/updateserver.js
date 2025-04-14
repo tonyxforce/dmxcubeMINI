@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 
 var phpExpress = require('php-express')({
-  binPath: 'php'
+  binPath: 'C:\\xampp\\php\\php.exe'
 });
 
 // set view engine to php-express
