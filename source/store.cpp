@@ -14,9 +14,8 @@ You should have received a copy of the GNU General Public License along with thi
 If not, see http://www.gnu.org/licenses/
 */
 
-
 StoreStruct deviceSettings = {
-  CONFIG_VERSION,
+	CONFIG_VERSION,
   
   // The default values
   IPAddress(2,0,0,1), IPAddress(255,0,0,0), IPAddress(2,0,0,1), IPAddress(2,255,255,255), IPAddress(2,0,0,1), IPAddress(255,0,0,0), IPAddress(2,255,255,255), IPAddress(2,255,255,255),
@@ -38,7 +37,7 @@ StoreStruct deviceSettings = {
 
 
 void eepromSave() {
-  for (uint16_t t = 0; t < sizeof(deviceSettings); t++)
+  for (uint16_t t = 0; t < STORESIZE; t++)
     EEPROM.write(CONFIG_START + t, *((char*)&deviceSettings + t));
   
   EEPROM.commit();

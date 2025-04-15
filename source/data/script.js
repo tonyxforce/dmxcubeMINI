@@ -9,6 +9,7 @@ if (currentURL.port != 80 && currentURL.port != "") {
     ajaxEndpoint = `http://localhost:8080/http://cubeminiw.local/ajax`;
 }
 
+var saveClicked = 0;
 var updateBtn = document.getElementById("doUpdate");
 var targetSectionIndex = 0;
 var err = 0;
@@ -20,6 +21,7 @@ var checkUpdateBtn = document.getElementById("checkUpdate");
 save.forEach((e) =>
     e.addEventListener("click", function () {
         sendData();
+        saveClicked = true;
     })
 );
 
@@ -31,7 +33,12 @@ var checkWPAE = () => {
     return isWPA2E.checked;
 };
 function doUpdate() {
-    if (!confirm("Are you sure you want to start updating? WiFi and other settings may be reset to factory defauls")) return;
+    if (
+        !confirm(
+            "Are you sure you want to start updating? WiFi and other settings may be reset to factory defauls"
+        )
+    )
+        return;
     var x = new XMLHttpRequest();
     x.onreadystatechange = function () {};
     x.open("POST", ajaxEndpoint, true);
@@ -206,7 +213,9 @@ function handleAJAX(request) {
                     response["message"];
                 return;
             }
-            if (response.hasOwnProperty("message")) {
+
+            if (saveClicked && response.hasOwnProperty("message")) {
+                saveClicked = 0;
                 for (let i = 0; i < save.length; i++) {
                     let e = save[i];
                     e.value = response["message"];

@@ -87,7 +87,7 @@ cssPurge.purgeCSS(
 				fs.writeFileSync("source/firmVer.h", `#define FIRMWARE_VERSION "v${major}.${minor}.${patch}"`);
     };
 
-		if(fs.existsSync("./bin") && fs.existsSync(".pio/build/esp12/firmware.bin")){
+/* 		if(fs.existsSync("./bin") && fs.existsSync(".pio/build/esp12/firmware.bin")){
 			fs.copyFileSync(".pio/build/esp12/firmware.bin", `./bin/v${versionNum}.bin`);
-		}
+		} */
 })();
