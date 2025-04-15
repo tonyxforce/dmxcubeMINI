@@ -71,6 +71,7 @@ struct StoreStruct {
   bool startupUpdates;
 };
 extern StoreStruct deviceSettings;
+#define STORESIZE sizeof(StoreStruct)
 
 
 void eepromSave();

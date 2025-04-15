@@ -25,7 +25,7 @@ void ajaxHandle()
 	JsonObject jsonRequest = jsonRequestDoc.to<JsonObject>();
 	DeserializationError err = deserializeJson(jsonRequestDoc, String(webServer.arg("plain")).c_str());
 
-	DynamicJsonDocument jsonReplyDoc(768);
+	DynamicJsonDocument jsonReplyDoc(4096);
 	JsonObject jsonReply = jsonReplyDoc.to<JsonObject>();
 
 	if (err)
@@ -39,7 +39,7 @@ void ajaxHandle()
 	{
 		if (ajaxSave((uint8_t)jsonRequest["page"], jsonRequest, jsonRequestDoc))
 		{
-			ajaxLoad((uint8_t)jsonRequest["page"], jsonReply, jsonReplyDoc);
+			ajaxLoad((uint8_t)jsonRequest["page"], jsonReply, jsonReplyDoc, jsonRequest, jsonRequestDoc);
 
 			if (jsonReply["message"] == "")
 				jsonReply["message"] = "Settings Saved";
@@ -84,11 +84,14 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 	switch (page)
 	{
 	case 1: // Device Status
+	{
 		// We don't need to save anything for this.  Go straight to load
 		return true;
 		break;
+	}
 
 	case 2: // Wifi
+	{
 		strcpy(deviceSettings.wifiUsername, jsonRequest["wifiUsername"]);
 		strcpy(deviceSettings.wifiSSID, jsonRequest["wifiSSID"]);
 		strcpy(deviceSettings.wifiPass, jsonRequest["wifiPass"]);
@@ -104,8 +107,10 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 			doReboot = true;
 		return true;
 		break;
+	}
 
 	case 3: // IP Address & Node Name
+	{
 		deviceSettings.ip = IPAddress(jsonRequest["ipAddress"][0], jsonRequest["ipAddress"][1], jsonRequest["ipAddress"][2], jsonRequest["ipAddress"][3]);
 		deviceSettings.subnet = IPAddress(jsonRequest["subAddress"][0], jsonRequest["subAddress"][1], jsonRequest["subAddress"][2], jsonRequest["subAddress"][3]);
 		deviceSettings.gateway = IPAddress(jsonRequest["gwAddress"][0], jsonRequest["gwAddress"][1], jsonRequest["gwAddress"][2], jsonRequest["gwAddress"][3]);
@@ -160,6 +165,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		eepromSave();
 		return true;
 		break;
+	}
 
 	case 4: // Port A
 	{
@@ -511,6 +517,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 	break;
 
 	case 6: // Firmware
+	{
 		if (jsonRequest.containsKey("checkUpdate") && jsonRequest["checkUpdate"])
 		{
 			checkForUpdate();
@@ -522,6 +529,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		deviceSettings.startupUpdates = jsonRequest["startupUpdates"];
 		eepromSave();
 		break;
+	}
 
 	default:
 		// Catch errors
@@ -530,7 +538,7 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 	return true;
 }
 
-void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyDoc)
+void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyDoc, JsonObject jsonRequest, DynamicJsonDocument jsonRequestDoc)
 {
 
 	// Create the needed arrays here - doesn't work within the switch below
@@ -758,6 +766,17 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("portAsACNuni");
 		jsonReply.remove("portBsACNuni");
 		jsonReply.remove("dmxInBroadcast");
+
+		if (jsonRequest.containsKey("export") && jsonRequest["export"])
+		{
+			jsonReply["deviceSettings"] = "";
+
+			uint8_t buf[505];
+			for (uint16_t t = 0; t < 504UL; t++)
+				buf[t] = /* (uint8_t)(*((char *)&deviceSettings + t)) */ random(0, 255);
+			buf[504] = '\0';
+			jsonReply["deviceSettings"] = buf;
+		}
 
 		jsonReply["updateAvail"] = webUpdateAvail;
 		jsonReply["firmVer"] = FIRMWARE_VERSION;

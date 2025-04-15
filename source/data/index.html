@@ -26,7 +26,7 @@
 					<li><a href="javascript: void(0)" id="menuClick3">IP settings</a></li>
 					<li><a href="javascript: void(0)" id="menuClick4">Port A</a></li>
 					<li><a href="javascript: void(0)" id="menuClick5">Port B</a></li>
-					<li><a href="javascript: void(0)" id="menuClick6">Update</a></li>
+					<li><a href="javascript: void(0)" id="menuClick6">Updates & Backup</a></li>
 					<li class="last"><a href="javascript: reboot()">Reboot</a></li>
 				</ul>
 				<div class="author"><i>Design by</i> Matthew Tong and Dominik Hörich</div>
@@ -314,21 +314,32 @@
 				</div>
 				<div class="hide section" name="sections">
 					<form action="/update" enctype="multipart/form-data" method="POST" id="firmForm">
-					<input name="save" type="button" value="Save Changes" />
+						<input name="save" type="button" value="Save Changes" />
 
-						<h2>Update Firmware</h2>
+						<h2>Updates & Backup</h2>
 						<div class="grid">
 							<span class="grid-item grid-item-left colored">Currently installed version:</span>
 							<span class="grid-item grid-item-right" name="firmVer"></span>
 							<span class="grid-item grid-item-left colored hide newFirm">Newest version:</span>
-							<span class="grid-item grid-item-left">Enable automatic updates on startup:</span>
-							<span class="grid-item grid-item-right"><input type="checkbox" name="startupUpdates"></span>
 							<span class="grid-item grid-item-right hide newFirm" id="newFirmVer"></span>
 							<span class="grid-item grid-item-right colored-red hide newFirm textCenter">New Firmware available!</span>
-							<span class="grid-item grid-item-right hide newFirm"><input type="button" class="submit" value="Update"
-									id="doUpdate" style="margin:0px"></span>
-							<span class="grid-item grid-item-right"><input type="button" class="submit" value="Check for updates"
-									id="checkUpdate" style="margin:0px"></span>
+							<span class="grid-item grid-item-right hide newFirm">
+								<input type="button" class="submit" value="Update" id="doUpdate" style="margin:0px">
+							</span>
+							<span class="grid-item grid-item-left">Enable automatic updates on startup:</span>
+							<span class="grid-item grid-item-right"><input type="checkbox" name="startupUpdates"></span>
+							<span class="grid-item grid-item-right">
+								<input type="button" class="submit" value="Check for updates" id="checkUpdate" style="margin:0px">
+							</span>
+							<p class="spacer grid-item grid-item-right"></p>
+							<span class="grid-item grid-item-left">
+								<input type="button" value="Export settings" class="submit" id="export">
+							</span>
+							<span class="grid-item grid-item-right">
+								<input type="button" value="Import settings" class="submit" id="import">
+
+							</span>
+							
 						</div>
 				</div>
 			</div>
