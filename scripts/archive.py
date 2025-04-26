@@ -10,6 +10,5 @@ def after_upload(source, target, env):
         shutil.copy2(".pio/build/esp12/firmware.bin", f"bin/{data}.bin")
       else:
         print("bin doesn't exist")
-      os.unlink(".pio/build/esp12/firmware.bin")
 
 env.AddPostAction("buildprog", after_upload)
