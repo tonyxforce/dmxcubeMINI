@@ -272,7 +272,7 @@ void setup()
 	webStart();
 
 	// Don't start our Artnet or DMX in firmware update mode or after multiple WDT resets
-	if (!deviceSettings.doFirmwareUpdate && deviceSettings.wdtCounter <= 3)
+	if (deviceSettings.wdtCounter <= 3)
 	{
 
 		// We only allow 1 DMX input - and RDM can't run alongside DMX in
@@ -291,7 +291,6 @@ void setup()
 	}
 	else
 	{
-		deviceSettings.doFirmwareUpdate = false;
 		deviceSettings.wdtCounter = 0;
 		u8g2.setFont(u8g2_font_5x8_mf);
 		u8g2.drawStr(0, 10, "Recovery Mode!");

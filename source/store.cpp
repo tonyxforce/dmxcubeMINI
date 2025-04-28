@@ -26,7 +26,6 @@ StoreStruct deviceSettings = {
   TYPE_DMX_OUT, TYPE_DMX_OUT, PROT_ARTNET, PROT_ARTNET, MERGE_HTP, MERGE_HTP,
   0, 0, {0, 0, 0, 0}, 0, 0, {1, 1, 1, 1}, {1, 2, 3, 4}, {5, 6, 7, 8},
   680, 680, 0, 0,
-  false,
   FX_MODE_PIXEL_MAP, FX_MODE_PIXEL_MAP,
   1, 1,
   0, 0,

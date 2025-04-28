@@ -61,7 +61,6 @@ struct StoreStruct {
   uint8_t portAmode, portBmode, portAprot, portBprot, portAmerge, portBmerge;
   uint8_t portAnet, portAsub, portAuni[4], portBnet, portBsub, portBuni[4], portAsACNuni[4], portBsACNuni[4];
   uint16_t portAnumPix, portBnumPix, portApixConfig, portBpixConfig;
-  bool doFirmwareUpdate;
   uint8_t portApixMode, portBpixMode;
   uint16_t portApixFXstart, portBpixFXstart;
   uint8_t resetCounter, wdtCounter;
