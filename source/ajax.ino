@@ -57,10 +57,6 @@ void ajaxHandle()
 		jsonReply["success"] = 1;
 		jsonReply["message"] = "Device Restarting.";
 
-		// Turn pixel strips off if they're on
-		pixDriver.updateStrip(0, 0, deviceSettings.portApixConfig);
-		pixDriver.updateStrip(1, 0, deviceSettings.portBpixConfig);
-
 		doReboot = true;
 	}
 
@@ -180,17 +176,14 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		if ((uint8_t)jsonRequest["portAsub"] < 16)
 			deviceSettings.portAsub = (uint8_t)jsonRequest["portAsub"];
 
-		for (uint8_t x = 0; x < 4; x++)
-		{
-			if ((uint8_t)jsonRequest["portAuni"][x] < 16)
-				deviceSettings.portAuni[x] = (uint8_t)jsonRequest["portAuni"][x];
+		if ((uint8_t)jsonRequest["portAuni"] < 16)
+			deviceSettings.portAuni = (uint8_t)jsonRequest["portAuni"];
 
-			if ((uint16_t)jsonRequest["portAsACNuni"][x] > 0 && (uint16_t)jsonRequest["portAsACNuni"][x] < 64000)
-				deviceSettings.portAsACNuni[x] = (uint16_t)jsonRequest["portAsACNuni"][x];
+		if ((uint16_t)jsonRequest["portAsACNuni"] > 0 && (uint16_t)jsonRequest["portAsACNuni"] < 64000)
+			deviceSettings.portAsACNuni = (uint16_t)jsonRequest["portAsACNuni"];
 
-			artRDM.setE131(portA[0], portA[x + 1], e131);
-			artRDM.setE131Uni(portA[0], portA[x + 1], deviceSettings.portAsACNuni[x]);
-		}
+		artRDM.setE131(portA[0], portA[1], e131);
+		artRDM.setE131Uni(portA[0], portA[1], deviceSettings.portAsACNuni);
 
 		uint8_t newMode = jsonRequest["portAmode"];
 		uint8_t oldMode = deviceSettings.portAmode;
@@ -273,73 +266,8 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		// Update the Artnet class
 		artRDM.setNet(portA[0], deviceSettings.portAnet);
 		artRDM.setSubNet(portA[0], deviceSettings.portAsub);
-		artRDM.setUni(portA[0], portA[1], deviceSettings.portAuni[0]);
+		artRDM.setUni(portA[0], portA[1], deviceSettings.portAuni);
 		artRDM.setMerge(portA[0], portA[1], deviceSettings.portAmerge);
-
-		// Lengthen or shorten our pixel strip & handle required Artnet ports
-		if (newMode == TYPE_WS2812 && !doReboot)
-		{
-			// Get the new & old lengths of pixel strip
-			uint16_t newLen = (jsonRequest.containsKey("portAnumPix")) ? (uint16_t)jsonRequest["portAnumPix"] : deviceSettings.portAnumPix;
-			if (newLen > 680)
-				newLen = 680;
-
-			uint16_t oldLen = deviceSettings.portAnumPix;
-
-			// If pixel size has changed
-			if (newLen <= 680 && oldLen != newLen)
-			{
-				// Update our pixel strip
-				deviceSettings.portAnumPix = newLen;
-				pixDriver.updateStrip(1, deviceSettings.portAnumPix, deviceSettings.portApixConfig);
-
-				// If the old mode was pixel map then update the Artnet ports
-				if (deviceSettings.portApixMode == FX_MODE_PIXEL_MAP)
-					updatePorts = true;
-			}
-
-			// If the old mode was 12 channel FX, update oldLen to represent the number of channels we used
-			if (deviceSettings.portApixMode == FX_MODE_12)
-				oldLen = 12;
-
-			// If our mode changes then update the Artnet ports
-			if (deviceSettings.portApixMode != (uint8_t)jsonRequest["portApixMode"])
-				updatePorts = true;
-
-			// Store the new pixel mode
-			deviceSettings.portApixMode = (uint8_t)jsonRequest["portApixMode"];
-
-			// If our new mode is FX12 then we need 12 channels & store the start address
-			if (deviceSettings.portApixMode == FX_MODE_12)
-			{
-				if ((uint16_t)jsonRequest["portApixFXstart"] <= 501 && (uint16_t)jsonRequest["portApixFXstart"] > 0)
-					deviceSettings.portApixFXstart = (uint16_t)jsonRequest["portApixFXstart"];
-				newLen = 12;
-			}
-
-			// If needed, open and close Artnet ports
-			if (updatePorts)
-			{
-				for (uint8_t x = 1, y = 2; x < 4; x++, y++)
-				{
-					uint16_t c = (x * 170);
-					if (newLen > c)
-						portA[y] = artRDM.addPort(portA[0], x, deviceSettings.portAuni[x], TYPE_DMX_OUT, deviceSettings.portAmerge);
-					else if (oldLen > c)
-						artRDM.closePort(portA[0], portA[y]);
-				}
-			}
-
-			// Set universe and merge settings (port 1 is done above for all port types)
-			for (uint8_t x = 1, y = 2; x < 4; x++, y++)
-			{
-				if (newLen > (x * 170))
-				{
-					artRDM.setUni(portA[0], portA[y], deviceSettings.portAuni[x]);
-					artRDM.setMerge(portA[0], portA[y], deviceSettings.portAmerge);
-				}
-			}
-		}
 
 		artRDM.artPollReply();
 
@@ -362,17 +290,14 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 		if ((uint8_t)jsonRequest["portBsub"] < 16)
 			deviceSettings.portBsub = (uint8_t)jsonRequest["portBsub"];
 
-		for (uint8_t x = 0; x < 4; x++)
-		{
-			if ((uint8_t)jsonRequest["portBuni"][x] < 16)
-				deviceSettings.portBuni[x] = (uint8_t)jsonRequest["portBuni"][x];
+		if ((uint8_t)jsonRequest["portBuni"] < 16)
+			deviceSettings.portBuni = (uint8_t)jsonRequest["portBuni"];
 
-			if ((uint16_t)jsonRequest["portBsACNuni"][x] > 0 && (uint16_t)jsonRequest["portBsACNuni"][x] < 64000)
-				deviceSettings.portBsACNuni[x] = (uint16_t)jsonRequest["portBsACNuni"][x];
+		if ((uint16_t)jsonRequest["portBsACNuni"] > 0 && (uint16_t)jsonRequest["portBsACNuni"] < 64000)
+			deviceSettings.portBsACNuni = (uint16_t)jsonRequest["portBsACNuni"];
 
-			artRDM.setE131(portB[0], portB[x + 1], e131);
-			artRDM.setE131Uni(portB[0], portB[x + 1], deviceSettings.portBsACNuni[x]);
-		}
+		artRDM.setE131(portB[0], portB[1], e131);
+		artRDM.setE131Uni(portB[0], portB[1], deviceSettings.portBsACNuni);
 
 		uint8_t newMode = jsonRequest["portBmode"];
 		uint8_t oldMode = deviceSettings.portBmode;
@@ -389,124 +314,13 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 			deviceSettings.portBmode = newMode;
 
 			doReboot = true;
-
-			/*
-			if (oldMode == TYPE_WS2812) {
-				doReboot = true;
-
-				// Set pixel strip length to zero
-				pixDriver.updateStrip(1, 0, deviceSettings.portBpixConfig);
-
-				// Close ports from pixels - library handles if they dont exist
-				for (uint8_t x = 2; x <= 4; x++)
-					artRDM.closePort(portB[0], portB[x]);
-
-				// Start our DMX port
-				dmxB.begin(DMX_DIR_B, artRDM.getDMX(portB[0], portB[1]));
-
-
-			} else if (oldMode == TYPE_RDM_OUT)
-				dmxB.rdmDisable();
-
-
-
-			// Start DMX output with no DMX
-			if (newMode == TYPE_DMX_OUT) {
-				artRDM.setPortType(portB[0], portB[1], DMX_OUT);
-
-			// Start DMX output with RDM
-			} else if (newMode == TYPE_RDM_OUT) {
-				dmxB.rdmEnable(ESTA_MAN, ESTA_DEV);
-				dmxB.rdmSetCallBack(rdmReceivedB);
-				dmxB.todSetCallBack(sendTodB);
-				artRDM.setPortType(portB[0], portB[1], RDM_OUT);
-
-			// Start WS2812 output
-			} else if (newMode == TYPE_WS2812) {
-				doReboot = true;
-
-
-				//dmxB.end();
-				artRDM.setPortType(portB[0], portB[1], TYPE_DMX_OUT);
-				updatePorts = true;
-
-				// Initialize the pixel strip
-				pixDriver.setStrip(1, DMX_TX_B, deviceSettings.portBnumPix, deviceSettings.portBpixConfig);
-
-			}
-			*/
 		}
 
 		// Update the Artnet class
 		artRDM.setNet(portB[0], deviceSettings.portBnet);
 		artRDM.setSubNet(portB[0], deviceSettings.portBsub);
-		artRDM.setUni(portB[0], portB[1], deviceSettings.portBuni[0]);
+		artRDM.setUni(portB[0], portB[1], deviceSettings.portBuni);
 		artRDM.setMerge(portB[0], portB[1], deviceSettings.portBmerge);
-
-		// Lengthen or shorten our pixel strip & handle required Artnet ports
-		if (newMode == TYPE_WS2812 && !doReboot)
-		{
-			// Get the new & old lengths of pixel strip
-			uint16_t newLen = (jsonRequest.containsKey("portBnumPix")) ? (uint16_t)jsonRequest["portBnumPix"] : deviceSettings.portBnumPix;
-			if (newLen > 680)
-				newLen = 680;
-
-			uint16_t oldLen = deviceSettings.portBnumPix;
-
-			// If pixel size has changed
-			if (newLen <= 680 && oldLen != newLen)
-			{
-				// Update our pixel strip
-				deviceSettings.portBnumPix = newLen;
-				pixDriver.updateStrip(1, deviceSettings.portBnumPix, deviceSettings.portBpixConfig);
-
-				// If the old mode was pixel map then update the Artnet ports
-				if (deviceSettings.portBpixMode == FX_MODE_PIXEL_MAP)
-					updatePorts = true;
-			}
-
-			// If the old mode was 12 channel FX, update oldLen to represent the number of channels we used
-			if (deviceSettings.portBpixMode == FX_MODE_12)
-				oldLen = 12;
-
-			// If our mode changes then update the Artnet ports
-			if (deviceSettings.portBpixMode != (uint8_t)jsonRequest["portBpixMode"])
-				updatePorts = true;
-
-			// Store the new pixel mode
-			deviceSettings.portBpixMode = (uint8_t)jsonRequest["portBpixMode"];
-
-			// If our new mode is FX12 then we need 12 channels & store the start address
-			if (deviceSettings.portBpixMode == FX_MODE_12)
-			{
-				if ((uint16_t)jsonRequest["portBpixFXstart"] <= 501 && (uint16_t)jsonRequest["portBpixFXstart"] > 0)
-					deviceSettings.portBpixFXstart = (uint16_t)jsonRequest["portBpixFXstart"];
-				newLen = 12;
-			}
-
-			// If needed, open and close Artnet ports
-			if (updatePorts)
-			{
-				for (uint8_t x = 1, y = 2; x < 4; x++, y++)
-				{
-					uint16_t c = (x * 170);
-					if (newLen > c)
-						portB[y] = artRDM.addPort(portB[0], x, deviceSettings.portBuni[x], TYPE_DMX_OUT, deviceSettings.portBmerge);
-					else if (oldLen > c)
-						artRDM.closePort(portB[0], portB[y]);
-				}
-			}
-
-			// Set universe and merge settings (port 1 is done above for all port types)
-			for (uint8_t x = 1, y = 2; x < 4; x++, y++)
-			{
-				if (newLen > (x * 170))
-				{
-					artRDM.setUni(portB[0], portB[y], deviceSettings.portBuni[x]);
-					artRDM.setMerge(portB[0], portB[y], deviceSettings.portBmerge);
-				}
-			}
-		}
 
 		artRDM.artPollReply();
 
@@ -546,10 +360,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 	JsonArray subAddress = jsonReply.createNestedArray("subAddress");
 	JsonArray gwAddress = jsonReply.createNestedArray("gwAddress");
 	JsonArray bcAddress = jsonReply.createNestedArray("bcAddress");
-	JsonArray portAuni = jsonReply.createNestedArray("portAuni");
-	JsonArray portBuni = jsonReply.createNestedArray("portBuni");
-	JsonArray portAsACNuni = jsonReply.createNestedArray("portAsACNuni");
-	JsonArray portBsACNuni = jsonReply.createNestedArray("portBsACNuni");
 	JsonArray dmxInBroadcast = jsonReply.createNestedArray("dmxInBroadcast");
 
 	// Get MAC Address
@@ -568,10 +378,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
 		jsonReply.remove("bcAddress");
-		jsonReply.remove("portAuni");
-		jsonReply.remove("portBuni");
-		jsonReply.remove("portAsACNuni");
-		jsonReply.remove("portBsACNuni");
 		jsonReply.remove("dmxInBroadcast");
 
 		jsonReply["wifiStatus"] = wifiStatus;
@@ -644,11 +450,8 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
 		jsonReply.remove("bcAddress");
-		jsonReply.remove("portAuni");
-		jsonReply.remove("portBuni");
-		jsonReply.remove("portAsACNuni");
-		jsonReply.remove("portBsACNuni");
 		jsonReply.remove("dmxInBroadcast");
+		jsonReply.remove("deviceSettings");
 
 		jsonReply["wifiUsername"] = deviceSettings.wifiUsername;
 		jsonReply["wifiSSID"] = deviceSettings.wifiSSID;
@@ -665,11 +468,8 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 	case 3: // IP Address & Node Name
 	{
-		jsonReply.remove("portAuni");
-		jsonReply.remove("portBuni");
-		jsonReply.remove("portAsACNuni");
-		jsonReply.remove("portBsACNuni");
 		jsonReply.remove("dmxInBroadcast");
+		jsonReply.remove("deviceSettings");
 
 		jsonReply["dhcpEnable"] = deviceSettings.dhcpEnable;
 
@@ -695,8 +495,7 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
 		jsonReply.remove("bcAddress");
-		jsonReply.remove("portBuni");
-		jsonReply.remove("portBsACNuni");
+		jsonReply.remove("deviceSettings");
 
 		jsonReply["portAmode"] = deviceSettings.portAmode;
 
@@ -709,17 +508,10 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply["portAmerge"] = deviceSettings.portAmerge;
 		jsonReply["portAnet"] = deviceSettings.portAnet;
 		jsonReply["portAsub"] = deviceSettings.portAsub;
-		jsonReply["portAnumPix"] = deviceSettings.portAnumPix;
 
-		jsonReply["portApixMode"] = deviceSettings.portApixMode;
-		jsonReply["portApixFXstart"] = deviceSettings.portApixFXstart;
-
-		for (uint8_t x = 0; x < 4; x++)
-		{
-			portAuni.add(deviceSettings.portAuni[x]);
-			portAsACNuni.add(deviceSettings.portAsACNuni[x]);
-			dmxInBroadcast.add(deviceSettings.dmxInBroadcast[x]);
-		}
+		jsonReply["portAuni"] = deviceSettings.portAuni;
+		jsonReply["portAsACNuni"] = deviceSettings.portAsACNuni;
+		jsonReply["dmxInBroadcast"] = deviceSettings.dmxInBroadcast;
 
 		jsonReply["success"] = 1;
 		break;
@@ -731,8 +523,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
 		jsonReply.remove("bcAddress");
-		jsonReply.remove("portAuni");
-		jsonReply.remove("portAsACNuni");
 
 		jsonReply["portBmode"] = deviceSettings.portBmode;
 		jsonReply["portBprot"] = deviceSettings.portBprot;

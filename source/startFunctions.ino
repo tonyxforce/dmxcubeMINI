@@ -61,12 +61,6 @@ void doNodeReport()
 		case TYPE_DMX_IN:
 			sprintf(c, "%s DMX In", c);
 			break;
-
-		case TYPE_WS2812:
-			if (deviceSettings.portApixMode == FX_MODE_12)
-				sprintf(c, "%s 12chan", c);
-			sprintf(c, "%s WS2812 %ipixels", c, deviceSettings.portAnumPix);
-			break;
 		}
 
 #ifndef ONE_PORT
@@ -80,12 +74,6 @@ void doNodeReport()
 
 		case TYPE_RDM_OUT:
 			sprintf(c, "%s RDM Out", c);
-			break;
-
-		case TYPE_WS2812:
-			if (deviceSettings.portBpixMode == FX_MODE_12)
-				sprintf(c, "%s 12chan", c);
-			sprintf(c, "%s WS2812 %ipixels", c, deviceSettings.portBnumPix);
 			break;
 		}
 #endif
@@ -130,7 +118,6 @@ void portSetup()
 #endif
 
 		digitalWrite(DMX_DIR_A, HIGH);
-		pixDriver.setStrip(0, DMX_TX_A, deviceSettings.portAnumPix, deviceSettings.portApixConfig);
 	}
 
 #ifndef ONE_PORT
@@ -151,7 +138,6 @@ void portSetup()
 		setStatusLed(STATUS_LED_B, GREEN);
 
 		digitalWrite(DMX_DIR_B, HIGH);
-		pixDriver.setStrip(1, DMX_TX_B, deviceSettings.portBnumPix, deviceSettings.portBpixConfig);
 	}
 #endif
 
@@ -177,39 +163,14 @@ void artStart()
 
 	// WS2812 uses TYPE_DMX_OUT - the rest use the value assigned
 	if (deviceSettings.portAmode == TYPE_WS2812)
-		portA[1] = artRDM.addPort(portA[0], 0, deviceSettings.portAuni[0], TYPE_DMX_OUT, deviceSettings.portAmerge);
+		portA[1] = artRDM.addPort(portA[0], 0, deviceSettings.portAuni, TYPE_DMX_OUT, deviceSettings.portAmerge);
 	else
-		portA[1] = artRDM.addPort(portA[0], 0, deviceSettings.portAuni[0], deviceSettings.portAmode, deviceSettings.portAmerge);
+		portA[1] = artRDM.addPort(portA[0], 0, deviceSettings.portAuni, deviceSettings.portAmode, deviceSettings.portAmerge);
 
 	artRDM.setE131(portA[0], portA[1], e131);
-	artRDM.setE131Uni(portA[0], portA[1], deviceSettings.portAsACNuni[0]);
+	artRDM.setE131Uni(portA[0], portA[1], deviceSettings.portAsACNuni);
 
-	// Add extra Artnet ports for WS2812
-	if (deviceSettings.portAmode == TYPE_WS2812 && deviceSettings.portApixMode == FX_MODE_PIXEL_MAP)
-	{
-		if (deviceSettings.portAnumPix > 170)
-		{
-			portA[2] = artRDM.addPort(portA[0], 1, deviceSettings.portAuni[1], TYPE_DMX_OUT, deviceSettings.portAmerge);
-
-			artRDM.setE131(portA[0], portA[2], e131);
-			artRDM.setE131Uni(portA[0], portA[2], deviceSettings.portAsACNuni[1]);
-		}
-		if (deviceSettings.portAnumPix > 340)
-		{
-			portA[3] = artRDM.addPort(portA[0], 2, deviceSettings.portAuni[2], TYPE_DMX_OUT, deviceSettings.portAmerge);
-
-			artRDM.setE131(portA[0], portA[3], e131);
-			artRDM.setE131Uni(portA[0], portA[3], deviceSettings.portAsACNuni[2]);
-		}
-		if (deviceSettings.portAnumPix > 510)
-		{
-			portA[4] = artRDM.addPort(portA[0], 3, deviceSettings.portAuni[3], TYPE_DMX_OUT, deviceSettings.portAmerge);
-
-			artRDM.setE131(portA[0], portA[4], e131);
-			artRDM.setE131Uni(portA[0], portA[4], deviceSettings.portAsACNuni[3]);
-		}
-	}
-
+	
 #ifndef ONE_PORT
 	// Add Group
 	portB[0] = artRDM.addGroup(deviceSettings.portBnet, deviceSettings.portBsub);
@@ -217,39 +178,14 @@ void artStart()
 
 	// WS2812 uses TYPE_DMX_OUT - the rest use the value assigned
 	if (deviceSettings.portBmode == TYPE_WS2812)
-		portB[1] = artRDM.addPort(portB[0], 0, deviceSettings.portBuni[0], TYPE_DMX_OUT, deviceSettings.portBmerge);
+		portB[1] = artRDM.addPort(portB[0], 0, deviceSettings.portBuni, TYPE_DMX_OUT, deviceSettings.portBmerge);
 	else
-		portB[1] = artRDM.addPort(portB[0], 0, deviceSettings.portBuni[0], deviceSettings.portBmode, deviceSettings.portBmerge);
+		portB[1] = artRDM.addPort(portB[0], 0, deviceSettings.portBuni, deviceSettings.portBmode, deviceSettings.portBmerge);
 
 	artRDM.setE131(portB[0], portB[1], e131);
-	artRDM.setE131Uni(portB[0], portB[1], deviceSettings.portBsACNuni[0]);
+	artRDM.setE131Uni(portB[0], portB[1], deviceSettings.portBsACNuni);
 
-	// Add extra Artnet ports for WS2812
-	if (deviceSettings.portBmode == TYPE_WS2812 && deviceSettings.portBpixMode == FX_MODE_PIXEL_MAP)
-	{
-		if (deviceSettings.portBnumPix > 170)
-		{
-			portB[2] = artRDM.addPort(portB[0], 1, deviceSettings.portBuni[1], TYPE_DMX_OUT, deviceSettings.portBmerge);
-
-			artRDM.setE131(portB[0], portB[2], e131);
-			artRDM.setE131Uni(portB[0], portB[2], deviceSettings.portBsACNuni[1]);
-		}
-		if (deviceSettings.portBnumPix > 340)
-		{
-			portB[3] = artRDM.addPort(portB[0], 2, deviceSettings.portBuni[2], TYPE_DMX_OUT, deviceSettings.portBmerge);
-
-			artRDM.setE131(portB[0], portB[3], e131);
-			artRDM.setE131Uni(portB[0], portB[3], deviceSettings.portBsACNuni[2]);
-		}
-		if (deviceSettings.portBnumPix > 510)
-		{
-			portB[4] = artRDM.addPort(portB[0], 3, deviceSettings.portBuni[3], TYPE_DMX_OUT, deviceSettings.portBmerge);
-
-			artRDM.setE131(portB[0], portB[4], e131);
-			artRDM.setE131Uni(portB[0], portB[4], deviceSettings.portBsACNuni[3]);
-		}
-	}
-#endif
+	#endif
 
 	// Add required callback functions
 	artRDM.setArtDMXCallback(dmxHandle);

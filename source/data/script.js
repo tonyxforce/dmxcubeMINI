@@ -118,10 +118,6 @@ function sendData() {
             name == "ipAddress" ||
             name == "subAddress" ||
             name == "gwAddress" ||
-            name == "portAuni" ||
-            name == "portBuni" ||
-            name == "portAsACNuni" ||
-            name == "portBsACNuni" ||
             name == "dmxInBroadcast"
         ) {
             var c = [v];
@@ -194,7 +190,7 @@ function handleAJAX(request) {
     if (request.readyState == XMLHttpRequest.DONE) {
         if (request.status == 200) {
             var response = JSON.parse(request.responseText);
-            console.log(response);
+            console.log("res", response);
             if (!response.hasOwnProperty("success")) {
                 console.error("no success");
                 err = 1;
@@ -258,13 +254,10 @@ function handleAJAX(request) {
                         }
                         continue;
                     } else if (
-                        key == "gwAddress" ||
-                        key == "dmxInBroadcast" ||
-                        key == "portAuni" ||
-                        key == "portBuni" ||
-                        key == "portAsACNuni" ||
-                        key == "portBsACNuni"
-                    ) {
+											name == "ipAddress" ||
+											name == "subAddress" ||
+											name == "gwAddress" ||
+											name == "dmxInBroadcast"                    ) {
                         for (let octet = 0; octet < elements.length; octet++) {
                             elements[octet].value = response[key][octet];
                         }

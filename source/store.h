@@ -21,7 +21,7 @@ If not, see http://www.gnu.org/licenses/
 
 
 // Change this if the settings structure changes
-#define CONFIG_VERSION "006"
+#define CONFIG_VERSION "007"
 
 // Dont change this
 #define CONFIG_START 0
@@ -59,10 +59,7 @@ struct StoreStruct {
 	char hostName[18];
   uint16_t hotspotDelay;
   uint8_t portAmode, portBmode, portAprot, portBprot, portAmerge, portBmerge;
-  uint8_t portAnet, portAsub, portAuni[4], portBnet, portBsub, portBuni[4], portAsACNuni[4], portBsACNuni[4];
-  uint16_t portAnumPix, portBnumPix, portApixConfig, portBpixConfig;
-  uint8_t portApixMode, portBpixMode;
-  uint16_t portApixFXstart, portBpixFXstart;
+  uint8_t portAnet, portAsub, portAuni, portBnet, portBsub, portBuni, portAsACNuni, portBsACNuni;
   uint8_t resetCounter, wdtCounter;
 	bool allowOTA;
 	bool autoRefresh;
