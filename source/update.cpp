@@ -20,13 +20,11 @@ void updateSetup()
 {
 	ArduinoOTA.onProgress([](int a, int b)
 												{
-		if((a*100/b)%10 == 0){
 		u8g2.setFont(u8g2_font_5x7_mf);
 		u8g2.drawStr(0, 10, "ArduinoOTA updating...");
 		u8g2.drawFrame(0, 14, 128, 10);
 			u8g2.drawBox(0, 14, (a * 128 / b), 10);
-			u8g2.sendBuffer();
-		} });
+			u8g2.sendBuffer(); });
 	ArduinoOTA.setHostname(deviceSettings.hostName);
 	ArduinoOTA.begin(); // Starts OTA
 
@@ -44,8 +42,9 @@ u8g2.sendBuffer(); });
 
 bool checkForUpdate()
 {
-	if(WiFi.status() != WL_CONNECTED) return false;
-	
+	if (WiFi.status() != WL_CONNECTED)
+		return false;
+
 	String serverName = updateServer + String("/checkUpdate.php") + params;
 
 	HTTPClient http;

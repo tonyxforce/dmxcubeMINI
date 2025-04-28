@@ -3,9 +3,14 @@
 
 $currentVer = $_GET["fw"];
 $model = $_GET["model"];
+$channel = $_GET["ch"];
 
-if (is_dir("./files/" . $model)) {
-	$files = scandir("./files/" . $model);
+if($channel == ""){
+	$channel = "prod";
+};
+
+if (is_dir("./files/" . $model . "/" . $channel)) {
+	$files = scandir("./files/" . $model . "/" . $channel);
 	if (count($files) <= 2) {
 		echo "no files";
 	} else {

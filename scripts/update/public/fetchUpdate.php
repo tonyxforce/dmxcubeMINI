@@ -2,7 +2,12 @@
 
 
 $currentVer = $_GET["fw"];
+$model = $_GET["model"];
+$channel = $_GET["ch"];
 
+if($channel == ""){
+	$channel = "prod";
+};
 
 $specificVer = "";
 
@@ -13,10 +18,9 @@ if (array_key_exists("version", $_GET))
 if ($currentVer == "") {
 	$currenVer = "v0.0.0";
 }
-$model = $_GET["model"];
 
-if (is_dir("./files/" . $model)) {
-	$files = scandir("./files/" . $model);
+if (is_dir("./files/" . $model . "/" . $channel)) {
+	$files = scandir("./files/" . $model . "/" . $channel);
 	if (count($files) <= 2) {
 		echo "no files";
 	} else {
@@ -52,10 +56,10 @@ if (is_dir("./files/" . $model)) {
 	echo "bad model";
 }
 
-function sendFile($name, $_model)
+function sendFile($version, $_model)
 {
-	header('Content-Disposition: attachment; filename="DMXCube mini W_' . $name . '.bin"');
-	$filename = "./files/" . $_model . "/" . $name . ".bin";
+	header('Content-Disposition: attachment; filename="DMXCube mini W_prod_' . $version . '.bin"');
+	$filename = "./files/" . $_model . "/prod/" . $version . ".bin";
 	header('Content-Type: application/octet-stream');
 	header("Content-Length: " . filesize($filename));
 	readfile($filename);
