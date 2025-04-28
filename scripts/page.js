@@ -66,28 +66,4 @@ cssPurge.purgeCSS(
         `const char PROGMEM favicon[] = ${JSON.stringify(favicon)};`
     );
 
-    console.log("Incrementing version number");
-
-    var versionFile = fs.readFileSync("source/firmVer.h").toString();
-
-    var versionNum = versionFile
-        .split('#define FIRMWARE_VERSION "v')[1]
-        .split('"')[0];
-
-    console.log(`Old firmware ver: v${versionNum}`);
-    var major = versionNum.split(".")[0];
-    var minor = versionNum.split(".")[1];
-    var patch = versionNum.split(".")[2];
-
-    if (!major || !minor || !patch) {
-        console.log("Invalid version num");
-    } else {
-        patch++;
-        console.log(`New firmvare ver: v${major}.${minor}.${patch}`);
-				fs.writeFileSync("source/firmVer.h", `#define FIRMWARE_VERSION "v${major}.${minor}.${patch}"`);
-    };
-
-/* 		if(fs.existsSync("./bin") && fs.existsSync(".pio/build/esp12/firmware.bin")){
-			fs.copyFileSync(".pio/build/esp12/firmware.bin", `./bin/v${versionNum}.bin`);
-		} */
 })();
