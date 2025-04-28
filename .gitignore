@@ -7,3 +7,4 @@ source/media/*
 scripts/node_modules
 bin
 scripts/update/public/files
+scripts/log
