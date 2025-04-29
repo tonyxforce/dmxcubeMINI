@@ -53,12 +53,34 @@ struct StoreStruct {
   char version[4];
 
   // Device settings:
-  IPAddress ip, subnet, gateway, broadcast, hotspotIp, hotspotSubnet, hotspotBroadcast, dmxInBroadcast;
+  IPAddress ip,
+	subnet,
+	gateway,
+	broadcast,
+	
+	hotspotIp,
+	hotspotSubnet,
+	hotspotBroadcast,
+	
+	dmxInBroadcast;
+
+
   bool dhcpEnable, standAloneEnable;
-  char nodeName[18], longName[64], wifiSSID[40], wifiPass[40], wifiUsername[40], hotspotSSID[31], hotspotPass[63];
+
+  char nodeName[18],
+	longName[64],
+	
+	wifiSSID[32], wifiPass[64], wifiUsername[32],
+	hotspotSSID[32], hotspotPass[64];
+	
 	char hostName[18];
-  uint16_t hotspotDelay;
-  uint8_t portAmode, portBmode, portAprot, portBprot, portAmerge, portBmerge;
+  
+	uint16_t hotspotDelay;
+
+  uint8_t portAmode, portBmode,
+	portAprot, portBprot,
+	portAmerge, portBmerge;
+	
   uint8_t portAnet, portAsub, portAuni, portBnet, portBsub, portBuni, portAsACNuni, portBsACNuni;
   uint8_t resetCounter, wdtCounter;
 	bool allowOTA;

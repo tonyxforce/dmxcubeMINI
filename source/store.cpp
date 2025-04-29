@@ -18,20 +18,42 @@ StoreStruct deviceSettings = {
 	CONFIG_VERSION,
   
   // The default values
-  IPAddress(2,0,0,1), IPAddress(255,0,0,0), IPAddress(2,0,0,1), IPAddress(2,255,255,255), IPAddress(2,0,0,1), IPAddress(255,0,0,0), IPAddress(2,255,255,255), IPAddress(2,255,255,255),
-  true, false,
-  "DMXCube mini W", "DMXCube mini Wireless", "", "", "", "DMXCube mini W", "DMXCube2024",
-	"cubeminiw",
-  15,
-  TYPE_DMX_OUT, TYPE_DMX_OUT, PROT_ARTNET, PROT_ARTNET, MERGE_HTP, MERGE_HTP,
-  0, 0, {0, 0, 0, 0}, 0, 0, {1, 1, 1, 1}, {1, 2, 3, 4}, {5, 6, 7, 8},
-  680, 680, 0, 0,
-  FX_MODE_PIXEL_MAP, FX_MODE_PIXEL_MAP,
-  1, 1,
-  0, 0,
-	true,
-	true,
-	false,
+  IPAddress(2,0,0,1), //ip
+	IPAddress(255,0,0,0), //subnet
+	IPAddress(2,0,0,1), //gatewy
+	IPAddress(2,255,255,255), //broadcast
+	
+	IPAddress(2,0,0,1), //hotspotIP
+	IPAddress(255,0,0,0), //hotspotSubnet
+	IPAddress(2,255,255,255), //hotspotBroadcast
+	
+	IPAddress(2,255,255,255), //dmxInBroadcast
+
+
+  true, false, //dhcpEnable, standAloneEnable
+
+  "DMXCube mini W", // nodeName
+	"DMXCube mini Wireless", // longName
+	"", "", "", // WiFi SSID, WiFi Password, WiFi Username
+	"DMXCube mini W", "DMXCube2024", // hotspotSSID, hotspotPass
+	
+	"cubeminiw", //hostname
+  
+	15, //hotspotdelay
+
+  TYPE_DMX_OUT, TYPE_DMX_OUT, // port A/B mode
+	PROT_ARTNET, PROT_ARTNET, // port A/B protocol
+	MERGE_HTP, MERGE_HTP, // port A/B merge mode
+  0, 0, 0, // port A net, sub, uni
+	0, 0, 1, // port B net, sub, uni
+	0, 1, // port A/B sACN uni
+  
+	0, 0, // resetCounter, wdtCounter
+	
+	true, //allowOTA
+	true, //autoRefresh
+	false,//wpa2Enterprise
+	false//startupUpdates
 };
 
 
