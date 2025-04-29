@@ -1,12 +1,19 @@
 /** @format */
 
-console.log("JSfile V0.1.0");
-
 var currentSectionIndex = 0;
 var currentURL = new URL(document.URL);
 var ajaxEndpoint = `/ajax`;
 if (currentURL.port != 80 && currentURL.port != "") {
     ajaxEndpoint = `http://localhost:8080/http://cubeminiw.local/ajax`;
+}
+
+function downloadTxt(text) {
+    var hiddenElement = document.createElement("a");
+
+    hiddenElement.href = "data:attachment/text," + encodeURI(text);
+    hiddenElement.target = "_blank";
+    hiddenElement.download = "settings.dcs";
+    hiddenElement.click();
 }
 
 var saveClicked = 0;
@@ -342,7 +349,11 @@ function handleAJAX(request) {
                                 break;
                         }
                     }
+                    if (key == "deviceSettings") {
+                        downloadTxt(response.deviceSettings);
+                    }
                 }
+							}
                 switch (currentSectionIndex) {
                     case 6:
                         checkUpdateBtn.value = "Check for updates";
