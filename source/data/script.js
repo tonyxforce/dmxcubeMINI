@@ -115,10 +115,9 @@ function sendData() {
         var v = element.value;
         if (name in data) continue;
         if (
-            name == "ipAddress" ||
-            name == "subAddress" ||
-            name == "gwAddress" ||
-            name == "dmxInBroadcast"
+            ["ipAddress", "subAddress", "gwAddress", "dmxInBroadcast"].includes(
+                name
+            )
         ) {
             var c = [v];
             console.log("k", name);
@@ -231,40 +230,21 @@ function handleAJAX(request) {
             for (let key in response) {
                 if (response.hasOwnProperty(key)) {
                     var elements = document.getElementsByName(key);
-                    if (key == "ipAddress" || key == "subAddress") {
-                        var portApix = document.getElementsByName(key + "T");
-                        for (let octet = 0; octet < 4; octet++) {
-                            elements[octet].value = response[key][octet];
-                            if (octet == 0) portApix[0].innerHTML = "";
-                            else
-                                portApix[0].innerHTML =
-                                    portApix[0].innerHTML + " . ";
-                            portApix[0].innerHTML =
-                                portApix[0].innerHTML + response[key][octet];
+                    if (
+                        [
+                            "ipAddress",
+                            "subAddress",
+                            "gwAddress",
+                            "dmxInBroadcast",
+                        ].includes(key)
+                    ) {
+                        for (let i = 0; i < elements.length; i++) {
+                            elements[i].value = response[key][i];
                         }
-                        continue;
-                    } else if (key == "bcAddress") {
-                        for (let octet = 0; octet < 4; octet++) {
-                            if (octet == 0) elements[0].innerHTML = "";
-                            else
-                                elements[0].innerHTML =
-                                    elements[0].innerHTML + ".";
-                            elements[0].innerHTML =
-                                elements[0].innerHTML + response[key][octet];
-                        }
-                        continue;
-                    } else if (
-											name == "ipAddress" ||
-											name == "subAddress" ||
-											name == "gwAddress" ||
-											name == "dmxInBroadcast"                    ) {
-                        for (let octet = 0; octet < elements.length; octet++) {
-                            elements[octet].value = response[key][octet];
-                        }
-                        continue;
-                    }
-                    ["A", "B"].forEach((port) => {
-                        if (key == `port${port}mode`) {
+                    }else{
+
+											["A", "B"].forEach((port) => {
+												if (key == `port${port}mode`) {
                             var portPix = document.getElementsByClassName(
                                 `port${port}pix`
                             );

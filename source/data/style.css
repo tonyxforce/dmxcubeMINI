@@ -566,7 +566,7 @@ select {
 	}
 
 	ul.nav a {
-		font: 12px Helvetica, Arial, sans-serif;
+		font-size: 12px;
 		letter-spacing: 0;
 		padding: .8em
 	}
@@ -588,11 +588,9 @@ select {
 		border-bottom: 1px solid #888583;
 		width: 100%;
 		display: block;
-		font: 400 15px Baskerville, Garamond, Palatino, 'Palatino Linotype', 'Hoefler Text', 'Times New Roman', serif
 	}
 
 	.title h1 {
-		font: 600 15px Baskerville, Garamond, Palatino, 'Palatino Linotype', 'Hoefler Text', 'Times New Roman', serif;
 		display: inline
 	}
 
@@ -631,6 +629,9 @@ select {
 		width: 85%;
 	}
 
+	input[type=checkbox]{
+		background-color: #575E62;
+	}
 	@media (min-width:1300px) {
 		.page {
 			width: 1300px
