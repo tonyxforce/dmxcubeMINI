@@ -453,22 +453,6 @@ void loop()
 		dmxB.handler();
 #endif
 
-		// Do Pixel FX on port A
-		if (deviceSettings.portAmode == TYPE_WS2812 && deviceSettings.portApixMode != FX_MODE_PIXEL_MAP)
-		{
-			if (pixFXA.Update())
-				pixDone = 0;
-		}
-
-// Do Pixel FX on port B
-#ifndef ONE_PORT
-		if (deviceSettings.portBmode == TYPE_WS2812 && deviceSettings.portBpixMode != FX_MODE_PIXEL_MAP)
-		{
-			if (pixFXB.Update())
-				pixDone = 0;
-		}
-#endif
-
 		// Do pixel string output
 		if (!pixDone)
 			pixDone = pixDriver.show();
@@ -531,51 +515,7 @@ void dmxHandle(uint8_t group, uint8_t port, uint16_t numChans, bool syncEnabled)
 	artRDM.getIP();
 	if (portA[0] == group)
 	{
-		if (deviceSettings.portAmode == TYPE_WS2812)
-		{
-
-#ifndef ESP_01
-			setStatusLed(STATUS_LED_A, GREEN);
-#endif
-
-			if (deviceSettings.portApixMode == FX_MODE_PIXEL_MAP)
-			{
-				if (numChans > 510)
-					numChans = 510;
-
-				// Copy DMX data to the pixels buffer
-				pixDriver.setBuffer(0, port * 510, artRDM.getDMX(group, port), numChans);
-
-				// Output to pixel strip
-				if (!syncEnabled)
-					pixDone = false;
-
-				return;
-
-				// FX 12 Mode
-			}
-			else if (port == portA[1])
-			{
-				byte *a = artRDM.getDMX(group, port);
-				uint16_t s = deviceSettings.portApixFXstart - 1;
-
-				pixFXA.Intensity = a[s + 0];
-				pixFXA.setFX(a[s + 1]);
-				pixFXA.setSpeed(a[s + 2]);
-				pixFXA.Pos = a[s + 3];
-				pixFXA.Size = a[s + 4];
-
-				pixFXA.setColour1((a[s + 5] << 16) | (a[s + 6] << 8) | a[s + 7]);
-				pixFXA.setColour2((a[s + 8] << 16) | (a[s + 9] << 8) | a[s + 10]);
-				pixFXA.Size1 = a[s + 11];
-				// pixFXA.Fade = a[s + 12];
-
-				pixFXA.NewData = 1;
-			}
-
-			// DMX modes
-		}
-		else if (deviceSettings.portAmode != TYPE_DMX_IN && port == portA[1])
+		if (deviceSettings.portAmode != TYPE_DMX_IN && port == portA[1])
 		{
 			dmxA.chanUpdate(numChans);
 
@@ -588,45 +528,7 @@ void dmxHandle(uint8_t group, uint8_t port, uint16_t numChans, bool syncEnabled)
 	}
 	else if (portB[0] == group)
 	{
-		if (deviceSettings.portBmode == TYPE_WS2812)
-		{
-			setStatusLed(STATUS_LED_B, GREEN);
-
-			if (deviceSettings.portBpixMode == FX_MODE_PIXEL_MAP)
-			{
-				if (numChans > 510)
-					numChans = 510;
-
-				// Copy DMX data to the pixels buffer
-				pixDriver.setBuffer(1, port * 510, artRDM.getDMX(group, port), numChans);
-
-				// Output to pixel strip
-				if (!syncEnabled)
-					pixDone = false;
-
-				return;
-
-				// FX 12 mode
-			}
-			else if (port == portB[1])
-			{
-				byte *a = artRDM.getDMX(group, port);
-				uint16_t s = deviceSettings.portBpixFXstart - 1;
-
-				pixFXB.Intensity = a[s + 0];
-				pixFXB.setFX(a[s + 1]);
-				pixFXB.setSpeed(a[s + 2]);
-				pixFXB.Pos = a[s + 3];
-				pixFXB.Size = a[s + 4];
-				pixFXB.setColour1((a[s + 5] << 16) | (a[s + 6] << 8) | a[s + 7]);
-				pixFXB.setColour2((a[s + 8] << 16) | (a[s + 9] << 8) | a[s + 10]);
-				pixFXB.Size1 = a[s + 11];
-				// pixFXB.Fade = a[s + 12];
-
-				pixFXB.NewData = 1;
-			}
-		}
-		else if (deviceSettings.portBmode != TYPE_DMX_IN && port == portB[1])
+		if (deviceSettings.portBmode != TYPE_DMX_IN && port == portB[1])
 		{
 			dmxB.chanUpdate(numChans);
 			setStatusLed(STATUS_LED_B, BLUE);
@@ -708,7 +610,7 @@ void addressHandle()
 
 	deviceSettings.portAnet = artRDM.getNet(portA[0]);
 	deviceSettings.portAsub = artRDM.getSubNet(portA[0]);
-	deviceSettings.portAuni[0] = artRDM.getUni(portA[0], portA[1]);
+	deviceSettings.portAuni = artRDM.getUni(portA[0], portA[1]);
 	deviceSettings.portAmerge = artRDM.getMerge(portA[0], portA[1]);
 
 	if (artRDM.getE131(portA[0], portA[1]))
@@ -719,7 +621,7 @@ void addressHandle()
 #ifndef ONE_PORT
 	deviceSettings.portBnet = artRDM.getNet(portB[0]);
 	deviceSettings.portBsub = artRDM.getSubNet(portB[0]);
-	deviceSettings.portBuni[0] = artRDM.getUni(portB[0], portB[1]);
+	deviceSettings.portBuni = artRDM.getUni(portB[0], portB[1]);
 	deviceSettings.portBmerge = artRDM.getMerge(portB[0], portB[1]);
 
 	if (artRDM.getE131(portB[0], portB[1]))
