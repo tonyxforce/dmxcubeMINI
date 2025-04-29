@@ -16,6 +16,7 @@ If not, see http://www.gnu.org/licenses/
 #include <ArduinoJson.h>
 #include "store.h"
 #include "update.h"
+#include "IPHelper.h"
 
 bool _doUpdate = 0;
 
@@ -47,7 +48,7 @@ void ajaxHandle()
 		else
 		{
 			jsonReply["success"] = 0;
-			jsonReply["message"] = "Failed to save data.  Reload page and try again.";
+			jsonReply["message"] = "Failed to save data. Reload page and try again.";
 		}
 
 		// Handle reboots
@@ -187,7 +188,6 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 
 		uint8_t newMode = jsonRequest["portAmode"];
 		uint8_t oldMode = deviceSettings.portAmode;
-		bool updatePorts = false;
 
 #ifndef ONE_PORT
 		// RDM and DMX input can't run together
@@ -301,7 +301,6 @@ bool ajaxSave(uint8_t page, JsonObject jsonRequest, DynamicJsonDocument jsonRequ
 
 		uint8_t newMode = jsonRequest["portBmode"];
 		uint8_t oldMode = deviceSettings.portBmode;
-		bool updatePorts = false;
 
 		// RDM and DMX input can't run together
 		if (newMode == TYPE_RDM_OUT && deviceSettings.portAmode == TYPE_DMX_IN)
@@ -359,7 +358,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 	JsonArray ipAddress = jsonReply.createNestedArray("ipAddress");
 	JsonArray subAddress = jsonReply.createNestedArray("subAddress");
 	JsonArray gwAddress = jsonReply.createNestedArray("gwAddress");
-	JsonArray bcAddress = jsonReply.createNestedArray("bcAddress");
 	JsonArray dmxInBroadcast = jsonReply.createNestedArray("dmxInBroadcast");
 
 	// Get MAC Address
@@ -377,7 +375,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
-		jsonReply.remove("bcAddress");
 		jsonReply.remove("dmxInBroadcast");
 
 		jsonReply["wifiStatus"] = wifiStatus;
@@ -449,7 +446,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
-		jsonReply.remove("bcAddress");
 		jsonReply.remove("dmxInBroadcast");
 		jsonReply.remove("deviceSettings");
 
@@ -478,8 +474,8 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 			ipAddress.add(deviceSettings.ip[x]);
 			subAddress.add(deviceSettings.subnet[x]);
 			gwAddress.add(deviceSettings.gateway[x]);
-			bcAddress.add(deviceSettings.broadcast[x]);
-		}
+		};
+		jsonReply["bcAddress"] = IPAddressToString(deviceSettings.broadcast);
 
 		jsonReply["allowOTA"] = deviceSettings.allowOTA;
 		jsonReply["autoRefresh"] = deviceSettings.autoRefresh;
@@ -494,8 +490,6 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
-		jsonReply.remove("bcAddress");
-		jsonReply.remove("deviceSettings");
 
 		jsonReply["portAmode"] = deviceSettings.portAmode;
 
@@ -522,22 +516,17 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
-		jsonReply.remove("bcAddress");
 
 		jsonReply["portBmode"] = deviceSettings.portBmode;
 		jsonReply["portBprot"] = deviceSettings.portBprot;
 		jsonReply["portBmerge"] = deviceSettings.portBmerge;
 		jsonReply["portBnet"] = deviceSettings.portBnet;
 		jsonReply["portBsub"] = deviceSettings.portBsub;
-		jsonReply["portBnumPix"] = deviceSettings.portBnumPix;
-
-		jsonReply["portBpixMode"] = deviceSettings.portBpixMode;
-		jsonReply["portBpixFXstart"] = deviceSettings.portBpixFXstart;
+		jsonReply["portBuni"] = deviceSettings.portBuni;
+		jsonReply["portBsACNuni"] = deviceSettings.portBsACNuni;
 
 		for (uint8_t x = 0; x < 4; x++)
 		{
-			portBuni.add(deviceSettings.portBuni[x]);
-			portBsACNuni.add(deviceSettings.portBsACNuni[x]);
 			dmxInBroadcast.add(deviceSettings.dmxInBroadcast[x]);
 		}
 
@@ -547,25 +536,93 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 
 	case 6: // Firmware
 	{
-		jsonReply.remove("ipAddress");
-		jsonReply.remove("subAddress");
-		jsonReply.remove("gwAddress");
-		jsonReply.remove("bcAddress");
-		jsonReply.remove("portAuni");
-		jsonReply.remove("portBuni");
-		jsonReply.remove("portAsACNuni");
-		jsonReply.remove("portBsACNuni");
-		jsonReply.remove("dmxInBroadcast");
 
-		if (jsonRequest.containsKey("export") && jsonRequest["export"])
+		/* if (jsonRequest.containsKey("export") && jsonRequest["export"])
 		{
-			jsonReply["deviceSettings"] = "";
+			for (uint16_t t = 0; t < sizeof(deviceSettings); t++)
+				devSet.add(*((uint8_t *)&deviceSettings + t));
 
-			uint8_t buf[505];
-			for (uint16_t t = 0; t < 504UL; t++)
-				buf[t] = /* (uint8_t)(*((char *)&deviceSettings + t)) */ random(0, 255);
-			buf[504] = '\0';
-			jsonReply["deviceSettings"] = buf;
+			jsonReply["wifiStatus"] = wifiStatus;
+			JsonArray devSet_version = devSetO.createNestedArray("version");
+			JsonArray devSet_ip = devSetO.createNestedArray("ip");
+			JsonArray devSet_subnet = devSetO.createNestedArray("subnet");
+			JsonArray devSet_gateway = devSetO.createNestedArray("gateway");
+			JsonArray devSet_broadcast = devSetO.createNestedArray("broadcast");
+			JsonArray devSet_hotspotIp = devSetO.createNestedArray("hotspotIp");
+			JsonArray devSet_hotspotSubnet = devSetO.createNestedArray("hotspotSubnet");
+			JsonArray devSet_hotspotBroadcast = devSetO.createNestedArray("hotspotBroadcast");
+			JsonArray devSet_dmxInBroadcast = devSetO.createNestedArray("dmxInBroadcast");
+			JsonArray devSet_nodeName = devSetO.createNestedArray("nodeName");
+			JsonArray devSet_longName = devSetO.createNestedArray("longName");
+			JsonArray devSet_wifiSSID = devSetO.createNestedArray("wifiSSID");
+			JsonArray devSet_wifiPass = devSetO.createNestedArray("wifiPass");
+			JsonArray devSet_wifiUsername = devSetO.createNestedArray("wifiUsername");
+			JsonArray devSet_hotspotSSID = devSetO.createNestedArray("hotspotSSID");
+			JsonArray devSet_hotspotPass = devSetO.createNestedArray("hotspotPass");
+			JsonArray devSet_hostName = devSetO.createNestedArray("hostName");
+
+			for (int i = 0; i < 4; i++)
+			{
+				devSet_version.add(deviceSettings.version[i]);
+				devSet_ip.add(deviceSettings.ip[i]);
+				devSet_subnet.add(deviceSettings.subnet[i]);
+				devSet_gateway.add(deviceSettings.gateway[i]);
+				devSet_broadcast.add(deviceSettings.broadcast[i]);
+				devSet_hotspotIp.add(deviceSettings.hotspotIp[i]);
+				devSet_hotspotSubnet.add(deviceSettings.hotspotSubnet[i]);
+				devSet_hotspotBroadcast.add(deviceSettings.hotspotBroadcast[i]);
+				devSet_dmxInBroadcast.add(deviceSettings.dmxInBroadcast[i]);
+			};
+
+			for (int i = 0; i < 64; i++)
+			{
+				devSet_longName.add(deviceSettings.longName[i]);
+				devSet_wifiPass.add(deviceSettings.wifiPass[i]);
+				devSet_hotspotPass.add(deviceSettings.hotspotPass[i]);
+			};
+			for (int i = 0; i < 32; i++)
+			{
+				devSet_wifiSSID.add(deviceSettings.wifiSSID[i]);
+				devSet_wifiUsername.add(deviceSettings.wifiUsername[i]);
+				devSet_hotspotSSID.add(deviceSettings.hotspotSSID[i]);
+			}
+			for (int i = 0; i < 18; i++)
+			{
+				devSet_nodeName.add(deviceSettings.nodeName[i]);
+				devSet_hostName.add(deviceSettings.hostName[i]);
+			}
+
+			devSetO["dhcpEnable"] = deviceSettings.dhcpEnable;
+			devSetO["standAloneEnable"] = deviceSettings.standAloneEnable;
+			devSetO["hotspotDelay"] = deviceSettings.hotspotDelay;
+			devSetO["portAmode"] = deviceSettings.portAmode;
+			devSetO["portBmode"] = deviceSettings.portBmode;
+			devSetO["portAprot"] = deviceSettings.portAprot;
+			devSetO["portBprot"] = deviceSettings.portBprot;
+			devSetO["portAmerge"] = deviceSettings.portAmerge;
+			devSetO["portBmerge"] = deviceSettings.portBmerge;
+			devSetO["portAnet"] = deviceSettings.portAnet;
+			devSetO["portAsub"] = deviceSettings.portAsub;
+			devSetO["portBnet"] = deviceSettings.portBnet;
+			devSetO["portBsub"] = deviceSettings.portBsub;
+			devSetO["resetCounter"] = deviceSettings.resetCounter;
+			devSetO["wdtCounter"] = deviceSettings.wdtCounter;
+			devSetO["allowOTA"] = deviceSettings.allowOTA;
+			devSetO["autoRefresh"] = deviceSettings.autoRefresh;
+			devSetO["wpa2Enterprise"] = deviceSettings.wpa2Enterprise;
+			devSetO["startupUpdates"] = deviceSettings.startupUpdates;
+			devSetO["portAuni"] = deviceSettings.portAuni;
+			devSetO["portBuni"] = deviceSettings.portBuni;
+			devSetO["portAsACNuni"] = deviceSettings.portAsACNuni;
+			devSetO["portBsACNuni"] = deviceSettings.portBsACNuni;
+		}
+		else */
+		{
+			jsonReply.remove("ipAddress");
+			jsonReply.remove("subAddress");
+			jsonReply.remove("gwAddress");
+			jsonReply.remove("dmxInBroadcast");
+			jsonReply.remove("deviceSettings");
 		}
 
 		jsonReply["updateAvail"] = webUpdateAvail;
@@ -581,12 +638,12 @@ void ajaxLoad(uint8_t page, JsonObject jsonReply, DynamicJsonDocument jsonReplyD
 		jsonReply.remove("ipAddress");
 		jsonReply.remove("subAddress");
 		jsonReply.remove("gwAddress");
-		jsonReply.remove("bcAddress");
 		jsonReply.remove("portAuni");
 		jsonReply.remove("portBuni");
 		jsonReply.remove("portAsACNuni");
 		jsonReply.remove("portBsACNuni");
 		jsonReply.remove("dmxInBroadcast");
+		jsonReply.remove("deviceSettings");
 
 		jsonReply["success"] = 0;
 		jsonReply["message"] = "Invalid or incomplete data received.";
