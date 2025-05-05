@@ -57,36 +57,6 @@ I have implemented as many DMX Workshop/ArtNet V4 features as I possibly could. 
 - Web UI uses AJAX & JSON to minimize network traffic used & decrease latency
 - Pixel FX - a 12 channel mode for ws2812 LED pixel control
 
-## Pixel FX
-
-To enable this mode, select WS2812 in the port settings and enter the number of pixels you wish to control.  Select '12 Channel FX'. 'Start Channel' is the DMX address of the first channel below.
-
-Note: You still need to set the Artnet net, subnet and universe correctly.
-
-| DMX Channel | Function  | Values (0-255) |                       |
-| ----------- | --------- | -------------- | --------------------- |
-| 1           | Intensity | 0 - 255        |                       |
-| 2           | FX Select | 0 - 49         | Static                |
-|             |           | 50 - 74        | Rainbow               |
-|             |           | 75 - 99        | Theatre Chase         |
-|             |           | 100 - 124      | Twinkle               |
-| 3           | Speed     | 0 - 19         | Stop - Index Reset    |
-|             |           | 20 - 122       | Slow - Fast CW        |
-|             |           | 123 - 130      | Stop                  |
-|             |           | 131 - 234      | Fast - Slow CCW       |
-|             |           | 235 - 255      | Stop                  |
-| 4           | Position  | 0 - 127 - 255  | Left - Centre - Right |
-| 5           | Size      | 0 - 255        | Small - Big           |
-| 6           | Colour 1  | 0 - 255        | Red                   |
-| 7           |           | 0 - 255        | Green                 |
-| 8           |           | 0 - 255        | Blue                  |
-| 9           | Colour 2  | 0 - 255        | Red                   |
-| 10          |           | 0 - 255        | Green                 |
-| 11          |           | 0 - 255        | Blue                  |
-| 12          | Modify    | 0 - 255        | *Modify FX            |
-
-Modify FX is only currently used for the Static effect and is used to resize colour 1 within the overall size.
-
 ## Special Thanks To
 
 I'd like to thank these people.  They have either contributed with donations, a large amount of testing and feedback, or with their own code/projects that have been of assistance or inspiration.
