@@ -256,6 +256,15 @@ void setup()
 	if (!resetDefaults)
 		eepromLoad();
 
+	// Set node long name
+	// New name : "DMXCube mini Wireless" + esp chip ID
+	if (strcmp(deviceSettings.longName, "DMXCube mini Wireless") == 0)
+	{
+		char longNameBuffer[80];
+		snprintf(longNameBuffer, sizeof(longNameBuffer), "DMXCube mini WiFi %04X", system_get_chip_id());
+		strcpy(deviceSettings.longName, String(longNameBuffer).c_str());
+	}
+
 	// Store our counters for resetting defaults
 	if (resetInfo.reason != REASON_DEFAULT_RST && resetInfo.reason != REASON_EXT_SYS_RST && resetInfo.reason != REASON_SOFT_RESTART)
 		deviceSettings.wdtCounter++;
