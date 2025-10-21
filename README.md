@@ -1,3 +1,8 @@
+# Deprecation notice
+This firmware/product has now been deprecated in favor of the new DMXCube mini ETH, details about which can be found in our discord server. Join at [dmxcube.eu](https://dmxcube.eu).
+
+This repository will likely not receive any more updates, but we will try our best and review and merge PRs if you decide to submit any.
+
 # DMXCube
 
 WiFi ArtNet V4 to DMX, with experimental RDM support
